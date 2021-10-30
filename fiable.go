@@ -23,6 +23,12 @@ import (
 	  return fiable
       }
 
+
+      func (f*fiable) serverHttp() {
+	      
+
+      }
+
       func (f*fiable) Listen(addr string) error {
 	server := &http.Server{Addr: addr}
 	 if f.started {
