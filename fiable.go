@@ -14,6 +14,7 @@ import (
 	server       *http.Server
 	started      bool
 	Timeout      time.Duration
+	router        *router
 	properties   map[string]interface{}
       }
       
