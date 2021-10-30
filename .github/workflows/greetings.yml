@@ -1,0 +1,16 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: 'Thank you for opening an issue to Fiable 🦄. The issue will soon be reviewed 🔨'
+        pr-message: 'Thank you for showing interest in Fiable 🦄 and contributing to it. The Pr would soon be reviewed by the maintainer'
