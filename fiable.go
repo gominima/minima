@@ -24,9 +24,8 @@ import (
       }
 
 
-      func (f*fiable) serverHttp() {
-	      
-
+      func (e *fiable) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	
       }
 
       func (f*fiable) Listen(addr string) error {

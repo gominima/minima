@@ -5,6 +5,7 @@ import ("regexp")
 
 type Middleware func()
 
+type NextFunc func(NextFunc)
 
 type Route struct {
 	url        *regexp.Regexp
@@ -38,3 +39,4 @@ func (router *router) addUrl(method string, hasMiddleware bool, url *regexp.Rege
 
 }
 
+func (r *router) Get(url string, )

@@ -16,8 +16,7 @@ type request struct {
 	url        string
 	_url       *url.URL
 	
-	query      map[string][]string
-	body       map[string][]string
+	
 
 	json       *json.Decoder
 	props      *map[string]interface{}
@@ -27,6 +26,8 @@ func Request(httRequest *http.Request, props *map[string]interface{}) *request{
  req := &request{}
  req.ref = httRequest
  req.fileReader = nil
- req.method = 
+ req.method = httRequest.Proto
+ req.props = props
+ return req
 
 }

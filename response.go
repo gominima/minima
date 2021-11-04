@@ -8,17 +8,18 @@ import (
 
 type response struct {
 	response http.ResponseWriter
-	write *bufio.Writer
+	write *bufio.ReadWriter
 	connection net.Conn
 	url string
 	method string
 	ended bool
 	props *map[string]interface{}
 	host string
+	HasEnded bool
 
 }
 
-func Response(rs http.ResponseWriter, req *http.Request, write *bufio.Writer, connection net.Conn, props *map[string]interface{}) *response {
+func Response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter, connection net.Conn, props *map[string]interface{}) *response {
  res := &response{}
  res.response = rs
  res.connection = connection
