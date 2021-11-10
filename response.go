@@ -31,3 +31,12 @@ func Response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter
  return res
 
 }
+
+
+func (r *response) Header(){
+	
+}
+
+func (r *response) Send(status int, content interface{}) error {
+
+}

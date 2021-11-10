@@ -31,3 +31,8 @@ func Request(httRequest *http.Request, props *map[string]interface{}) *request{
  return req
 
 }
+
+
+func (r * request) GetPathURl() string {
+ return r.url
+}

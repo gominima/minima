@@ -1,42 +1,46 @@
 package fiable
 
-import ("regexp")
+import (
+	"net/http"
+
+)
 
 
-type Middleware func()
+type Middleware func(Request request, Response response)
 
 type NextFunc func(NextFunc)
 
 type Route struct {
-	url        *regexp.Regexp
+	url       string
+  method    string
 	middleware      Middleware
 	hasMiddleware bool
-      }
+  handler        *http.Handler
+    }
 
 type router struct {
-  routes  map[string][]*Route
+  routes []*Route
 }
 
 func Router () *router{
   router := router{}
-  router.routes = make(map[string][]*Route)
-  router.routes["get"] = []*Route{}
-  router.routes["post"] = []*Route{}
-  router.routes["delete"] = []*Route{}
-  router.routes["put"] = []*Route{}
-  router.routes["patch"] = []*Route{}
+  
 
   return &router
 
 }
 
-func (router *router) addUrl(method string, hasMiddleware bool, url *regexp.Regexp, middleware Middleware){
+func (router *router) addUrl(method string, hasMiddleware bool, url string,  middleware Middleware){
  r := &Route{}
  r.hasMiddleware = hasMiddleware
  r.middleware = middleware
  r.url = url
- router.routes[method] = append(router.routes[method], r)
+ r.method = method
+ router.routes = append(router.routes, r)
 
 }
 
-func (r *router) Get(url string, )
+func (r *router) Get(url string, handler Middleware ){
+r.addUrl("GET", true, url, handler)
+}
+
