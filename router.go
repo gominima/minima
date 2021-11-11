@@ -1,21 +1,21 @@
 package fiable
 
 import (
+	"fmt"
 	"net/http"
-
 )
 
-
-type Middleware func(Request request, Response response)
+type handler func(Request *Request, Response *Response)
 
 type NextFunc func(NextFunc)
 
 type Route struct {
 	url       string
   method    string
-	middleware      Middleware
-	hasMiddleware bool
-  handler        *http.Handler
+	handler      handler
+	hashandler bool
+  http      *http.ServeMux
+ 
     }
 
 type router struct {
@@ -30,17 +30,18 @@ func Router () *router{
 
 }
 
-func (router *router) addUrl(method string, hasMiddleware bool, url string,  middleware Middleware){
+func (router *router) addUrl(method string, hashandler bool, url string,  handler handler){
  r := &Route{}
- r.hasMiddleware = hasMiddleware
- r.middleware = middleware
+ r.hashandler = hashandler
+ r.handler = handler
  r.url = url
  r.method = method
  router.routes = append(router.routes, r)
 
 }
 
-func (r *router) Get(url string, handler Middleware ){
+func (r *router) Get(url string, handler handler ){
+fmt.Printf("Get route added")
 r.addUrl("GET", true, url, handler)
 }
 

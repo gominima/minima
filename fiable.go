@@ -2,9 +2,9 @@ package fiable
 
 import (
 	"fmt"
+	"log"
 
 	"net/http"
-	
 
 	"time"
 )
@@ -29,27 +29,29 @@ import (
 	hijack, ok := res.(http.Hijacker)
 	
 	if !ok {
-	 
+	 fmt.Errorf("Error occured at 32")
 	}
 	conn, buffrw, err := hijack.Hijack()
 	if err != nil {
-
+		log.Fatal(err)
 	}
-	request := Request(req, &e.properties)
-	response := Response(res, req, buffrw, conn, &e.properties)
+	request := request(req, &e.properties)
+	response := response(res, req, buffrw, conn, &e.properties)
             
 	for _, routes := range e.router.routes {
 	 path := request.GetPathURl()
 	  if routes.url != path {
 	   fmt.Fprint(res, "Not found" )
+	   fmt.Print(path, routes.url)
 	    
 	  }
-	  if path == routes.url {
-           routes.middleware(response, request)
-	  }
+	  fmt.Print(routes)
+		routes.handler(request, response)
+		
+	  
 	}
 
-	
+	http.NotFound(res, req)
        
          }
         
@@ -63,7 +65,11 @@ import (
 	 f.started = true
 	 return f.server.ListenAndServe()
       }
+       
 
+      func (f *fiable) Get(path string, handler handler) {
+	f.router.addUrl("GET", true, path, handler)
+      }
 
 
 

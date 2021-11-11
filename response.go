@@ -2,11 +2,12 @@ package fiable
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 	"net/http"
 )
 
-type response struct {
+type Response struct {
 	response http.ResponseWriter
 	write *bufio.ReadWriter
 	connection net.Conn
@@ -19,8 +20,8 @@ type response struct {
 
 }
 
-func Response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter, connection net.Conn, props *map[string]interface{}) *response {
- res := &response{}
+func response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter, connection net.Conn, props *map[string]interface{}) *Response {
+ res := &Response{}
  res.response = rs
  res.connection = connection
  res.url = req.URL.Path
@@ -33,10 +34,10 @@ func Response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter
 }
 
 
-func (r *response) Header(){
+func (r *Response) Header(){
 	
 }
 
-func (r *response) Send(status int, content interface{}) error {
-
+func (r *Response) Send(status int, content interface{})  {
+ fmt.Print(content)
 }

@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-type request struct {
+type Request struct {
 	ref        *http.Request
 	fileReader *multipart.Reader
 	query      map[string][]string
@@ -22,8 +22,8 @@ type request struct {
 	props      *map[string]interface{}
 }
 
-func Request(httRequest *http.Request, props *map[string]interface{}) *request{
- req := &request{}
+func request(httRequest *http.Request, props *map[string]interface{}) *Request{
+ req := &Request{}
  req.ref = httRequest
  req.fileReader = nil
  req.method = httRequest.Proto
@@ -33,6 +33,6 @@ func Request(httRequest *http.Request, props *map[string]interface{}) *request{
 }
 
 
-func (r * request) GetPathURl() string {
+func (r * Request) GetPathURl() string {
  return r.url
 }
