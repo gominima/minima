@@ -29,6 +29,7 @@ func response(rs http.ResponseWriter, req *http.Request, write *bufio.ReadWriter
  res.host = req.Host
  res.write = write
  res.props = props
+
  return res
 
 }
