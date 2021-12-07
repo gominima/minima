@@ -1,10 +1,8 @@
 package fiable
 
 import (
-	"context"
 	"fmt"
-	"strings"
-
+	"log"
 	"net/http"
 	"time"
 )
@@ -21,36 +19,14 @@ type fiable struct {
 type ctxKey struct{}
 
 func New() *fiable {
-	var router *router = Router()
+	var router *router = NewRouter()
 	var fiable *fiable = &fiable{router: router}
 	return fiable
 }
 
-func (f *fiable) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var allow []string
-	for _, route := range f.router.routes {
-		matches := route.regex.FindStringSubmatch(r.URL.Path)
-		if len(matches) > 0 {
-			if r.Method != route.method {
-				allow = append(allow, route.method)
-				continue
-			}
-			ctx := context.WithValue(r.Context(), ctxKey{}, matches[1:])
-			route.handler(w, r.WithContext(ctx))
-			return
-		}
-	}
-	if len(allow) > 0 {
-		w.Header().Set("Allow", strings.Join(allow, ", "))
-		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.NotFound(w, r)
-	fmt.Fprint(w, "Uh")
-}
 
 func (f *fiable) Listen(addr string) error {
-	server := &http.Server{Addr: addr}
+	server := &http.Server{Addr: addr , Handler: f}
 	if f.started {
 		fmt.Errorf("Server is already running", f)
 	}
@@ -60,6 +36,32 @@ func (f *fiable) Listen(addr string) error {
 	return f.server.ListenAndServe()
 }
 
-func (f *fiable) Get(path string, handler http.HandlerFunc) {
-	f.router.Get(path, handler)
+func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
+	match := false
+
+	for _, requestedMethod := range f.router.routes[q.Method] {
+		if isMatchRoute, namedParams := requestedMethod.matchingPath(q.URL.Path); isMatchRoute {
+			match = isMatchRoute
+			if err := q.ParseForm(); err != nil {
+				log.Printf("Error parsing form: %s", err)
+				return
+			}
+			currentRequest := 0
+			
+			res := response(w,q, &f.properties)
+			req := request(q, &f.properties)
+
+			f.router.NextWithContext(namedParams, requestedMethod.Handlers[currentRequest], res, req)
+			currentRequest++
+			break
+		}
+	}
+
+	if !match {
+
+	}
+}
+
+func (f *fiable) Get(path string, handler ...Handler) {
+	f.router.Get(path, handler...)
 }

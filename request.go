@@ -32,6 +32,11 @@ func request(httRequest *http.Request, props *map[string]interface{}) *Request{
 
 }
 
+func (r*Request) Param(name string) interface{}{
+	result := r.ref.Context().Value(name)
+	return result
+}
+
 
 func (r * Request) GetPathURl() string {
  return r.url
