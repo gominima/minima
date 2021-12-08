@@ -39,8 +39,8 @@ func (f *fiable) Listen(addr string) error {
 func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 	match := false
 
-	for _, requestedMethod := range f.router.routes[q.Method] {
-		if isMatchRoute, namedParams := requestedMethod.matchingPath(q.URL.Path); isMatchRoute {
+	for _, requestQuery := range f.router.routes[q.Method] {
+		if isMatchRoute,Params := requestQuery.matchingPath(q.URL.Path); isMatchRoute {
 			match = isMatchRoute
 			if err := q.ParseForm(); err != nil {
 				log.Printf("Error parsing form: %s", err)
@@ -51,7 +51,7 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 			res := response(w,q, &f.properties)
 			req := request(q, &f.properties)
 
-			f.router.NextWithContext(namedParams, requestedMethod.Handlers[currentRequest], res, req)
+			f.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
 			break
 		}

@@ -1,12 +1,16 @@
 package fiable
 
 import (
+	"context"
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
-	"net/url"
 )
-
+type Param struct {
+ path string
+ value string
+ ctx   context.Context
+}
 type Request struct {
 	ref        *http.Request
 	fileReader *multipart.Reader
@@ -14,7 +18,7 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	url        string
-	_url       *url.URL
+	Params     []*Param
 	
 	
 
@@ -32,12 +36,19 @@ func request(httRequest *http.Request, props *map[string]interface{}) *Request{
 
 }
 
-func (r*Request) Param(name string) interface{}{
-	result := r.ref.Context().Value(name)
-	return result
+func (r*Request) Param(name string) (string, context.Context){
+ var val string
+ var ctx context.Context
+ for _, v := range r.Params{
+   if v.path == r.GetPathURl(){
+   val = v.value
+   ctx = v.ctx
+   }
+  	 
+ }
+ return val, ctx
 }
 
-
 func (r * Request) GetPathURl() string {
- return r.url
+ return r.ref.URL.Path
 }
