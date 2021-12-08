@@ -1,8 +1,6 @@
 package fiable
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -70,14 +68,13 @@ func (r*router) Get(path string, handlers ...Handler){
 
 
 func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
-	ctx := context.Background()
+	Path := req.GetPathURl()
 	for k, v := range p {
-		ctx = context.WithValue(ctx, k, v)
-		fmt.Println(ctx)
+		
 		addParam := &Param{
-		 path: req.ref.URL.Path,
+		 Path: Path,
+		 key: k,
 		 value: v,
-		 ctx: ctx,
 		}
 		req.Params = append(req.Params, addParam)
 	}

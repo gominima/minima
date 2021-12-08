@@ -1,15 +1,15 @@
 package fiable
 
 import (
-	"context"
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
 )
 type Param struct {
- path string
+ Path string
+ key string
  value string
- ctx   context.Context
+
 }
 type Request struct {
 	ref        *http.Request
@@ -36,18 +36,16 @@ func request(httRequest *http.Request, props *map[string]interface{}) *Request{
 
 }
 
-func (r*Request) Param(name string) (string, context.Context){
- var val string
- var ctx context.Context
- for _, v := range r.Params{
-   if v.path == r.GetPathURl(){
+func (r*Request) GetParam(name string) string{
+var val string
+for _, v:= range r.Params{
+ if v.Path == r.GetPathURl() && v.key == name{
    val = v.value
-   ctx = v.ctx
-   }
-  	 
  }
- return val, ctx
 }
+ return val
+}
+
 
 func (r * Request) GetPathURl() string {
  return r.ref.URL.Path
