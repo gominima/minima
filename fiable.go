@@ -12,7 +12,8 @@ type fiable struct {
 	started bool
 	Timeout time.Duration
 	router  *router
-
+        errorRoute bool
+	w  http.Response
 	properties map[string]interface{}
 }
 
@@ -32,7 +33,9 @@ func (f *fiable) Listen(addr string) error {
 	}
 	f.server = server
 	f.started = true
-
+        if !f.errorRoute{
+	
+	}
 	return f.server.ListenAndServe()
 }
 
@@ -50,7 +53,8 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 			
 			res := response(w,q, &f.properties)
 			req := request(q, &f.properties)
-
+                        	
+			
 			f.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
 			break
@@ -58,10 +62,15 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 	}
 
 	if !match {
-
+         
 	}
 }
 
 func (f *fiable) Get(path string, handler ...Handler) {
 	f.router.Get(path, handler...)
+}
+
+
+func (f *fiable) UseRouter(router *router) {
+	f.router.UseRouter(router)
 }

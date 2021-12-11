@@ -3,7 +3,6 @@ package fiable
 import (
 	"bufio"
 	"fmt"
-
 	"net"
 	"net/http"
 )

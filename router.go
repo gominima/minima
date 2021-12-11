@@ -65,7 +65,16 @@ func (r*router) Get(path string, handlers ...Handler){
  r.Register("GET", path, handlers...)
 }
 
+func (r*router) GetRouterRoutes() map[string][]*mux{
+ return r.routes
+}
 
+func (r*router) UseRouter(router *router){
+ routes := router.GetRouterRoutes()
+ for routeType, list:= range routes {
+ r.routes[routeType] = append(r.routes[routeType], list...)
+ }
+}
 
 func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()

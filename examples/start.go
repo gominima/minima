@@ -1,13 +1,15 @@
 package main
 
 import (
+
 	"github.com/gofiable/fiable"
 )
 
 func main(){
     
     app := fiable.New()
-    app.Get("/hello/:name/:id", func(response *fiable.Response, request *fiable.Request) {
+    router := fiable.NewRouter()
+    router.Get("/hello/:name/:id", func(response *fiable.Response, request *fiable.Request) {
         param := request.GetParam("name")
         p := request.GetParam("id")
         r := "The user name is " + param + "and his id is " + p
@@ -19,7 +21,7 @@ func main(){
         response.Send(300, param)
   
     })
-
-    
+   
+    app.UseRouter(router)
     app.Listen(":3000")
 }
