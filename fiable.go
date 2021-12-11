@@ -13,11 +13,10 @@ type fiable struct {
 	Timeout time.Duration
 	router  *router
         errorRoute bool
-	w  http.Response
+	
 	properties map[string]interface{}
 }
 
-type ctxKey struct{}
 
 func New() *fiable {
 	var router *router = NewRouter()
@@ -62,7 +61,11 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 	}
 
 	if !match {
-         
+		if f.router.NotFound != nil {
+			f.router.NotFound(w, q)
+		} else {
+			http.NotFound(w, q)
+		}
 	}
 }
 
