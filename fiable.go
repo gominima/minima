@@ -16,6 +16,7 @@ type fiable struct {
 	Timeout time.Duration
 	router  *router
 	properties map[string]interface{}
+	Config   *Config
 	errorPath  string
 	errorData interface{}
 	Middleware *Plugins
@@ -25,8 +26,10 @@ type fiable struct {
 func New() *fiable {
 	var router *router = NewRouter()
 	var plugin *Plugins = use()
-	var fiable *fiable = &fiable{router: router }
+	var Config *Config = NewConfig()
+	var fiable *fiable = &fiable{router: router}
 	fiable.Middleware = plugin
+	fiable.Config = Config
 	fiable.errorPath =  "../assets/404.html"
 	return fiable
 
@@ -91,4 +94,12 @@ func (f*fiable) Use(handler Handler){
 func (f *fiable) UseRouter(router *router) {
 	f.router.UseRouter(router)
 	
+}
+
+func (f*fiable) UseConfig(config *Config){
+ for _,v := range config.Middleware{
+   f.Middleware.plugin = append(f.Middleware.plugin, &Middleware{handler: v})
+ }
+ f.Config.Logger = config.Logger
+ f.router.UseRouter(config.Router)
 }
