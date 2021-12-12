@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 	"time"
 )
 
@@ -12,16 +13,18 @@ type fiable struct {
 	started bool
 	Timeout time.Duration
 	router  *router
-        errorRoute bool
-	
 	properties map[string]interface{}
+	errorPath  string
+	errorData interface{}
 }
 
 
 func New() *fiable {
 	var router *router = NewRouter()
 	var fiable *fiable = &fiable{router: router}
+	fiable.errorPath =  "../assets/404.html"
 	return fiable
+
 }
 
 
@@ -32,9 +35,6 @@ func (f *fiable) Listen(addr string) error {
 	}
 	f.server = server
 	f.started = true
-        if !f.errorRoute{
-	
-	}
 	return f.server.ListenAndServe()
 }
 
@@ -61,11 +61,12 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 	}
 
 	if !match {
-		if f.router.NotFound != nil {
-			f.router.NotFound(w, q)
-		} else {
-			http.NotFound(w, q)
-		}
+	path := f.errorPath
+	t, err := template.New("404.html").ParseFiles(path)
+	if err != nil {
+	 fmt.Println(err)
+	}
+	t.Execute(w, f.errorData)
 	}
 }
 
@@ -73,6 +74,11 @@ func (f *fiable) Get(path string, handler ...Handler) {
 	f.router.Get(path, handler...)
 }
 
+func (f*fiable) Set404(path string, data interface{}) *fiable{
+ f.errorPath = path
+ f.errorData = data
+ return f
+}
 
 func (f *fiable) UseRouter(router *router) {
 	f.router.UseRouter(router)
