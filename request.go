@@ -9,7 +9,6 @@ type Param struct {
  Path string
  key string
  value string
-
 }
 type Request struct {
 	ref        *http.Request
@@ -19,9 +18,6 @@ type Request struct {
 	method     string
 	url        string
 	Params     []*Param
-	
-	
-
 	json       *json.Decoder
 	props      *map[string]interface{}
 }
