@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 
 	"github.com/gofiable/fiable"
 )
@@ -20,8 +21,11 @@ func main(){
         param := request.GetParam("id")
         response.Send(300, param)  
     })
+    app.Use(func(response *fiable.Response, request *fiable.Request) {
+       fmt.Print(request.GetPathURl())
+    })
    
     app.UseRouter(router)
-
+    
     app.Listen(":3000")
 }
