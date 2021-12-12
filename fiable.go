@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"text/template"
 	"time"
+
+
 )
 
 type fiable struct {
@@ -16,12 +18,15 @@ type fiable struct {
 	properties map[string]interface{}
 	errorPath  string
 	errorData interface{}
+	Middleware *Plugins
 }
 
 
 func New() *fiable {
 	var router *router = NewRouter()
-	var fiable *fiable = &fiable{router: router}
+	var plugin *Plugins = use()
+	var fiable *fiable = &fiable{router: router }
+	fiable.Middleware = plugin
 	fiable.errorPath =  "../assets/404.html"
 	return fiable
 
@@ -48,11 +53,12 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 				log.Printf("Error parsing form: %s", err)
 				return
 			}
+			
 			currentRequest := 0
 			
 			res := response(w,q, &f.properties)
 			req := request(q, &f.properties)
-                        	
+                        f.Middleware.ServePlugin(res, req)	
 			
 			f.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
@@ -79,7 +85,10 @@ func (f*fiable) Set404(path string, data interface{}) *fiable{
  f.errorData = data
  return f
 }
-
+func (f*fiable) Use(handler Handler){
+ f.Middleware.AddPlugin(handler)
+}
 func (f *fiable) UseRouter(router *router) {
 	f.router.UseRouter(router)
+	
 }

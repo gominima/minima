@@ -76,6 +76,7 @@ func (r*router) UseRouter(router *router){
  }
 }
 
+
 func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()
 	for k, v := range p {
