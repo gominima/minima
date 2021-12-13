@@ -58,14 +58,23 @@ func (f* fiable) ServeHTTP(w http.ResponseWriter, q *http.Request){
 			}
 			
 			currentRequest := 0
-			
-			res := response(w,q, &f.properties)
+			hijack, ok := w.(http.Hijacker)
+			if !ok {
+			  http.Error(w, "Hijacking not supported for this request", http.StatusInternalServerError)
+			}
+			  conn, bufrw, err := hijack.Hijack()
+			  if err != nil {
+			    http.Error(w, err.Error(), http.StatusInternalServerError)
+			    return
+			  }
+			res := response(w,q, &f.properties, conn, bufrw)
 			req := request(q, &f.properties)
                         f.Middleware.ServePlugin(res, req)	
 			
 			f.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
 			break
+			  
 		}
 	}
 
