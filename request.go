@@ -4,12 +4,28 @@ import (
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
+	"strings"
 )
 type Param struct {
  Path string
  key string
  value string
 }
+
+
+type ReqHeader struct {
+ keys map[string]string
+}
+func (h *ReqHeader) Get(key string) string {
+return h.keys[key]
+}
+      
+ func (h *ReqHeader) Set(key string, v string) {
+ h.keys[key] = v
+ }
+
+
+
 type Request struct {
 	ref        *http.Request
 	fileReader *multipart.Reader
@@ -18,6 +34,7 @@ type Request struct {
 	method     string
 	url        string
 	Params     []*Param
+	header      *ReqHeader
 	json       *json.Decoder
 	props      *map[string]interface{}
 }
@@ -28,6 +45,9 @@ func request(httRequest *http.Request, props *map[string]interface{}) *Request{
  req.fileReader = nil
  req.method = httRequest.Proto
  req.props = props
+ for i,v := range httRequest.Header{
+	req.header.Set(strings.ToLower(i), strings.Join(v, ","))
+ }
  return req
 
 }
