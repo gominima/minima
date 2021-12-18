@@ -1,15 +1,20 @@
 package fiable
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
-
 )
 
-var statusCodes = map[int]string{
+type Header struct {
+	req    *http.Request
+	res    http.ResponseWriter
+	Body   bool
+	status int
+	Done   bool
+}
+
+var status = map[int]string{
 	200: "OK",
 	201: "Created",
 	202: "Accepted",
@@ -38,90 +43,77 @@ var statusCodes = map[int]string{
 	505: "HTTP Version Not Supported",
 }
 
-type Header struct {
-	res   http.ResponseWriter
-	req    *http.Request
-	w     *bufio.ReadWriter
-	bodyDone   bool
-	basicDone bool
-	hasLength  bool
-	StatusCode int
-	ProtoMajor int
-	ProtoMinor int
-}
-
-func newHeader(res http.ResponseWriter, req *http.Request, w *bufio.ReadWriter) *Header{
+func NewHeader(res http.ResponseWriter, req *http.Request) *Header {
 	h := &Header{}
-	h.res = res
 	h.req = req
-	h.w= w
-	h.bodyDone = false
-	h.basicDone = false
-	h.ProtoMinor = 1
-	h.ProtoMajor = 1
+	h.res = res
+	h.Body = false
+	h.Done = false
 	return h
 }
 
-
-func (h *Header) Set(key string, value string) *Header {
+func (h *Header) Set(key string, value string) {
 	h.res.Header().Set(key, value)
-	return h
 }
 
-func (h*Header) Delete(key string) *Header{
- h.res.Header().Del(key)
- return h
-}
 func (h *Header) Get(key string) string {
 	return h.res.Header().Get(key)
 }
 
-func (h*Header) GetReqHeaders(key string) []string{
- return h.req.Header[key]
+func (h *Header) Del(key string) {
+	h.res.Header().Del(key)
 }
 
-func (h *Header) SetLength(len int){
-	h.res.Header().Set("Content-Length", strconv.Itoa(len))
-	h.hasLength = true
+func (h *Header) Clone(key string) {
+	h.res.Header().Clone()
 }
-func (h *Header) SetStatus(code int) {
-	h.StatusCode = code
+
+func (h *Header) Setlength(len string) {
+	h.Set("Content-lenght", len)
 }
-func (h *Header) CanSendHeader() bool {
-	if h.basicDone == true {
-		if h.bodyDone == false {
+
+func (h *Header) BasicDone() bool {
+	return h.Done
+}
+func (h *Header) Status(code int) {
+	h.status = code
+}
+func (h *Header) SendBaseHeaders() {
+	if h.Done == false && h.BasicDone() == false {
+		if h.status == 0 {
+			h.status = 200
+		}
+		fmt.Fprintf(h.res, "HTTP/%d.%d %03d %s\r\n", 1, 1, h.status, status[h.status])
+		h.Set("transfer-encoding", "chunked")
+		h.Set("connection", "keep-alive")
+	}
+}
+func (h* Header) Flush() bool{
+	if h.Body == true {
+		log.Panic("Cannot send headers in middle of body")
+		return false
+	}
+	if h.BasicDone() == false {
+		h.SendBaseHeaders()
+	}
+	if h.Get("Content-Type") == "" {
+		h.Set("Content-Type", "text/html;charset=utf-8")
+	}
+	if err := h.res.Header().Write(h.res); err != nil {
+		return false
+	}
+	if f, ok := h.res.(http.Flusher); ok { 
+		f.Flush() 
+	} 
+	return true
+}
+
+func (h *Header) CanSend() bool {
+	if h.BasicDone() == true {
+		if h.Body == false {
 			return true
 		}
 		return false
 	}
 	return true
-}
-
-func (h*Header) Flush() bool{
-	if h.bodyDone == true {
-		log.Panic("Cannot send headers in middle of body")
-		return false
-	}
-	if h.basicDone == false {
-		h.Basics()
-	}
-
-	if h.Get("Content-Type") == "" {
-		h.Set("Content-Type", "text/html;charset=utf-8")
-	}
-	if err := h.res.Header().Write(h.w); err != nil {
-		return false
-	}
-	var chunkSize = fmt.Sprintf("%x", 0)
-	h.w.WriteString(chunkSize + "\r\n" + "\r\n")
-	h.w.Writer.Flush()
- return true
-}
-
-func (h *Header) Basics(){
-	if h.StatusCode == 0 {h.StatusCode = 200}
-	fmt.Fprintf(h.w, "HTTP/%d.%d %03d %s\r\n", h.ProtoMajor, h.ProtoMinor, h.StatusCode, statusCodes[h.StatusCode])
-	h.Set("transfer-encoding", "chunked")
-	h.Set("connection", "keep-alive")
-	h.basicDone = true
 }
