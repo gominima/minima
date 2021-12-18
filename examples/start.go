@@ -7,12 +7,16 @@ import (
 func main() {
 	app := fiable.New()
 	router := fiable.NewRouter()
-	app.Get("/:name", func(response *fiable.Response, request *fiable.Request) {
+	app.Get("/o/:name", func(response *fiable.Response, request *fiable.Request) {
 		p := request.GetParam("name")
 		response.Send(300, p)
 	})
 	router.Get("/hello", func(response *fiable.Response, request *fiable.Request) {
-		response.Send(300, "Hello World")
+		type hello struct {
+			Name string `json:"name"`
+			Age  int    `json:"age"`
+		}
+		response.Json(&hello{Name: "totu", Age: 15})
 	})
 
 	app.UseConfig(&fiable.Config{

@@ -88,7 +88,7 @@ func (h *Header) SendBaseHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
-func (h* Header) Flush() bool{
+func (h *Header) Flush() bool {
 	if h.Body == true {
 		log.Panic("Cannot send headers in middle of body")
 		return false
@@ -102,9 +102,9 @@ func (h* Header) Flush() bool{
 	if err := h.res.Header().Write(h.res); err != nil {
 		return false
 	}
-	if f, ok := h.res.(http.Flusher); ok { 
-		f.Flush() 
-	} 
+	if f, ok := h.res.(http.Flusher); ok {
+		f.Flush()
+	}
 	return true
 }
 
