@@ -37,9 +37,8 @@ func (h *ReqHeader) Set(key string, v string) {
 }
 
 type Request struct {
-	ref        *http.Request
+	Ref        *http.Request
 	fileReader *multipart.Reader
-	query      map[string][]string
 	body       map[string][]string
 	method     string
 	url        string
@@ -51,13 +50,24 @@ type Request struct {
 
 func request(httRequest *http.Request, props *map[string]interface{}) *Request {
 	req := &Request{}
-	req.ref = httRequest
+	req.Ref = httRequest
 	req.header = &ReqHeader{}
 	req.fileReader = nil
 	req.method = httRequest.Proto
 	req.props = props
 	for i, v := range httRequest.Header {
 		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
+	}
+	if req.header.Get("content-type") == "application/json" {
+		req.json = json.NewDecoder(httRequest.Body)
+	} else {
+		httRequest.ParseForm()
+	}
+	if len(httRequest.PostForm) > 0 && len(req.body) == 0 {
+		req.body = make(map[string][]string)
+	}
+	for key, value := range httRequest.PostForm {
+		req.body[key] = value
 	}
 	return req
 
@@ -74,5 +84,21 @@ func (r *Request) GetParam(name string) string {
 }
 
 func (r *Request) GetPathURl() string {
-	return r.ref.URL.Path
+	return r.Ref.URL.Path
+}
+
+func (r *Request) Body() map[string][]string {
+	return r.body
+}
+
+func (r *Request) GetBodyValue(key string) []string {
+	return r.body[key]
+}
+
+func (r *Request) Header() *ReqHeader {
+	return r.header
+}
+
+func (r *Request) Json() *json.Decoder {
+	return r.json
 }
