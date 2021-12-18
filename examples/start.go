@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gofiable/fiable"
 )
 
@@ -11,11 +13,13 @@ func main() {
 		p := request.GetParam("name")
 		response.Send(300, p)
 	})
-	router.Get("/hello", func(response *fiable.Response, request *fiable.Request) {
+	router.Get("/hello/?name", func(response *fiable.Response, request *fiable.Request) {
 		type hello struct {
 			Name string `json:"name"`
 			Age  int    `json:"age"`
 		}
+		q := request.Ref.URL.Query()
+		fmt.Println(q)
 		response.Json(&hello{Name: "totu", Age: 15})
 	})
 
