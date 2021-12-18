@@ -102,3 +102,7 @@ func (r *Request) Header() *ReqHeader {
 func (r *Request) Json() *json.Decoder {
 	return r.json
 }
+
+func (r *Request) Method() string {
+	return r.method
+}
