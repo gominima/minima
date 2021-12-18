@@ -2,8 +2,10 @@ package fiable
 
 import (
 	"encoding/json"
+	"log"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"strings"
 	// "strings"
 )
@@ -43,6 +45,7 @@ type Request struct {
 	method     string
 	url        string
 	Params     []*Param
+	query      url.Values
 	header     *ReqHeader
 	json       *json.Decoder
 	props      *map[string]interface{}
@@ -55,6 +58,7 @@ func request(httRequest *http.Request, props *map[string]interface{}) *Request {
 	req.fileReader = nil
 	req.method = httRequest.Proto
 	req.props = props
+	req.query = httRequest.URL.Query()
 	for i, v := range httRequest.Header {
 		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
 	}
@@ -105,4 +109,11 @@ func (r *Request) Json() *json.Decoder {
 
 func (r *Request) Method() string {
 	return r.method
+}
+
+func (r *Request) GetQuery(key string) string {
+	if r.query[key][0] == "" {
+		log.Panic("No query param found with given key")
+	}
+	return r.query[key][0]
 }

@@ -9,11 +9,12 @@ import (
 )
 
 type Response struct {
-	Ref      http.ResponseWriter
-	url      string
-	method   string
-	ended    bool
-	header   *Header
+	Ref    http.ResponseWriter
+	url    string
+	method string
+	ended  bool
+	header *Header
+
 	props    *map[string]interface{}
 	host     string
 	HasEnded bool
@@ -26,6 +27,7 @@ func response(rs http.ResponseWriter, req *http.Request, props *map[string]inter
 	res.url = req.URL.Path
 	res.method = req.Method
 	res.host = req.Host
+
 	res.props = props
 
 	return res
