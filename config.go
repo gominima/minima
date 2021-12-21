@@ -1,4 +1,4 @@
-package fiable
+package minima
 
 type Config struct {
 	Middleware []Handler

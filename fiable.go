@@ -1,4 +1,4 @@
-package fiable
+package minima
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type fiable struct {
+type minima struct {
 	server     *http.Server
 	started    bool
 	Timeout    time.Duration
@@ -20,32 +20,32 @@ type fiable struct {
 	Middleware *Plugins
 }
 
-func New() *fiable {
+func New() *minima{
 	var router *router = NewRouter()
 	var plugin *Plugins = use()
 	var Config *Config = NewConfig()
-	var fiable *fiable = &fiable{router: router}
-	fiable.Middleware = plugin
-	fiable.Config = Config
-	fiable.errorPath = "../assets/404.html"
-	return fiable
+	var minima *minima= &minima{router: router}
+	minima.Middleware = plugin
+	minima.Config = Config
+	minima.errorPath = "../assets/404.html"
+	return minima
 
 }
 
-func (f *fiable) Listen(addr string) error {
-	server := &http.Server{Addr: addr, Handler: f}
-	if f.started {
-		fmt.Errorf("Server is already running", f)
+func (m *minima) Listen(addr string) error {
+	server := &http.Server{Addr: addr, Handler: m}
+	if m.started {
+		fmt.Errorf("Server is already running", m)
 	}
-	f.server = server
-	f.started = true
-	return f.server.ListenAndServe()
+	m.server = server
+	m.started = true
+	return m.server.ListenAndServe()
 }
 
-func (f *fiable) ServeHTTP(w http.ResponseWriter, q *http.Request) {
+func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	match := false
 
-	for _, requestQuery := range f.router.routes[q.Method] {
+	for _, requestQuery := range m.router.routes[q.Method] {
 		if isMatchRoute, Params := requestQuery.matchingPath(q.URL.Path); isMatchRoute {
 			match = isMatchRoute
 			if err := q.ParseForm(); err != nil {
@@ -55,11 +55,11 @@ func (f *fiable) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 
 			currentRequest := 0
 
-			res := response(w, q, &f.properties)
-			req := request(q, &f.properties)
-			f.Middleware.ServePlugin(res, req)
+			res := response(w, q, &m.properties)
+			req := request(q, &m.properties)
+			m.Middleware.ServePlugin(res, req)
 
-			f.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
+			m.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
 			break
 
@@ -67,36 +67,36 @@ func (f *fiable) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	}
 
 	if !match {
-		path := f.errorPath
+		path := m.errorPath
 		t, err := template.New("404.html").ParseFiles(path)
 		if err != nil {
 			fmt.Println(err)
 		}
-		t.Execute(w, f.errorData)
+		t.Execute(w, m.errorData)
 	}
 }
 
-func (f *fiable) Get(path string, handler ...Handler) {
-	f.router.Get(path, handler...)
+func (m *minima) Get(path string, handler ...Handler) {
+	m.router.Get(path, handler...)
 }
 
-func (f *fiable) Set404(path string, data interface{}) *fiable {
-	f.errorPath = path
-	f.errorData = data
-	return f
+func (m *minima) Set404(path string, data interface{}) *minima{
+	m.errorPath = path
+	m.errorData = data
+	return m
 }
-func (f *fiable) Use(handler Handler) {
-	f.Middleware.AddPlugin(handler)
+func (m *minima) Use(handler Handler) {
+	m.Middleware.AddPlugin(handler)
 }
-func (f *fiable) UseRouter(router *router) {
-	f.router.UseRouter(router)
+func (m *minima) UseRouter(router *router) {
+	m.router.UseRouter(router)
 
 }
 
-func (f *fiable) UseConfig(config *Config) {
+func (m *minima) UseConfig(config *Config) {
 	for _, v := range config.Middleware {
-		f.Middleware.plugin = append(f.Middleware.plugin, &Middleware{handler: v})
+		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
 	}
-	f.Config.Logger = config.Logger
-	f.router.UseRouter(config.Router)
+	m.Config.Logger = config.Logger
+	m.router.UseRouter(config.Router)
 }
