@@ -1,4 +1,4 @@
-package fiable
+package minima
 
 import (
 	"fmt"

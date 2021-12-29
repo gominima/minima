@@ -1,3 +1,3 @@
-module github.com/gofiable/fiable
+module github.com/gominima/minima
 
 go 1.17

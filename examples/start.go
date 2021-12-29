@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 
-	"github.com/gofiable/fiable"
+	"github.com/gominima/minima"
 )
 
 func main() {
-	app := fiable.New()
-	router := fiable.NewRouter()
-	app.Get("/o/:name", func(response *fiable.Response, request *fiable.Request) {
+	app := minima.New()
+	router := minima.NewRouter()
+	app.Get("/o/:name", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
 		response.Send(300, p)
 	})
-	router.Get("/hello/?", func(response *fiable.Response, request *fiable.Request) {
+	router.Get("/hello/?", func(response *minima.Response, request *minima.Request) {
 		type hello struct {
 			Name string `json:"name"`
 			Age  int    `json:"age"`
@@ -23,9 +23,9 @@ func main() {
 		response.Json(&hello{Name: "totu", Age: 15})
 	})
 
-	app.UseConfig(&fiable.Config{
+	app.UseConfig(&minima.Config{
 		Logger:     false,
-		Middleware: []fiable.Handler{},
+		Middleware: []minima.Handler{},
 		Router:     router,
 	})
 	app.Listen(":3000")
