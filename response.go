@@ -14,7 +14,7 @@ type Response struct {
 	method string
 	ended  bool
 	header *Header
-
+       
 	props    *map[string]interface{}
 	host     string
 	HasEnded bool

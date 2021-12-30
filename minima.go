@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"text/template"
 	"time"
 )
 
@@ -15,8 +14,6 @@ type minima struct {
 	router     *router
 	properties map[string]interface{}
 	Config     *Config
-	errorPath  string
-	errorData  interface{}
 	Middleware *Plugins
 }
 
@@ -27,7 +24,6 @@ func New() *minima{
 	var minima *minima= &minima{router: router}
 	minima.Middleware = plugin
 	minima.Config = Config
-	minima.errorPath = "../assets/404.html"
 	return minima
 
 }
@@ -67,12 +63,8 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	}
 
 	if !match {
-		path := m.errorPath
-		t, err := template.New("404.html").ParseFiles(path)
-		if err != nil {
-			fmt.Println(err)
-		}
-		t.Execute(w, m.errorData)
+	 w.Write([]byte("No matching route found"))
+	
 	}
 }
 
@@ -80,11 +72,6 @@ func (m *minima) Get(path string, handler ...Handler) {
 	m.router.Get(path, handler...)
 }
 
-func (m *minima) Set404(path string, data interface{}) *minima{
-	m.errorPath = path
-	m.errorData = data
-	return m
-}
 func (m *minima) Use(handler Handler) {
 	m.Middleware.AddPlugin(handler)
 }
