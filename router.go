@@ -9,13 +9,13 @@ import (
 
 type Handler func(response *Response, request *Request)
 
-type router struct {
+type Router struct {
 	NotFound http.HandlerFunc
 	routes   map[string][]*mux
 }
 
-func NewRouter() *router {
-	router := &router{
+func NewRouter() *Router {
+	Router := &Router{
 		routes: map[string][]*mux{
 			"GET":     make([]*mux, 0),
 			"POST":    make([]*mux, 0),
@@ -26,7 +26,7 @@ func NewRouter() *router {
 			"HEAD":    make([]*mux, 0),
 		},
 	}
-	return router
+	return Router
 }
 func RegexPath(path string) (string, []string) {
 	var items []string
@@ -49,7 +49,7 @@ func RegexPath(path string) (string, []string) {
 	return regexPath, Params
 }
 
-func (r *router) Register(method string, path string, handlers ...Handler) *mux {
+func (r *Router) Register(method string, path string, handlers ...Handler) *mux {
 	reg, Params := RegexPath(path)
 	var newroute = &mux{
 		Path:     path,
@@ -61,22 +61,22 @@ func (r *router) Register(method string, path string, handlers ...Handler) *mux 
 	return newroute
 }
 
-func (r *router) Get(path string, handlers ...Handler) {
+func (r *Router) Get(path string, handlers ...Handler) {
 	r.Register("GET", path, handlers...)
 }
 
-func (r *router) GetRouterRoutes() map[string][]*mux {
+func (r *Router) GetRouterRoutes() map[string][]*mux {
 	return r.routes
 }
 
-func (r *router) UseRouter(router *router) {
-	routes := router.GetRouterRoutes()
+func (r *Router) UseRouter(Router *Router) {
+	routes := Router.GetRouterRoutes()
 	for routeType, list := range routes {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
 }
 
-func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
+func (r *Router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()
 	for k, v := range p {
 

@@ -3,7 +3,7 @@ package minima
 type Config struct {
 	Middleware []Handler
 	Logger     bool
-	Router     *router
+	Router     *Router
 	ErrorPath  string
 	ErrorData  interface{}
 }

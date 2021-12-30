@@ -11,14 +11,14 @@ type minima struct {
 	server     *http.Server
 	started    bool
 	Timeout    time.Duration
-	router     *router
+	router     *Router
 	properties map[string]interface{}
 	Config     *Config
 	Middleware *Plugins
 }
 
 func New() *minima{
-	var router *router = NewRouter()
+	var router *Router = NewRouter()
 	var plugin *Plugins = use()
 	var Config *Config = NewConfig()
 	var minima *minima= &minima{router: router}
@@ -75,7 +75,7 @@ func (m *minima) Get(path string, handler ...Handler) {
 func (m *minima) Use(handler Handler) {
 	m.Middleware.AddPlugin(handler)
 }
-func (m *minima) UseRouter(router *router) {
+func (m *minima) UseRouter(router *Router) {
 	m.router.UseRouter(router)
 
 }
