@@ -61,43 +61,50 @@ func (r *Router) Register(method string, path string, handlers ...Handler) *mux 
 	return newroute
 }
 
-func (r *Router) Get(path string, handlers ...Handler) {
+func (r *Router) Get(path string, handlers ...Handler) *Router{
 	r.Register("GET", path, handlers...)
+	return r
 }
 
-func (r *Router) Post(path string, handlers ...Handler) {
+func (r *Router) Post(path string, handlers ...Handler) *Router{
 	r.Register("POST", path, handlers...)
+	return r
 }
 
-func (r *Router) Put(path string, handlers ...Handler) {
+func (r *Router) Put(path string, handlers ...Handler) *Router{
 	r.Register("PUT", path, handlers...)
+	return r
 }
 
 func (r *Router) Patch(path string, handlers ...Handler) {
 	r.Register("PATCH", path, handlers...)
 }
 
-func (r *Router) Options(path string, handlers ...Handler) {
+func (r *Router) Options(path string, handlers ...Handler) *Router {
 	r.Register("Options", path, handlers...)
+	return r
 }
 
-func (r *Router) Head(path string, handlers ...Handler) {
+func (r *Router) Head(path string, handlers ...Handler) *Router{
 	r.Register("HEAD", path, handlers...)
+	return r
 }
 
-func (r *Router) Delete(path string, handlers ...Handler) {
+func (r *Router) Delete(path string, handlers ...Handler) *Router{
 	r.Register("DELETE", path, handlers...)
+	return r
 }
 
 func (r *Router) GetRouterRoutes() map[string][]*mux {
 	return r.routes
 }
 
-func (r *Router) UseRouter(Router *Router) {
+func (r *Router) UseRouter(Router *Router) *Router{
 	routes := Router.GetRouterRoutes()
 	for routeType, list := range routes {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
+	return r
 }
 
 func (r *Router) Next(p map[string]string, next Handler, res *Response, req *Request) {

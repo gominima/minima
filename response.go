@@ -26,9 +26,7 @@ func response(rs http.ResponseWriter, req *http.Request, props *map[string]inter
 	res.url = req.URL.Path
 	res.method = req.Method
 	res.host = req.Host
-
 	res.props = props
-
 	return res
 
 }
@@ -80,13 +78,14 @@ func (res *Response) sendContent(status int, contentType string, content []byte)
 
 }
 
-func (res *Response) Json(content interface{}) {
+func (res *Response) Json(content interface{}) *Response {
 	output, err := json.Marshal(content)
 	if err != nil {
 		res.sendContent(500, "application/json", []byte(""))
 	} else {
 		res.sendContent(200, "application/json", output)
 	}
+	return res
 }
 func (res *Response) Error(status int, str string) {
 	res.sendContent(status, "text/html", []byte(str))
@@ -96,7 +95,7 @@ func (res *Response) Error(status int, str string) {
 func (res *Response) Raw() http.ResponseWriter {
 	return res.Ref
 }
-func (res *Response) Render(path string, data interface{}) {
+func (res *Response) Render(path string, data interface{}) *Response {
 	tmpl, err := template.ParseFiles(path)
 	if err != nil {
 		log.Panicf("Given path was not found", err)
@@ -112,6 +111,7 @@ func (res *Response) Render(path string, data interface{}) {
 		res.header.Flush()
 	}
 	res.WriteBytes(byt.Bytes())
+	return res
 
 }
 
@@ -121,4 +121,9 @@ func (res *Response) Redirect(url string) *Response {
 	res.header.Flush()
 	res.ended = true
 	return res
+}
+
+func (res *Response) Status(status int) *Response {
+ res.header.Status(status)
+ return res
 }
