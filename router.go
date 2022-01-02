@@ -65,6 +65,30 @@ func (r *Router) Get(path string, handlers ...Handler) {
 	r.Register("GET", path, handlers...)
 }
 
+func (r *Router) Post(path string, handlers ...Handler) {
+	r.Register("POST", path, handlers...)
+}
+
+func (r *Router) Put(path string, handlers ...Handler) {
+	r.Register("PUT", path, handlers...)
+}
+
+func (r *Router) Patch(path string, handlers ...Handler) {
+	r.Register("PATCH", path, handlers...)
+}
+
+func (r *Router) Options(path string, handlers ...Handler) {
+	r.Register("Options", path, handlers...)
+}
+
+func (r *Router) Head(path string, handlers ...Handler) {
+	r.Register("HEAD", path, handlers...)
+}
+
+func (r *Router) Delete(path string, handlers ...Handler) {
+	r.Register("DELETE", path, handlers...)
+}
+
 func (r *Router) GetRouterRoutes() map[string][]*mux {
 	return r.routes
 }

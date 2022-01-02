@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Header struct {
+type OutgoingHeader struct {
 	req    *http.Request
 	res    http.ResponseWriter
 	Body   bool
@@ -43,8 +43,8 @@ var status = map[int]string{
 	505: "HTTP Version Not Supported",
 }
 
-func NewHeader(res http.ResponseWriter, req *http.Request) *Header {
-	h := &Header{}
+func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
+	h := &OutgoingHeader{}
 	h.req = req
 	h.res = res
 	h.Body = false
@@ -52,34 +52,34 @@ func NewHeader(res http.ResponseWriter, req *http.Request) *Header {
 	return h
 }
 
-func (h *Header) Set(key string, value string) {
+func (h *OutgoingHeader) Set(key string, value string) {
 	h.res.Header().Set(key, value)
 }
 
-func (h *Header) Get(key string) string {
+func (h *OutgoingHeader) Get(key string) string {
 	return h.res.Header().Get(key)
 }
 
-func (h *Header) Del(key string) {
+func (h *OutgoingHeader) Del(key string) {
 	h.res.Header().Del(key)
 }
 
-func (h *Header) Clone(key string) {
+func (h *OutgoingHeader) Clone(key string) {
 	h.res.Header().Clone()
 }
 
-func (h *Header) Setlength(len string) {
+func (h *OutgoingHeader) Setlength(len string) {
 	h.Set("Content-lenght", len)
 }
 
-func (h *Header) BasicDone() bool {
+func (h *OutgoingHeader) BasicDone() bool {
 	return h.Done
 }
-func (h *Header) Status(code int) {
+func (h *OutgoingHeader) Status(code int) {
 	h.status = code
 }
-func (h *Header) SendBaseHeaders() {
-	if h.Done == false && h.BasicDone() == false {
+func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
+	if !h.Done && !h.BasicDone() {
 		if h.status == 0 {
 			h.status = 200
 		}
@@ -88,13 +88,13 @@ func (h *Header) SendBaseHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
-func (h *Header) Flush() bool {
-	if h.Body == true {
-		log.Panic("Cannot send headers in middle of body")
+func (h *OutgoingHeader) Flush() bool {
+	if h.Body {
+		log.Panic("Cannot send OutgoingHeaders in middle of body")
 		return false
 	}
-	if h.BasicDone() == false {
-		h.SendBaseHeaders()
+	if !h.BasicDone() {
+		h.SendBaseOutgoingHeaders()
 	}
 	if h.Get("Content-Type") == "" {
 		h.Set("Content-Type", "text/html;charset=utf-8")
@@ -108,9 +108,9 @@ func (h *Header) Flush() bool {
 	return true
 }
 
-func (h *Header) CanSend() bool {
-	if h.BasicDone() == true {
-		if h.Body == false {
+func (h *OutgoingHeader) CanSend() bool {
+	if h.BasicDone() {
+		if !h.Body {
 			return true
 		}
 		return false

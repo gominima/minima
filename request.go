@@ -16,28 +16,6 @@ type Param struct {
 	value string
 }
 
-type HeadInfo struct {
-	key   string
-	value string
-}
-type ReqHeader struct {
-	headers []*HeadInfo
-}
-
-func (h *ReqHeader) Get(key string) string {
-	var value string
-	for _, v := range h.headers {
-		if v.key == key {
-			value = v.value
-		}
-	}
-	return value
-}
-
-func (h *ReqHeader) Set(key string, v string) {
-	h.headers = append(h.headers, &HeadInfo{key: key, value: v})
-}
-
 type Request struct {
 	Ref        *http.Request
 	fileReader *multipart.Reader
@@ -46,7 +24,7 @@ type Request struct {
 	url        string
 	Params     []*Param
 	query      url.Values
-	header     *ReqHeader
+	header     *IncomingHeader
 	json       *json.Decoder
 	props      *map[string]interface{}
 }
@@ -54,7 +32,7 @@ type Request struct {
 func request(httRequest *http.Request, props *map[string]interface{}) *Request {
 	req := &Request{}
 	req.Ref = httRequest
-	req.header = &ReqHeader{}
+	req.header = &IncomingHeader{}
 	req.fileReader = nil
 	req.method = httRequest.Proto
 	req.props = props
@@ -99,7 +77,7 @@ func (r *Request) GetBodyValue(key string) []string {
 	return r.body[key]
 }
 
-func (r *Request) Header() *ReqHeader {
+func (r *Request) Header() *IncomingHeader {
 	return r.header
 }
 

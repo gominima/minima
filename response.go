@@ -9,12 +9,11 @@ import (
 )
 
 type Response struct {
-	Ref    http.ResponseWriter
-	url    string
-	method string
-	ended  bool
-	header *Header
-       
+	Ref      http.ResponseWriter
+	url      string
+	method   string
+	ended    bool
+	header   *OutgoingHeader
 	props    *map[string]interface{}
 	host     string
 	HasEnded bool
@@ -23,7 +22,7 @@ type Response struct {
 func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
 	res := &Response{}
 	res.Ref = rs
-	res.header = NewHeader(rs, req)
+	res.header = NewResHeader(rs, req)
 	res.url = req.URL.Path
 	res.method = req.Method
 	res.host = req.Host
@@ -33,14 +32,14 @@ func response(rs http.ResponseWriter, req *http.Request, props *map[string]inter
 	return res
 
 }
-func (res *Response) Header() Header {
+func (res *Response) Header() OutgoingHeader {
 	return *res.header
 }
 
 func (res *Response) Send(status int, content string) *Response {
 	res.header.status = status
-	if res.header.BasicDone() == false && res.header.CanSend() == true {
-		if Done := res.header.Flush(); Done == false {
+	if !res.header.BasicDone() && res.header.CanSend() {
+		if res.header.Flush() {
 			log.Print("Failed to push headers")
 		}
 		res.header.Done = true
@@ -61,7 +60,7 @@ func (res *Response) WriteBytes(bytes []byte) error {
 }
 
 func (res *Response) sendContent(status int, contentType string, content []byte) {
-	if res.header.BasicDone() == false {
+	if res.header.BasicDone() {
 		res.header.Status(status)
 	}
 	if res.header.CanSend() {
