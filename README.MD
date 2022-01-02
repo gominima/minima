@@ -70,10 +70,11 @@ func main() {
 
 <h1>❓Why minima </h1>
 
-<h4>
+<h5>
 Minima's name is inspired by the word minimal and is the motivation for building this framework. As a go dev, I was struggling to learn it in my early days due to the steeper learning curve while using net/http.
-</h4>
-<br>
-<h4>Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible net/http modules like gqlgen and other middlewares.</h4>
-<br>
-<h4>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</h4>
+</h5>
+
+<h5>Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible to net/http modules like gqlgen and other middlewares.</h5>
+
+<h5>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</h5>
+
