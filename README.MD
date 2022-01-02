@@ -4,9 +4,9 @@
 </a>
 </p>
 
-<h3 align="center">
+<h4 align="center">
 Minima 🦄 is a reliable and lightweight framework for <a href="https://www.golang.org" target="_blank">Go</a> to carve the web 💻. Developed with core <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a>🔌and other native packages, and with 0 dependencies
-</h3>
+</h4>
 
 <br>
 <p align="center">
@@ -21,3 +21,47 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 </p>
 
 
+<h1>⚙️ Setup</h1>
+<p>Kindy check if you have <a href="https://go.dev/">Go</a> version 1.15 or higher</p>
+
+
+
+```go
+mkdir <project-name> && cd  <project-name>
+
+go mod init github.com/<user-name>/<repo-name>
+
+go get github.com/gominima/minima
+
+go run main.go
+```
+<br>
+
+<h1>🦄 Quickstart </h1>
+
+```go
+package main
+
+import "github.com/gominima/minima"
+
+func main() {
+	app := minima.New()
+
+	app.Get("/", func(res *minima.Response, req *minima.Request) {
+		res.Send(200, "Hello World")
+	})
+
+	app.Listen(":3000")
+}
+
+```
+<br>
+<h1>🪶 Features</h1>
+<ul>
+<li><b>Reliable -</b> Great modular api for building great server side applications</li>
+<li><b>Compatible with net/http</b>- use your plain old middlewares written in plain old net/http</li>
+<li><b>Lightweight -</b> clocked in ~ 1000 loc</li>
+<li><b>No Dependency -</b> Just your plain old go standard libraries</li>
+<li><b>Great Documentation -</b> Best in class precise <a href="https://gominima.org/">documentation</a></li>
+<li><b>Auto Docs -</b> Docgen for generating all you routing docs from router to json or markdown files</li>
+</ul>

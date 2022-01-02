@@ -16,7 +16,6 @@ func main() {
 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
 		type hello struct {
 			Name string `json:"name"`
-			
 		}
 		q := request.GetQuery("name")
 		fmt.Println(q)
