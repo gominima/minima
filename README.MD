@@ -261,7 +261,7 @@ type Req interface {
 
 <h2>📑 Middlewares</h2>
 
-<h5>Minima's middleware are written in its own custom res and req interfaces but as they are written in standard libs maintained by go, you could use ```res.Raw()``` to get http.ResponseWriter instance and ```req.Raw()``` to get http.Request instance. which means all community written middlewares are compatible with Minima.</h5>
+<h5>Minima's middleware are written in its own custom res and req interfaces but as they are written in standard libs maintained by go, you could use res.Raw() to get http.ResponseWriter instance and req.Raw() to get http.Request instance. which means all community written middlewares are compatible with Minima.</h5>
 
 <h5>Here is an example of standard net/http middleware being used with minima</h5>
 
