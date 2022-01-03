@@ -9,18 +9,17 @@ import (
 func main() {
 	app := minima.New()
 	router := minima.NewRouter()
-	app.Get("/o/:name", func(response *minima.Response, request *minima.Request) {
+	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
 		response.Send(300, p)
 	})
-	router.Get("/hello/?", func(response *minima.Response, request *minima.Request) {
+	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
 		type hello struct {
 			Name string `json:"name"`
-			Age  int    `json:"age"`
 		}
 		q := request.GetQuery("name")
 		fmt.Println(q)
-		response.Json(&hello{Name: "totu", Age: 15})
+		response.Json(&hello{Name: q})
 	})
 
 	app.UseConfig(&minima.Config{
@@ -30,3 +29,27 @@ func main() {
 	})
 	app.Listen(":3000")
 }
+
+func UserGetRouter() *minima.Router {
+	//router instance which would be used by the main router
+	router := minima.NewRouter()
+	return router.Get("/user/:id/?", func(response *minima.Response, request *minima.Request) {
+		//getting id param from route
+		id := request.GetParam("id")
+
+		//as query params are not part of the request path u need to add a ? to initialize them
+		username := request.GetQuery("name")
+
+		//get user from db
+		userdata, err := db.FindUser(id, username)
+
+		if err != nil {
+			panic(err)
+			//check for errors
+			response.Status(404).Send("No user found with particular id")
+		}
+		//sending user
+		response.Json(userdata).Status(200)
+	})
+}
+

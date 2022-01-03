@@ -9,12 +9,11 @@ import (
 )
 
 type Response struct {
-	Ref    http.ResponseWriter
-	url    string
-	method string
-	ended  bool
-	header *Header
-       
+	ref      http.ResponseWriter
+	url      string
+	method   string
+	ended    bool
+	header   *OutgoingHeader
 	props    *map[string]interface{}
 	host     string
 	HasEnded bool
@@ -22,25 +21,23 @@ type Response struct {
 
 func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
 	res := &Response{}
-	res.Ref = rs
-	res.header = NewHeader(rs, req)
+	res.ref = rs
+	res.header = NewResHeader(rs, req)
 	res.url = req.URL.Path
 	res.method = req.Method
 	res.host = req.Host
-
 	res.props = props
-
 	return res
 
 }
-func (res *Response) Header() Header {
+func (res *Response) Header() OutgoingHeader {
 	return *res.header
 }
 
-func (res *Response) Send(status int, content string) *Response {
-	res.header.status = status
-	if res.header.BasicDone() == false && res.header.CanSend() == true {
-		if Done := res.header.Flush(); Done == false {
+func (res *Response) Send(content string) *Response {
+
+	if !res.header.BasicDone() && res.header.CanSend() {
+		if res.header.Flush() {
 			log.Print("Failed to push headers")
 		}
 		res.header.Done = true
@@ -53,7 +50,7 @@ func (res *Response) Send(status int, content string) *Response {
 
 func (res *Response) WriteBytes(bytes []byte) error {
 	var errr error
-	_, err := res.Ref.Write(bytes)
+	_, err := res.ref.Write(bytes)
 	if err != nil {
 		errr = err
 	}
@@ -61,7 +58,7 @@ func (res *Response) WriteBytes(bytes []byte) error {
 }
 
 func (res *Response) sendContent(status int, contentType string, content []byte) {
-	if res.header.BasicDone() == false {
+	if res.header.BasicDone() {
 		res.header.Status(status)
 	}
 	if res.header.CanSend() {
@@ -81,23 +78,25 @@ func (res *Response) sendContent(status int, contentType string, content []byte)
 
 }
 
-func (res *Response) Json(content interface{}) {
+func (res *Response) Json(content interface{}) *Response {
 	output, err := json.Marshal(content)
 	if err != nil {
 		res.sendContent(500, "application/json", []byte(""))
 	} else {
 		res.sendContent(200, "application/json", output)
 	}
+	return res
 }
-func (res *Response) Error(status int, str string) {
+func (res *Response) Error(status int, str string) *Response {
 	res.sendContent(status, "text/html", []byte(str))
 	log.Panic(str)
+	return res
 }
 
 func (res *Response) Raw() http.ResponseWriter {
-	return res.Ref
+	return res.ref
 }
-func (res *Response) Render(path string, data interface{}) {
+func (res *Response) Render(path string, data interface{}) *Response {
 	tmpl, err := template.ParseFiles(path)
 	if err != nil {
 		log.Panicf("Given path was not found", err)
@@ -113,6 +112,7 @@ func (res *Response) Render(path string, data interface{}) {
 		res.header.Flush()
 	}
 	res.WriteBytes(byt.Bytes())
+	return res
 
 }
 
@@ -121,5 +121,10 @@ func (res *Response) Redirect(url string) *Response {
 	res.header.Set("Location", url)
 	res.header.Flush()
 	res.ended = true
+	return res
+}
+
+func (res *Response) Status(status int) *Response {
+	res.header.Status(status)
 	return res
 }
