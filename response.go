@@ -87,9 +87,10 @@ func (res *Response) Json(content interface{}) *Response {
 	}
 	return res
 }
-func (res *Response) Error(status int, str string) {
+func (res *Response) Error(status int, str string) *Response {
 	res.sendContent(status, "text/html", []byte(str))
 	log.Panic(str)
+	return res
 }
 
 func (res *Response) Raw() http.ResponseWriter {

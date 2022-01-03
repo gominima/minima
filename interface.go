@@ -40,3 +40,53 @@ type Minima interface {
 	SetProp(key string, value interface{}) *minima
 	GetProp(key string) interface{}
 }
+
+type Res interface {
+	//response interface is built over http.ResponseWriter for easy and better utility
+
+	//returns minima.OutgoingHeader interface
+	Header() *OutgoingHeader
+
+	//Utility functions for easier usage
+	Send(content string) *Response      //send content
+	WriteBytes(bytes []byte) error      //writes bytes to the page
+	Json(content interface{}) *Response //sends data in json format
+	Error(status int, str string) *Response
+
+	//This functions return http.ResponseWriter instace that means you could use any of your alrady written middlewares in minima!!
+	Raw() http.ResponseWriter
+
+	//renders a html file with data to the page
+	Render(path string, data interface{}) *Response
+
+	//Redirects to given url
+	Redirect(url string) *Response
+
+	//Sets Header status
+	Status(code int) *Response
+}
+
+type Req interface {
+	//Minima request interface is built on http.Request
+
+	//returns param from route url
+	GetParam(name string) string
+
+	//returns path url from the route
+	GetPathURl() string
+
+	//returns raw request body
+	Body() map[string][]string
+
+	//finds given key value from body and returns it
+	GetBodyValue(key string) []string
+
+	//returns instance of minima.IncomingHeader for incoming header requests
+	Header() *IncomingHeader
+
+	//returns route method ex.get,post
+	Method() string
+
+	//Gets query params from route and returns it
+	GetQuery(key string) string
+}
