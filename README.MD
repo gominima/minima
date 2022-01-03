@@ -288,6 +288,8 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 
 <br>
 <h1>🧾 License</h1>
-<h5>Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a></h5>
+<h5>Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers</a>. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a></h5>
 
-<h4 align="center">Happy coding ahead with Minima!</h4>
+<br>
+
+<h5 align="center">Happy coding ahead with Minima!</h5>
