@@ -274,3 +274,20 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 	w.Write([]byte(r.URL.Path))
 }
 ```
+<br>
+
+<h1>💫 Contributing</h1>
+
+<h5>If you wanna help grow this project or say a thank you :</h5>
+<ol>
+<li>Give minima a <a href="https://github.com/gominima/minima/stargazers">Github star</a></li>
+<li>Fork minima and Contribute</li>
+<li>Write a review or blog on minima</li>
+<li>Join our <a href="https://discord.gg/gRyCr5APmg">discord</a> community </li>
+</ol>
+
+<br>
+<h1>🧾 License</h1>
+<h5>Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a></h5>
+
+<h4 align="center">Happy coding ahead with Minima!</h4>
