@@ -9,7 +9,7 @@ import (
 )
 
 type Response struct {
-	Ref      http.ResponseWriter
+	ref      http.ResponseWriter
 	url      string
 	method   string
 	ended    bool
@@ -21,7 +21,7 @@ type Response struct {
 
 func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
 	res := &Response{}
-	res.Ref = rs
+	res.ref = rs
 	res.header = NewResHeader(rs, req)
 	res.url = req.URL.Path
 	res.method = req.Method
@@ -50,7 +50,7 @@ func (res *Response) Send(content string) *Response {
 
 func (res *Response) WriteBytes(bytes []byte) error {
 	var errr error
-	_, err := res.Ref.Write(bytes)
+	_, err := res.ref.Write(bytes)
 	if err != nil {
 		errr = err
 	}
@@ -94,7 +94,7 @@ func (res *Response) Error(status int, str string) *Response {
 }
 
 func (res *Response) Raw() http.ResponseWriter {
-	return res.Ref
+	return res.ref
 }
 func (res *Response) Render(path string, data interface{}) *Response {
 	tmpl, err := template.ParseFiles(path)

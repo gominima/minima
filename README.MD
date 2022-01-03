@@ -204,7 +204,7 @@ type Minima interface {
 
 <h2>📑 Response and Request interface</h2>
 
-<h4>Both response and request interfaces of minima are written in net/http so that means you could use any of your old route middlewares in minima out of the box without any hustle</h4>
+<h5>Both response and request interfaces of minima are written in net/http so that means you could use any of your old route middlewares in minima out of the box without any hustle.</h5>
 
 ```go
 
@@ -256,5 +256,21 @@ type Req interface {
 
 	//Gets query params from route and returns it
 	GetQuery(key string) string
+}
+```
+
+<h2>📑 Middlewares</h2>
+
+<h5>Minima's middleware are written in its own custom res and req interfaces but as they are written in standard libs maintained by go, you could use `res.Raw()` to get http.ResponseWriter instance and `req.Raw()` to get http.Request instance. which means all community written middlewares are compatible with Minima.</h5>
+
+<h5>Here is an example of standard net/http middleware being used with minima</h5>
+
+```go
+func MyMiddleWare(res *minima.Response, req *minima.Request) {
+	w := res.Raw() //raw http.ResponseWriter instance
+	r := req.Raw() //raw http.Request instance
+
+	//your normal net/http middleware
+	w.Write([]byte(r.URL.Path))
 }
 ```

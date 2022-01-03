@@ -1,32 +1,34 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gominima/minima"
 )
 
-// func main() {
-// 	app := minima.New()
-// 	router := minima.NewRouter()
-// 	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
-// 		p := request.GetParam("name")
-// 		response.Send(300, p)
-// 	})
-// 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
-// 		type hello struct {
-// 			Name string `json:"name"`
-// 		}
-// 		q := request.GetQuery("name")
-// 		fmt.Println(q)
-// 		response.Json(&hello{Name: q})
-// 	})
+func main() {
+	app := minima.New()
+	router := minima.NewRouter()
+	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
+		p := request.GetParam("name")
+		response.Send(300, p)
+	})
+	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
+		type hello struct {
+			Name string `json:"name"`
+		}
+		q := request.GetQuery("name")
+		fmt.Println(q)
+		response.Json(&hello{Name: q})
+	})
 
-// 	app.UseConfig(&minima.Config{
-// 		Logger:     false,
-// 		Middleware: []minima.Handler{},
-// 		Router:     router,
-// 	})
-// 	app.Listen(":3000")
-// }
+	app.UseConfig(&minima.Config{
+		Logger:     false,
+		Middleware: []minima.Handler{},
+		Router:     router,
+	})
+	app.Listen(":3000")
+}
 
 func UserGetRouter() *minima.Router {
 	//router instance which would be used by the main router
@@ -51,13 +53,3 @@ func UserGetRouter() *minima.Router {
 	})
 }
 
-func main() {
-	//main minima instance
-	app := minima.New()
-	//UseRouter method takes minima.router as param
-	//It appends all the routes used in that specific router to the main instance
-	app.UseRouter(UserGetRouter())
-
-	//running the app
-	app.Listen(":3000")
-}
