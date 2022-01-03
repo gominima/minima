@@ -71,63 +71,63 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	}
 }
 
-func (m *minima) Get(path string, handler ...Handler) *minima{
+func (m *minima) Get(path string, handler ...Handler) *minima {
 	m.router.Get(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Put(path string, handler ...Handler) *minima{
+func (m *minima) Put(path string, handler ...Handler) *minima {
 	m.router.Put(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Options(path string, handler ...Handler) *minima{
+func (m *minima) Options(path string, handler ...Handler) *minima {
 	m.router.Options(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Head(path string, handler ...Handler)*minima {
+func (m *minima) Head(path string, handler ...Handler) *minima {
 	m.router.Head(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Delete(path string, handler ...Handler)*minima {
+func (m *minima) Delete(path string, handler ...Handler) *minima {
 	m.router.Delete(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Patch(path string, handler ...Handler)*minima {
+func (m *minima) Patch(path string, handler ...Handler) *minima {
 	m.router.Patch(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Post(path string, handler ...Handler)*minima {
+func (m *minima) Post(path string, handler ...Handler) *minima {
 	m.router.Post(path, handler...)
-	return m 
+	return m
 }
 
-func (m *minima) Use(handler Handler) *minima{
+func (m *minima) Use(handler Handler) *minima {
 	m.Middleware.AddPlugin(handler)
-	return m 
+	return m
 }
 func (m *minima) UseRouter(router *Router) *minima {
 	m.router.UseRouter(router)
-	return m 
+	return m
 
 }
 
-func (m *minima) UseConfig(config *Config) *minima{
+func (m *minima) UseConfig(config *Config) *minima {
 	for _, v := range config.Middleware {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
 	}
 	m.Config.Logger = config.Logger
 	m.router.UseRouter(config.Router)
-	return m 
+	return m
 }
 
-func (m *minima) ShutdownTimeout(t time.Duration) *minima{
+func (m *minima) ShutdownTimeout(t time.Duration) *minima {
 	m.drain = t
-	return m 
+	return m
 }
 
 func (m *minima) Shutdown(ctx context.Context) error {
@@ -137,10 +137,10 @@ func (m *minima) Shutdown(ctx context.Context) error {
 
 func (m *minima) SetProp(key string, value interface{}) *minima {
 	m.properties[key] = value
-	return m 
+	return m
 
 }
 
-func (m *minima) GetProp(key string, value interface{}) interface{} {
+func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }

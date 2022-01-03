@@ -80,6 +80,8 @@ Minima's name is inspired by the word minimal and is the motivation for building
 <br>
 <h1>🍵 Examples</h1>
 
+<h4>Here are some basic examples related to routing and params</h4>
+
 <h2>📑 Routing & Router</h2>
 
 ```go
@@ -134,5 +136,68 @@ func main() {
 		fmt.Print(userid)
 		//Will print 20048 from router /getuser/200048
 	})
+}
+```
+
+<h2>📑 Query Params</h2>
+
+```go
+func main() {
+	app := minima.New()
+
+	app.Get("/getuser/?", func(response *minima.Response, request *minima.Request) {
+		//query params work a bit different instead of adding a param in route ur u just need to add a ? and fetch the param
+		userid := request.GetQuery("id")
+		
+		if userid == "" {
+			response.Error(404, "No user found")
+			panic("No user id found in request")
+		}
+		fmt.Print(userid)
+		//Will print 20048 from router /getuser/200048
+	})
+}
+```
+<h2>📑 Minima interface</h2>
+
+<h4>Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itsekf is fully compatible with <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a></h4>
+
+<h4>Here is minima's interface</h4>
+
+```go
+type Minima interface {
+	//Minima interface is built over net/http so every middleware is compatible with it
+
+	//initializes net/http server with address
+	Listen(address string) error
+
+	//handler interface
+	ServeHTTP(w http.ResponseWriter, q *http.Request)
+
+	//Router methods
+	Get(path string, handler ...Handler) *minima
+	Patch(path string, handler ...Handler) *minima
+	Post(path string, handler ...Handler) *minima
+	Put(path string, handler ...Handler) *minima
+	Options(path string, handler ...Handler) *minima
+	Head(path string, handler ...Handler) *minima
+	Delete(path string, handler ...Handler) *minima
+
+	//Takes middlewares as a param and adds them to routes
+	//middlewares initializes before route handler is mounted
+	Use(handler Handler) *minima
+
+	//Takes minima.Router as param and adds the routes from router to main instance
+	UseRouter(router *Router) *minima
+
+	//Works as a config for minima, you can add multiple middlewares and routers at once
+	UseConfig(config *Config) *minima
+
+	//Shutdowns the net/http server
+	Shutdown(ctx context.Context) error
+
+	//Prop methods
+	SetProp(key string, value interface{}) *minima
+	GetProp(key string) interface{}
 }
 ```

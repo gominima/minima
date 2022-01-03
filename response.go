@@ -35,7 +35,7 @@ func (res *Response) Header() OutgoingHeader {
 }
 
 func (res *Response) Send(content string) *Response {
-	
+
 	if !res.header.BasicDone() && res.header.CanSend() {
 		if res.header.Flush() {
 			log.Print("Failed to push headers")
@@ -124,6 +124,6 @@ func (res *Response) Redirect(url string) *Response {
 }
 
 func (res *Response) Status(status int) *Response {
- res.header.Status(status)
- return res
+	res.header.Status(status)
+	return res
 }
