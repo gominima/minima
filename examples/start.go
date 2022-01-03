@@ -1,31 +1,63 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gominima/minima"
 )
 
-func main() {
-	app := minima.New()
-	router := minima.NewRouter()
-	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
-		p := request.GetParam("name")
-		response.Send(300, p)
-	})
-	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
-		type hello struct {
-			Name string `json:"name"`
-		}
-		q := request.GetQuery("name")
-		fmt.Println(q)
-		response.Json(&hello{Name: q})
-	})
+// func main() {
+// 	app := minima.New()
+// 	router := minima.NewRouter()
+// 	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
+// 		p := request.GetParam("name")
+// 		response.Send(300, p)
+// 	})
+// 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
+// 		type hello struct {
+// 			Name string `json:"name"`
+// 		}
+// 		q := request.GetQuery("name")
+// 		fmt.Println(q)
+// 		response.Json(&hello{Name: q})
+// 	})
 
-	app.UseConfig(&minima.Config{
-		Logger:     false,
-		Middleware: []minima.Handler{},
-		Router:     router,
+// 	app.UseConfig(&minima.Config{
+// 		Logger:     false,
+// 		Middleware: []minima.Handler{},
+// 		Router:     router,
+// 	})
+// 	app.Listen(":3000")
+// }
+
+func UserGetRouter() *minima.Router {
+	//router instance which would be used by the main router
+	router := minima.NewRouter()
+	return router.Get("/user/:id/?", func(response *minima.Response, request *minima.Request) {
+		//getting id param from route
+		id := request.GetParam("id")
+
+		//as query params are not part of the request path u need to add a ? to initialize them
+		username := request.GetQuery("name")
+
+		//get user from db
+		userdata, err := db.FindUser(id, username)
+
+		if err != nil {
+			panic(err)
+			//check for errors
+			response.Status(404).Send("No user found with particular id")
+		}
+		//sending user
+		response.Json(userdata).Status(200)
 	})
+}
+
+func main() {
+	//main minima instance
+	app := minima.New()
+	//UseRouter method takes minima.router as param
+	//It appends all the routes used in that specific router to the main instance
+	app.UseRouter(UserGetRouter())
+
+	//running the app
 	app.Listen(":3000")
 }

@@ -34,8 +34,8 @@ func (res *Response) Header() OutgoingHeader {
 	return *res.header
 }
 
-func (res *Response) Send(status int, content string) *Response {
-	res.header.status = status
+func (res *Response) Send(content string) *Response {
+	
 	if !res.header.BasicDone() && res.header.CanSend() {
 		if res.header.Flush() {
 			log.Print("Failed to push headers")

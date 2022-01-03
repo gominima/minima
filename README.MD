@@ -77,4 +77,62 @@ Minima's name is inspired by the word minimal and is the motivation for building
 <p>Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible to net/http modules like gqlgen and other middlewares.</p>
 
 <p>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</p>
+<br>
+<h1>🍵 Examples</h1>
 
+<h2>📑 Routing & Router</h2>
+
+```go
+func UserGetRouter() *minima.Router {
+	//router instance which would be used by the main router
+	router := minima.NewRouter()
+	return router.Get("/user/:id/?", func(response *minima.Response, request *minima.Request) {
+		//getting id param from route
+		id := request.GetParam("id")
+
+		//as query params are not part of the request path u need to add a ? to initialize them
+		username := request.GetQuery("name")
+
+		//get user from db
+		userdata, err := db.FindUser(id, username)
+
+		if err != nil {
+			panic(err)
+			//check for errors
+			response.Status(404).Send("No user found with particular id")
+		}
+		//sending user
+		response.Json(userdata).Status(200)
+	})
+}
+
+func main() {
+	//main minima instance
+	app := minima.New()
+	//UseRouter method takes minima.router as param
+	//It appends all the routes used in that specific router to the main instance
+	app.UseRouter(UserGetRouter())
+
+	//running the app
+	app.Listen(":3000")
+}
+```
+
+<h2>📑 Params</h2>
+
+```go
+func main() {
+	app := minima.New()
+
+	app.Get("/getuser/:id", func(response *minima.Response, request *minima.Request) {
+		userid := request.GetParam("id")
+		// check if user id is available
+		if userid == "" {
+			response.Error(404, "No user found")
+			panic("No user id found in request")
+		}
+		fmt.Print(userid)
+		//Will print 20048 from router /getuser/200048
+	})
+}
+```
