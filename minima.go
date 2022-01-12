@@ -2,7 +2,6 @@ package minima
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -32,13 +31,14 @@ func New() *minima {
 }
 
 func (m *minima) Listen(addr string) error {
-	server := &http.Server{Addr: addr, Handler: m}
 	if m.started {
-		fmt.Errorf("Server is already running", m)
+		panic("Minima server instance is already running")
 	}
+	server := &http.Server{Addr: addr, Handler: m}
 	m.server = server
 	m.started = true
 	return m.server.ListenAndServe()
+
 }
 
 func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
@@ -120,7 +120,6 @@ func (m *minima) UseConfig(config *Config) *minima {
 	for _, v := range config.Middleware {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
 	}
-	m.Config.Logger = config.Logger
 	m.router.UseRouter(config.Router)
 	return m
 }

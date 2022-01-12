@@ -17,11 +17,10 @@ type Param struct {
 }
 
 type Request struct {
-	ref       *http.Request
+	ref        *http.Request
 	fileReader *multipart.Reader
 	body       map[string][]string
 	method     string
-	url        string
 	Params     []*Param
 	query      url.Values
 	header     *IncomingHeader
@@ -31,7 +30,7 @@ type Request struct {
 
 func request(httRequest *http.Request, props *map[string]interface{}) *Request {
 	req := &Request{}
-	req.ref= httRequest
+	req.ref = httRequest
 	req.header = &IncomingHeader{}
 	req.fileReader = nil
 	req.method = httRequest.Proto
