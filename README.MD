@@ -154,7 +154,7 @@ func main() {
 			panic("No user id found in request")
 		}
 		fmt.Print(userid)
-		//Will print 20048 from router /getuser/200048
+		//Will print 20048 from router /getuser?id=20048
 	})
 }
 ```
