@@ -1,7 +1,6 @@
 package minima
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -45,7 +44,6 @@ func RegexPath(path string) (string, []string) {
 
 	}
 	regexPath = "^" + strings.Join(items, `\/`) + "$"
-	fmt.Print(regexPath)
 	return regexPath, Params
 }
 

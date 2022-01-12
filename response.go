@@ -99,7 +99,7 @@ func (res *Response) Raw() http.ResponseWriter {
 func (res *Response) Render(path string, data interface{}) *Response {
 	tmpl, err := template.ParseFiles(path)
 	if err != nil {
-		log.Panicf("Given path was not found", err)
+		log.Panic("Given path was not found", err)
 		res.header.Status(500)
 		res.header.Flush()
 
