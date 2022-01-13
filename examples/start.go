@@ -21,10 +21,7 @@ func main() {
 		response.Json(&hello{Name: q})
 	})
 
-	app.UseConfig(&minima.Config{
-		Middleware: []minima.Handler{},
-		Router:     router,
-	})
+	app.Mount("/aa", router)
 	app.Listen(":3000")
 
 }

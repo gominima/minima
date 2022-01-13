@@ -105,6 +105,18 @@ func (r *Router) UseRouter(Router *Router) *Router {
 	return r
 }
 
+func (r *Router) Mount(basepath string, Router *Router) *Router {
+	routes := Router.GetRouterRoutes()
+	for routeType, list := range routes {
+		for _, v := range list {
+			v.Path = basepath + v.Path
+			r.Register(routeType, v.Path, v.Handlers...)
+		}
+
+	}
+	return r
+}
+
 func (r *Router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()
 	for k, v := range p {
