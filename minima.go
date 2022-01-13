@@ -116,6 +116,12 @@ func (m *minima) UseRouter(router *Router) *minima {
 
 }
 
+func (m *minima) Mount(path string, router *Router) *minima {
+	m.router.Mount(path, router)
+	return m
+
+}
+
 func (m *minima) UseConfig(config *Config) *minima {
 	for _, v := range config.Middleware {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})

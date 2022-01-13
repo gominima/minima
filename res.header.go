@@ -112,8 +112,9 @@ func (h *OutgoingHeader) CanSend() bool {
 	if h.BasicDone() {
 		if !h.Body {
 			return true
-		}
+		}else{
 		return false
+		}
 	}
 	return true
 }

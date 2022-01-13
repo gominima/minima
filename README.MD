@@ -182,6 +182,9 @@ type Minima interface {
 	//Takes middlewares as a param and adds them to routes
 	//middlewares initializes before route handler is mounted
 	Use(handler Handler) *minima
+        
+	//Mounts routes to specific base path
+	Mount(basePath string, router *Router) *minima
 
 	//Takes minima.Router as param and adds the routes from router to main instance
 	UseRouter(router *Router) *minima
