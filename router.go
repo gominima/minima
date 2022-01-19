@@ -1,7 +1,6 @@
 package minima
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -11,38 +10,10 @@ import (
 */
 type Handler func(response *Response, request *Request)
 /**
-	@info The router
-	@property {http.HandlerFunc} [NotFound] The Handler Func
-	@property {map[]string[]mux} [routes] The routes
-*/
-type router struct {
-	NotFound http.HandlerFunc
-	routes   map[string][]*mux
-}
-/**
-	@info Make a new router
-	@returns {router}
-*/
-func NewRouter() *router {
-	router := &router{
-		routes: map[string][]*mux{
-			"GET":     make([]*mux, 0),
-			"POST":    make([]*mux, 0),
-			"PUT":     make([]*mux, 0),
-			"DELETE":  make([]*mux, 0),
-			"PATCH":   make([]*mux, 0),
-			"OPTIONS": make([]*mux, 0),
-			"HEAD":    make([]*mux, 0),
-		},
-	}
-	return router
-}
-/**
 	@info Regex's the path
 	@param {string} [path] The path
 	@returns {string, []string}
 */
-func RegexPath(path string) (string, []string) {
 	var items []string
 	var Params []string
 	var regexPath string
@@ -59,17 +30,10 @@ func RegexPath(path string) (string, []string) {
 
 	}
 	regexPath = "^" + strings.Join(items, `\/`) + "$"
-	fmt.Print(regexPath)
 	return regexPath, Params
 }
-/**
-	@info Register the router
-	@param {string} [method] The method
-	@param {string} [path] The path
-	@param {...Handler} [handlers] The handlers
-	@returns {mux}
-*/
-func (r *router) Register(method string, path string, handlers ...Handler) *mux {
+
+func (r *Router) Register(method string, path string, handlers ...Handler) *mux {
 	reg, Params := RegexPath(path)
 	var newroute = &mux{
 		Path:     path,
@@ -80,39 +44,51 @@ func (r *router) Register(method string, path string, handlers ...Handler) *mux 
 	r.routes[method] = append(r.routes[method], newroute)
 	return newroute
 }
-/**
-	@info Register GET for the router
-	@param {string} [path] The path
-	@param {...Handler} [handlers] The handlers
-*/
-func (r *router) Get(path string, handlers ...Handler) {
-	r.Register("GET", path, handlers...)
+
+func (r *Router) Patch(path string, handlers ...Handler) {
+	r.Register("PATCH", path, handlers...)
 }
-/**
-	@info Returns the router's routes
-	@returns {map[]string[]mux}
-*/
-func (r *router) GetRouterRoutes() map[string][]*mux {
+
+func (r *Router) Options(path string, handlers ...Handler) *Router {
+	r.Register("Options", path, handlers...)
+	return r
+}
+
+func (r *Router) Head(path string, handlers ...Handler) *Router {
+	r.Register("HEAD", path, handlers...)
+	return r
+}
+
+func (r *Router) Delete(path string, handlers ...Handler) *Router {
+	r.Register("DELETE", path, handlers...)
+	return r
+}
+
+func (r *Router) GetRouterRoutes() map[string][]*mux {
 	return r.routes
 }
-/**
-	@info Use a router
-	@param {router} [router] The router
-*/
-func (r *router) UseRouter(router *router) {
-	routes := router.GetRouterRoutes()
+
+func (r *Router) UseRouter(Router *Router) *Router {
+	routes := Router.GetRouterRoutes()
+>>>>>>> 8c7aafb0132fdea03a58145f8ab9901e321e8614
 	for routeType, list := range routes {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
+	return r
 }
-/**
-	@info Switches to the next handler
-	@param {map[]string} [p] The params
-	@param {Handler} [next] The next handler
-	@param {Response} [res] The response
-	@param {Request} [req] The request
-*/
-func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
+
+func (r *Router) Mount(basepath string, Router *Router) *Router {
+	routes := Router.GetRouterRoutes()
+		for _, v := range list {
+			v.Path = basepath + v.Path
+			r.Register(routeType, v.Path, v.Handlers...)
+		}
+
+	}
+	return r
+}
+
+func (r *Router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()
 	for k, v := range p {
 

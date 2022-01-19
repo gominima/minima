@@ -9,15 +9,12 @@ package minima
 */
 type Config struct {
 	Middleware []Handler
-	Logger     bool
-	Router     *router
-	ErrorPath  string
-	ErrorData  interface{}
+	Router     *Router
 }
 /**
 	@info Make a new default config instance
 	@returns {Config}
 */
 func NewConfig() *Config {
-	return &Config{Logger: false}
+	return &Config{}
 }

@@ -1,10 +1,9 @@
 package minima
 
 import (
-	"fmt"
+	"context"
 	"log"
 	"net/http"
-	"text/template"
 	"time"
 )
 /**
@@ -23,25 +22,21 @@ type minima struct {
 	server     *http.Server
 	started    bool
 	Timeout    time.Duration
-	router     *router
+	router     *Router
 	properties map[string]interface{}
 	Config     *Config
-	errorPath  string
-	errorData  interface{}
 	Middleware *Plugins
+	drain      time.Duration
 }
-/**
-	@info Make a new minima instance
-	@returns {minima} Minima instance
-*/
+
 func New() *minima {
-	var router *router = NewRouter()
+	var router *Router = NewRouter()
 	var plugin *Plugins = use()
 	var Config *Config = NewConfig()
-	var minima *minima= &minima{router: router}
+	var minima *minima = &minima{router: router}
 	minima.Middleware = plugin
+	minima.drain = 0
 	minima.Config = Config
-	minima.errorPath = "../assets/404.html"
 	return minima
 
 }
@@ -51,13 +46,14 @@ func New() *minima {
 	@returns {error}
 */
 func (m *minima) Listen(addr string) error {
-	server := &http.Server{Addr: addr, Handler: m}
 	if m.started {
-		fmt.Errorf("Server is already running", m)
+		panic("Minima server instance is already running")
 	}
+	server := &http.Server{Addr: addr, Handler: m}
 	m.server = server
 	m.started = true
 	return m.server.ListenAndServe()
+
 }
 /**
 	@info Server HTTP
@@ -90,56 +86,70 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	}
 
 	if !match {
-		path := m.errorPath
-		t, err := template.New("404.html").ParseFiles(path)
-		if err != nil {
-			fmt.Println(err)
-		}
-		t.Execute(w, m.errorData)
+		w.Write([]byte("No matching route found"))
+
 	}
 }
-/**
-	@info Handle a GET request
-	@param {string} [path] The path
-	@param {...Handler} [handler] The handler
-*/
-func (m *minima) Get(path string, handler ...Handler) {
+
+func (m *minima) Get(path string, handler ...Handler) *minima {
 	m.router.Get(path, handler...)
-}
-/**
-	@info Set 404 page
-	@param {string} [path] The path
-	@param {interface} [data] The data
-	@returns {minima}
-*/
-func (m *minima) Set404(path string, data interface{}) *minima{
-	m.errorPath = path
-	m.errorData = data
 	return m
 }
-/**
-	@info Use a minima plugin
-	@param {Handler} [handler] The handler
-*/
-func (m *minima) Use(handler Handler) {
-	m.Middleware.AddPlugin(handler)
+
+func (m *minima) Put(path string, handler ...Handler) *minima {
+	m.router.Put(path, handler...)
+	return m
 }
-/**
-	@info Use a router
-	@param {router} [router] The router
-*/
+
+func (m *minima) Options(path string, handler ...Handler) *minima {
+	m.router.Options(path, handler...)
+	return m
+}
+
+func (m *minima) Head(path string, handler ...Handler) *minima {
+	m.router.Head(path, handler...)
+	return m
+}
+
+func (m *minima) Delete(path string, handler ...Handler) *minima {
+	m.router.Delete(path, handler...)
+	return m
+}
+
+func (m *minima) Patch(path string, handler ...Handler) *minima {
+	m.router.Patch(path, handler...)
+	return m
+}
 func (m *minima) UseRouter(router *router) {
+=======
+func (m *minima) UseRouter(router *Router) *minima {
+>>>>>>> 8c7aafb0132fdea03a58145f8ab9901e321e8614
 	m.router.UseRouter(router)
+	return m
 
 }
-/**
-	@info Use a config
-	@param {Config} [config] The config
-*/
-func (m *minima) UseConfig(config *Config) {
-	for _, v := range config.Middleware {
-		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
-	}
-	m.Config.Logger = config.Logger
-	m.router.UseRouter(config.Router)
+
+func (m *minima) Mount(path string, router *Router) *minima {
+	return m
+
+}
+}
+
+	m.drain = t
+	return m
+}
+
+func (m *minima) Shutdown(ctx context.Context) error {
+	log.Println("Stopping the server")
+	return m.server.Shutdown(ctx)
+}
+
+func (m *minima) SetProp(key string, value interface{}) *minima {
+	m.properties[key] = value
+	return m
+
+}
+
+func (m *minima) GetProp(key string) interface{} {
+	return m.properties[key]
 }

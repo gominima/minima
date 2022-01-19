@@ -72,14 +72,13 @@ func (h *ReqHeader) Set(key string, v string) {
 	@property {map[]string} [props] The properties
 */
 type Request struct {
-	Ref        *http.Request
+	ref        *http.Request
 	fileReader *multipart.Reader
 	body       map[string][]string
 	method     string
-	url        string
 	Params     []*Param
 	query      url.Values
-	header     *ReqHeader
+	header     *IncomingHeader
 	json       *json.Decoder
 	props      *map[string]interface{}
 }
@@ -91,8 +90,8 @@ type Request struct {
 */
 func request(httRequest *http.Request, props *map[string]interface{}) *Request {
 	req := &Request{}
-	req.Ref = httRequest
-	req.header = &ReqHeader{}
+	req.ref = httRequest
+	req.header = &IncomingHeader{}
 	req.fileReader = nil
 	req.method = httRequest.Proto
 	req.props = props
@@ -133,7 +132,7 @@ func (r *Request) GetParam(name string) string {
 	@returns {string}
 */
 func (r *Request) GetPathURl() string {
-	return r.Ref.URL.Path
+	return r.ref.URL.Path
 }
 /**
 	@info Get the Body
@@ -150,11 +149,8 @@ func (r *Request) Body() map[string][]string {
 func (r *Request) GetBodyValue(key string) []string {
 	return r.body[key]
 }
-/**
-	@info Get the Header
-	@returns {ReqHeader}
-*/
-func (r *Request) Header() *ReqHeader {
+
+func (r *Request) Header() *IncomingHeader {
 	return r.header
 }
 /**
@@ -171,11 +167,10 @@ func (r *Request) Json() *json.Decoder {
 func (r *Request) Method() string {
 	return r.method
 }
-/**
-	@info Get a query
-	@param {string} [key] The key
-	@returns {string}
-*/
+func (r *Request) Raw() *http.Request {
+	return r.ref
+}
+
 func (r *Request) GetQuery(key string) string {
 	if r.query[key][0] == "" {
 		log.Panic("No query param found with given key")
