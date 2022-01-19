@@ -1,5 +1,5 @@
+package minima
 
-<<<<<<< HEAD
 import (
 	"context"
 	"log"
