@@ -6,14 +6,23 @@ import (
 	"regexp"
 	"strings"
 )
-
+/**
+	@info The Handler
+*/
 type Handler func(response *Response, request *Request)
-
+/**
+	@info The router
+	@property {http.HandlerFunc} [NotFound] The Handler Func
+	@property {map[]string[]mux} [routes] The routes
+*/
 type router struct {
 	NotFound http.HandlerFunc
 	routes   map[string][]*mux
 }
-
+/**
+	@info Make a new router
+	@returns {router}
+*/
 func NewRouter() *router {
 	router := &router{
 		routes: map[string][]*mux{
@@ -28,6 +37,11 @@ func NewRouter() *router {
 	}
 	return router
 }
+/**
+	@info Regex's the path
+	@param {string} [path] The path
+	@returns {string, []string}
+*/
 func RegexPath(path string) (string, []string) {
 	var items []string
 	var Params []string
@@ -48,7 +62,13 @@ func RegexPath(path string) (string, []string) {
 	fmt.Print(regexPath)
 	return regexPath, Params
 }
-
+/**
+	@info Register the router
+	@param {string} [method] The method
+	@param {string} [path] The path
+	@param {...Handler} [handlers] The handlers
+	@returns {mux}
+*/
 func (r *router) Register(method string, path string, handlers ...Handler) *mux {
 	reg, Params := RegexPath(path)
 	var newroute = &mux{
@@ -60,22 +80,38 @@ func (r *router) Register(method string, path string, handlers ...Handler) *mux 
 	r.routes[method] = append(r.routes[method], newroute)
 	return newroute
 }
-
+/**
+	@info Register GET for the router
+	@param {string} [path] The path
+	@param {...Handler} [handlers] The handlers
+*/
 func (r *router) Get(path string, handlers ...Handler) {
 	r.Register("GET", path, handlers...)
 }
-
+/**
+	@info Returns the router's routes
+	@returns {map[]string[]mux}
+*/
 func (r *router) GetRouterRoutes() map[string][]*mux {
 	return r.routes
 }
-
+/**
+	@info Use a router
+	@param {router} [router] The router
+*/
 func (r *router) UseRouter(router *router) {
 	routes := router.GetRouterRoutes()
 	for routeType, list := range routes {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
 }
-
+/**
+	@info Switches to the next handler
+	@param {map[]string} [p] The params
+	@param {Handler} [next] The next handler
+	@param {Response} [res] The response
+	@param {Request} [req] The request
+*/
 func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request) {
 	Path := req.GetPathURl()
 	for k, v := range p {

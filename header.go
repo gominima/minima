@@ -5,7 +5,14 @@ import (
 	"log"
 	"net/http"
 )
-
+/**
+	@info The header structure
+	@property {http.Request} [req] The request
+	@property {http.ResponseWriter} [res] The response writer
+	@property {bool} [Body] Whether body is there
+	@property {int} [status] The status code
+	@property {bool} [Done] Whether the request is done
+*/
 type Header struct {
 	req    *http.Request
 	res    http.ResponseWriter
@@ -42,7 +49,12 @@ var status = map[int]string{
 	504: "Gateway Timeout",
 	505: "HTTP Version Not Supported",
 }
-
+/**
+	@info Make a new header
+	@param {http.ResponseWriter} [res] The response writer
+	@param {http.Request} [req] The request
+	@returns {Header}
+*/
 func NewHeader(res http.ResponseWriter, req *http.Request) *Header {
 	h := &Header{}
 	h.req = req
@@ -51,33 +63,60 @@ func NewHeader(res http.ResponseWriter, req *http.Request) *Header {
 	h.Done = false
 	return h
 }
-
+/**
+	@info Sets a value on header
+	@param {string} [key] The key
+	@param {string} [value] The value
+*/
 func (h *Header) Set(key string, value string) {
 	h.res.Header().Set(key, value)
 }
-
+/**
+	@info Gets a value on header
+	@param {string} [key] The key
+	@returns {string} The value
+*/
 func (h *Header) Get(key string) string {
 	return h.res.Header().Get(key)
 }
-
+/**
+	@info Deletes a value on header
+	@param {string} [key] The key
+*/
 func (h *Header) Del(key string) {
 	h.res.Header().Del(key)
 }
-
+/**
+	@info Clones a value on header
+	@param {string} [key] The key
+*/
 func (h *Header) Clone(key string) {
 	h.res.Header().Clone()
 }
-
+/**
+	@info Sets the length of content
+	@param {string} [len] The length
+*/
 func (h *Header) Setlength(len string) {
 	h.Set("Content-lenght", len)
 }
-
+/**
+	@info Returns value of Done
+	@returns {bool} Whether the request is done 
+*/
 func (h *Header) BasicDone() bool {
 	return h.Done
 }
+/**
+	@info Sets the status code
+	@returns {int} [code] The status code
+*/
 func (h *Header) Status(code int) {
 	h.status = code
 }
+/**
+	@info Sends the base headers
+*/
 func (h *Header) SendBaseHeaders() {
 	if h.Done == false && h.BasicDone() == false {
 		if h.status == 0 {
@@ -88,6 +127,7 @@ func (h *Header) SendBaseHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
+
 func (h *Header) Flush() bool {
 	if h.Body == true {
 		log.Panic("Cannot send headers in middle of body")
@@ -107,7 +147,10 @@ func (h *Header) Flush() bool {
 	}
 	return true
 }
-
+/**
+	@info Whether it can be sent
+	@returns {bool}
+*/
 func (h *Header) CanSend() bool {
 	if h.BasicDone() == true {
 		if h.Body == false {

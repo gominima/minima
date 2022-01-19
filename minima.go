@@ -7,7 +7,18 @@ import (
 	"text/template"
 	"time"
 )
-
+/**
+ 	@info The minima structure
+	@property {http.Server} [server] The server instance
+	@property {bool} [started] Whether the server has started yet
+	@property {time.Duration} [Timeout] The timeout duration
+	@property {router} [router] The router instance
+	@property {map[string]interface} [properties] The interal properties of the server
+	@property {Config} [Config] The config options
+	@property {string} [errorPath] The path for errors
+	@property {interface} [errorData] The data for errors
+	@property {Plugins} [Middleware] The additional middlewares
+*/
 type minima struct {
 	server     *http.Server
 	started    bool
@@ -19,8 +30,11 @@ type minima struct {
 	errorData  interface{}
 	Middleware *Plugins
 }
-
-func New() *minima{
+/**
+	@info Make a new minima instance
+	@returns {minima} Minima instance
+*/
+func New() *minima {
 	var router *router = NewRouter()
 	var plugin *Plugins = use()
 	var Config *Config = NewConfig()
@@ -31,7 +45,11 @@ func New() *minima{
 	return minima
 
 }
-
+/**
+	@info Listen to the port
+	@param {string} [addr] The port
+	@returns {error}
+*/
 func (m *minima) Listen(addr string) error {
 	server := &http.Server{Addr: addr, Handler: m}
 	if m.started {
@@ -41,7 +59,12 @@ func (m *minima) Listen(addr string) error {
 	m.started = true
 	return m.server.ListenAndServe()
 }
-
+/**
+	@info Server HTTP
+	@param {http.ResponseWriter} [w] The response writer
+	@param {http.Request} [q] The request
+	@returns {error}
+*/
 func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	match := false
 
@@ -75,24 +98,44 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 		t.Execute(w, m.errorData)
 	}
 }
-
+/**
+	@info Handle a GET request
+	@param {string} [path] The path
+	@param {...Handler} [handler] The handler
+*/
 func (m *minima) Get(path string, handler ...Handler) {
 	m.router.Get(path, handler...)
 }
-
+/**
+	@info Set 404 page
+	@param {string} [path] The path
+	@param {interface} [data] The data
+	@returns {minima}
+*/
 func (m *minima) Set404(path string, data interface{}) *minima{
 	m.errorPath = path
 	m.errorData = data
 	return m
 }
+/**
+	@info Use a minima plugin
+	@param {Handler} [handler] The handler
+*/
 func (m *minima) Use(handler Handler) {
 	m.Middleware.AddPlugin(handler)
 }
+/**
+	@info Use a router
+	@param {router} [router] The router
+*/
 func (m *minima) UseRouter(router *router) {
 	m.router.UseRouter(router)
 
 }
-
+/**
+	@info Use a config
+	@param {Config} [config] The config
+*/
 func (m *minima) UseConfig(config *Config) {
 	for _, v := range config.Middleware {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})

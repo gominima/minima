@@ -1,0 +1,1023 @@
+{
+	"Meta": {
+		"Generator": "1",
+		"Format": "1",
+		"Date": "2022-01-19 09:25:13.475412269 +0000 UTC m=+0.000293254"
+	},
+	"Functions": [
+		{
+			"Name": "NewConfig",
+			"Line": "func NewConfig() *Config",
+			"Description": "Make a new default config instance",
+			"Returns": {
+				"Type": "Config"
+			}
+		},
+		{
+			"Name": "NewHeader",
+			"Line": "func NewHeader(res http.ResponseWriter, req *http.Request) *Header",
+			"Description": "Make a new header",
+			"Parameters": [
+				{
+					"Type": "http.ResponseWriter",
+					"Name": "res",
+					"Description": "The response writer"
+				},
+				{
+					"Type": "http.Request",
+					"Name": "req",
+					"Description": "The request"
+				}
+			],
+			"Returns": {
+				"Type": "Header"
+			}
+		},
+		{
+			"Line": "func (h *Header) Set(key string, value string)",
+			"Description": "Sets a value on header",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				},
+				{
+					"Type": "string",
+					"Name": "value",
+					"Description": "The value"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (h *Header) Get(key string) string",
+			"Description": "Gets a value on header",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {
+				"Type": "string",
+				"Description": "The value"
+			}
+		},
+		{
+			"Line": "func (h *Header) Del(key string)",
+			"Description": "Deletes a value on header",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (h *Header) Clone(key string)",
+			"Description": "Clones a value on header",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (h *Header) Setlength(len string)",
+			"Description": "Sets the length of content",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "len",
+					"Description": "The length"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (h *Header) BasicDone() bool",
+			"Description": "Returns value of Done",
+			"Returns": {
+				"Type": "bool",
+				"Description": "Whether the request is done"
+			}
+		},
+		{
+			"Line": "func (h *Header) Status(code int)",
+			"Description": "Sets the status code",
+			"Returns": {
+				"Type": "int",
+				"Description": "[code] The status code"
+			}
+		},
+		{
+			"Line": "func (h *Header) SendBaseHeaders()",
+			"Description": "Sends the base headers",
+			"Returns": {}
+		},
+		{
+			"Line": "func (h *Header) CanSend() bool",
+			"Description": "Whether it can be sent",
+			"Returns": {
+				"Type": "bool"
+			}
+		},
+		{
+			"Name": "use",
+			"Line": "func use() *Plugins",
+			"Description": "Initialise the plugins interface",
+			"Returns": {}
+		},
+		{
+			"Line": "func (p *Plugins) AddPlugin(handler Handler)",
+			"Description": "Add a plugin",
+			"Parameters": [
+				{
+					"Type": "Handler",
+					"Name": "handler",
+					"Description": "The handler to add"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (p *Plugins) ServePlugin(res *Response, req *Request)",
+			"Description": "Serve a plugin",
+			"Parameters": [
+				{
+					"Type": "Response",
+					"Name": "res",
+					"Description": "The response"
+				},
+				{
+					"Type": "Request",
+					"Name": "req",
+					"Description": "The request"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Name": "New",
+			"Line": "func New() *minima",
+			"Description": "Make a new minima instance",
+			"Returns": {
+				"Type": "minima",
+				"Description": "Minima instance"
+			}
+		},
+		{
+			"Line": "func (m *minima) Listen(addr string) error",
+			"Description": "Listen to the port",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "addr",
+					"Description": "The port"
+				}
+			],
+			"Returns": {
+				"Type": "error"
+			}
+		},
+		{
+			"Line": "func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request)",
+			"Description": "Server HTTP",
+			"Parameters": [
+				{
+					"Type": "http.ResponseWriter",
+					"Name": "w",
+					"Description": "The response writer"
+				},
+				{
+					"Type": "http.Request",
+					"Name": "q",
+					"Description": "The request"
+				}
+			],
+			"Returns": {
+				"Type": "error"
+			}
+		},
+		{
+			"Line": "func (m *minima) Get(path string, handler ...Handler)",
+			"Description": "Handle a GET request",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				},
+				{
+					"Type": "...Handler",
+					"Name": "handler",
+					"Description": "The handler"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (m *minima) Set404(path string, data interface}) *minima",
+			"Description": "Set 404 page",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				},
+				{
+					"Type": "interface",
+					"Name": "data",
+					"Description": "The data"
+				}
+			],
+			"Returns": {
+				"Type": "minima"
+			}
+		},
+		{
+			"Line": "func (m *minima) Use(handler Handler)",
+			"Description": "Use a minima plugin",
+			"Parameters": [
+				{
+					"Type": "Handler",
+					"Name": "handler",
+					"Description": "The handler"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (m *minima) UseRouter(router *router)",
+			"Description": "Use a router",
+			"Parameters": [
+				{
+					"Type": "router",
+					"Name": "router",
+					"Description": "The router"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (m *minima) UseConfig(config *Config)",
+			"Description": "Use a config",
+			"Parameters": [
+				{
+					"Type": "Config",
+					"Name": "config",
+					"Description": "The config"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (m *mux) matchingPath(path string) (bool, map[string]string)",
+			"Description": "Match a path",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path to match"
+				}
+			],
+			"Returns": {
+				"Type": "bool, map[]string[]string"
+			}
+		},
+		{
+			"Line": "func (h *ReqHeader) Get(key string) string",
+			"Description": "Get a ReqHeader",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {
+				"Type": "string",
+				"Description": "The value"
+			}
+		},
+		{
+			"Line": "func (h *ReqHeader) Set(key string, v string)",
+			"Description": "Set a ReqHeader",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				},
+				{
+					"Type": "string",
+					"Name": "value",
+					"Description": "The value"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Name": "request",
+			"Line": "func request(httRequest *http.Request, props *map[string]interface}) *Request",
+			"Description": "Make a new request",
+			"Parameters": [
+				{
+					"Type": "http.Request",
+					"Name": "httpRequest",
+					"Description": "The http request"
+				},
+				{
+					"Type": "map[]string",
+					"Name": "props",
+					"Description": "The properties"
+				}
+			],
+			"Returns": {
+				"Type": "Request"
+			}
+		},
+		{
+			"Line": "func (r *Request) GetParam(name string) string",
+			"Description": "Get a param",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "name",
+					"Description": "The name"
+				}
+			],
+			"Returns": {
+				"Type": "string"
+			}
+		},
+		{
+			"Line": "func (r *Request) GetPathURl() string",
+			"Description": "Get the Path URL",
+			"Returns": {
+				"Type": "string"
+			}
+		},
+		{
+			"Line": "func (r *Request) Body() map[string][]string",
+			"Description": "Get the Body",
+			"Returns": {
+				"Type": "map[]string[]string"
+			}
+		},
+		{
+			"Line": "func (r *Request) GetBodyValue(key string) []string",
+			"Description": "Get a Body value",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {
+				"Type": "[]string"
+			}
+		},
+		{
+			"Line": "func (r *Request) Header() *ReqHeader",
+			"Description": "Get the Header",
+			"Returns": {
+				"Type": "ReqHeader"
+			}
+		},
+		{
+			"Line": "func (r *Request) Json() *json.Decoder",
+			"Description": "Get the json decoder",
+			"Returns": {
+				"Type": "json.Decoder"
+			}
+		},
+		{
+			"Line": "func (r *Request) Method() string",
+			"Description": "Get the method",
+			"Returns": {
+				"Type": "string"
+			}
+		},
+		{
+			"Line": "func (r *Request) GetQuery(key string) string",
+			"Description": "Get a query",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				}
+			],
+			"Returns": {
+				"Type": "string"
+			}
+		},
+		{
+			"Name": "response",
+			"Line": "func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface}) *Response",
+			"Description": "Make a new response",
+			"Parameters": [
+				{
+					"Type": "http.ResponseWriter",
+					"Name": "Ref",
+					"Description": "The response writer"
+				},
+				{
+					"Type": "http.Request",
+					"Name": "req",
+					"Description": "The http request"
+				},
+				{
+					"Type": "map[]string",
+					"Name": "props",
+					"Description": "The properties"
+				}
+			],
+			"Returns": {
+				"Type": "Response"
+			}
+		},
+		{
+			"Line": "func (res *Response) Header() Header",
+			"Description": "Get the Header",
+			"Returns": {
+				"Type": "Header"
+			}
+		},
+		{
+			"Line": "func (res *Response) Send(status int, content string) *Response",
+			"Description": "Send a response",
+			"Parameters": [
+				{
+					"Type": "int",
+					"Name": "status",
+					"Description": "The status code"
+				},
+				{
+					"Type": "string",
+					"Name": "content",
+					"Description": "The content to send"
+				}
+			],
+			"Returns": {
+				"Type": "Response"
+			}
+		},
+		{
+			"Line": "func (res *Response) WriteBytes(bytes []byte) error",
+			"Description": "Write bytes",
+			"Parameters": [
+				{
+					"Type": "[]byte",
+					"Name": "bytyes",
+					"Description": "The bytes to write"
+				}
+			],
+			"Returns": {
+				"Type": "error"
+			}
+		},
+		{
+			"Line": "func (res *Response) sendContent(status int, contentType string, content []byte)",
+			"Description": "Send content",
+			"Parameters": [
+				{
+					"Type": "int",
+					"Name": "status",
+					"Description": "The status code"
+				},
+				{
+					"Type": "string",
+					"Name": "contentType",
+					"Description": "The contentType"
+				},
+				{
+					"Type": "[]byte",
+					"Name": "content",
+					"Description": "The content to send"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (res *Response) Json(content interface})",
+			"Description": "Returns Json",
+			"Returns": {}
+		},
+		{
+			"Line": "func (res *Response) Error(status int, str string)",
+			"Description": "Send an error and log it",
+			"Parameters": [
+				{
+					"Type": "int",
+					"Name": "status",
+					"Description": "The status code"
+				},
+				{
+					"Type": "string",
+					"Name": "str",
+					"Description": "The error to send"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (res *Response) Raw() http.ResponseWriter",
+			"Description": "Get the raw response writer",
+			"Returns": {
+				"Type": "http.ResponseWriter"
+			}
+		},
+		{
+			"Line": "func (res *Response) Render(path string, data interface})",
+			"Description": "Render a path",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				},
+				{
+					"Type": "interface",
+					"Name": "data",
+					"Description": "The data"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (res *Response) Redirect(url string) *Response",
+			"Description": "Redirect a request",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "url",
+					"Description": "The url"
+				}
+			],
+			"Returns": {
+				"Type": "Response"
+			}
+		},
+		{
+			"Name": "NewRouter",
+			"Line": "func NewRouter() *router",
+			"Description": "Make a new router",
+			"Returns": {
+				"Type": "router"
+			}
+		},
+		{
+			"Name": "RegexPath",
+			"Line": "func RegexPath(path string) (string, []string)",
+			"Description": "Regex's the path",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				}
+			],
+			"Returns": {
+				"Type": "string, []string"
+			}
+		},
+		{
+			"Line": "func (r *router) Register(method string, path string, handlers ...Handler) *mux",
+			"Description": "Register the router",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "method",
+					"Description": "The method"
+				},
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				},
+				{
+					"Type": "...Handler",
+					"Name": "handlers",
+					"Description": "The handlers"
+				}
+			],
+			"Returns": {
+				"Type": "mux"
+			}
+		},
+		{
+			"Line": "func (r *router) Get(path string, handlers ...Handler)",
+			"Description": "Register GET for the router",
+			"Parameters": [
+				{
+					"Type": "string",
+					"Name": "path",
+					"Description": "The path"
+				},
+				{
+					"Type": "...Handler",
+					"Name": "handlers",
+					"Description": "The handlers"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (r *router) GetRouterRoutes() map[string][]*mux",
+			"Description": "Returns the router's routes",
+			"Returns": {
+				"Type": "map[]string[]mux"
+			}
+		},
+		{
+			"Line": "func (r *router) UseRouter(router *router)",
+			"Description": "Use a router",
+			"Parameters": [
+				{
+					"Type": "router",
+					"Name": "router",
+					"Description": "The router"
+				}
+			],
+			"Returns": {}
+		},
+		{
+			"Line": "func (r *router) Next(p map[string]string, next Handler, res *Response, req *Request)",
+			"Description": "Switches to the next handler",
+			"Parameters": [
+				{
+					"Type": "map[]string",
+					"Name": "p",
+					"Description": "The params"
+				},
+				{
+					"Type": "Handler",
+					"Name": "next",
+					"Description": "The next handler"
+				},
+				{
+					"Type": "Response",
+					"Name": "res",
+					"Description": "The response"
+				},
+				{
+					"Type": "Request",
+					"Name": "req",
+					"Description": "The request"
+				}
+			],
+			"Returns": {}
+		}
+	],
+	"Structures": [
+		{
+			"Name": "Config",
+			"Line": "type Config struct",
+			"Description": "The config structure",
+			"Properties": [
+				{
+					"Type": "[]Handler",
+					"Name": "Middleware",
+					"Description": "The plugins to be used"
+				},
+				{
+					"Type": "Logger",
+					"Name": "bool",
+					"Description": "Whether logger is enabled or not"
+				},
+				{
+					"Type": "Router",
+					"Name": "router",
+					"Description": "The router instance to be used"
+				},
+				{
+					"Type": "ErrorPath",
+					"Name": "string",
+					"Description": "The error path to be used"
+				},
+				{
+					"Type": "ErrorData",
+					"Name": "interface",
+					"Description": "The error data to be used"
+				}
+			]
+		},
+		{
+			"Name": "Header",
+			"Line": "type Header struct",
+			"Description": "The header structure",
+			"Properties": [
+				{
+					"Type": "http.Request",
+					"Name": "req",
+					"Description": "The request"
+				},
+				{
+					"Type": "http.ResponseWriter",
+					"Name": "res",
+					"Description": "The response writer"
+				},
+				{
+					"Type": "bool",
+					"Name": "Body",
+					"Description": "Whether body is there"
+				},
+				{
+					"Type": "int",
+					"Name": "status",
+					"Description": "The status code"
+				},
+				{
+					"Type": "bool",
+					"Name": "Done",
+					"Description": "Whether the request is done"
+				}
+			]
+		},
+		{
+			"Name": "Middleware",
+			"Line": "type Middleware struct",
+			"Description": "The Middleware structure",
+			"Properties": [
+				{
+					"Type": "Handler",
+					"Name": "handler",
+					"Description": "The handler to be used"
+				}
+			]
+		},
+		{
+			"Name": "Plugins",
+			"Line": "type Plugins struct",
+			"Description": "The Plugins structure",
+			"Properties": [
+				{
+					"Type": "Middleware",
+					"Name": "plugin",
+					"Description": "The plugin"
+				}
+			]
+		},
+		{
+			"Name": "minima",
+			"Line": "type minima struct",
+			"Description": "The minima structure",
+			"Properties": [
+				{
+					"Type": "http.Server",
+					"Name": "server",
+					"Description": "The server instance"
+				},
+				{
+					"Type": "bool",
+					"Name": "started",
+					"Description": "Whether the server has started yet"
+				},
+				{
+					"Type": "time.Duration",
+					"Name": "Timeout",
+					"Description": "The timeout duration"
+				},
+				{
+					"Type": "router",
+					"Name": "router",
+					"Description": "The router instance"
+				},
+				{
+					"Type": "map[string]interface",
+					"Name": "properties",
+					"Description": "The interal properties of the server"
+				},
+				{
+					"Type": "Config",
+					"Name": "Config",
+					"Description": "The config options"
+				},
+				{
+					"Type": "string",
+					"Name": "errorPath",
+					"Description": "The path for errors"
+				},
+				{
+					"Type": "interface",
+					"Name": "errorData",
+					"Description": "The data for errors"
+				},
+				{
+					"Type": "Plugins",
+					"Name": "Middleware",
+					"Description": "The additional middlewares"
+				}
+			]
+		},
+		{
+			"Name": "mux",
+			"Line": "type mux struct",
+			"Description": "The mux structure",
+			"Properties": [
+				{
+					"Type": "string",
+					"Name": "Path",
+					"Description": "The path to match"
+				},
+				{
+					"Type": "[]string",
+					"Name": "Params",
+					"Description": "The params to use"
+				},
+				{
+					"Type": "regexp.Regexp",
+					"Name": "Regex",
+					"Description": "The regex to use"
+				},
+				{
+					"Type": "[]Handler",
+					"Name": "Handlers",
+					"Description": "The handlers to use"
+				}
+			]
+		},
+		{
+			"Name": "Param",
+			"Line": "type Param struct",
+			"Description": "The param structure",
+			"Properties": [
+				{
+					"Type": "string",
+					"Name": "Path",
+					"Description": "The path"
+				},
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				},
+				{
+					"Type": "string",
+					"Name": "value",
+					"Description": "The value"
+				}
+			]
+		},
+		{
+			"Name": "HeadInfo",
+			"Line": "type HeadInfo struct",
+			"Description": "The HeadInfo structure",
+			"Properties": [
+				{
+					"Type": "string",
+					"Name": "key",
+					"Description": "The key"
+				},
+				{
+					"Type": "string",
+					"Name": "value",
+					"Description": "The value"
+				}
+			]
+		},
+		{
+			"Name": "ReqHeader",
+			"Line": "type ReqHeader struct",
+			"Description": "The ReqHeader structure",
+			"Properties": [
+				{
+					"Type": "[]HeadInfo",
+					"Name": "headers",
+					"Description": "The headers"
+				}
+			]
+		},
+		{
+			"Name": "Request",
+			"Line": "type Request struct",
+			"Description": "The request structure",
+			"Properties": [
+				{
+					"Type": "http.Request",
+					"Name": "Ref",
+					"Description": "The request"
+				},
+				{
+					"Type": "multipart.Reader",
+					"Name": "fileReader",
+					"Description": "The file reader"
+				},
+				{
+					"Type": "map[]string[]string",
+					"Name": "body",
+					"Description": "The body"
+				},
+				{
+					"Type": "string",
+					"Name": "method",
+					"Description": "The method"
+				},
+				{
+					"Type": "string",
+					"Name": "url",
+					"Description": "The url"
+				},
+				{
+					"Type": "[]Param",
+					"Name": "Params",
+					"Description": "The params"
+				},
+				{
+					"Type": "url.Values",
+					"Name": "query",
+					"Description": "The query"
+				},
+				{
+					"Type": "ReqHeader",
+					"Name": "header",
+					"Description": "The request header"
+				},
+				{
+					"Type": "json.Decoder",
+					"Name": "json",
+					"Description": "The json decoder"
+				},
+				{
+					"Type": "map[]string",
+					"Name": "props",
+					"Description": "The properties"
+				}
+			]
+		},
+		{
+			"Name": "Response",
+			"Line": "type Response struct",
+			"Description": "The response structure",
+			"Properties": [
+				{
+					"Type": "http.ResponseWriter",
+					"Name": "Ref",
+					"Description": "The response writer"
+				},
+				{
+					"Type": "string",
+					"Name": "url",
+					"Description": "The url"
+				},
+				{
+					"Type": "string",
+					"Name": "method",
+					"Description": "The method"
+				},
+				{
+					"Type": "bool",
+					"Name": "ended",
+					"Description": "Whether the response has ended"
+				},
+				{
+					"Type": "Header",
+					"Name": "header",
+					"Description": "The response header"
+				},
+				{
+					"Type": "map[]string",
+					"Name": "props",
+					"Description": "The properties"
+				},
+				{
+					"Type": "string",
+					"Name": "host",
+					"Description": "The host"
+				},
+				{
+					"Type": "bool",
+					"Name": "HasEnded",
+					"Description": "Whether the response has ended"
+				}
+			]
+		},
+		{
+			"Name": "router",
+			"Line": "type router struct",
+			"Description": "The router",
+			"Properties": [
+				{
+					"Type": "http.HandlerFunc",
+					"Name": "NotFound",
+					"Description": "The Handler Func"
+				},
+				{
+					"Type": "map[]string[]mux",
+					"Name": "routes",
+					"Description": "The routes"
+				}
+			]
+		}
+	]
+}
