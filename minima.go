@@ -4,18 +4,15 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"time"
 )
 
 type minima struct {
 	server     *http.Server
 	started    bool
-	Timeout    time.Duration
 	router     *Router
 	properties map[string]interface{}
 	Config     *Config
 	Middleware *Plugins
-	drain      time.Duration
 }
 
 func New() *minima {
@@ -24,7 +21,6 @@ func New() *minima {
 	var Config *Config = NewConfig()
 	var minima *minima = &minima{router: router}
 	minima.Middleware = plugin
-	minima.drain = 0
 	minima.Config = Config
 	return minima
 
@@ -127,11 +123,6 @@ func (m *minima) UseConfig(config *Config) *minima {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
 	}
 	m.router.UseRouter(config.Router)
-	return m
-}
-
-func (m *minima) ShutdownTimeout(t time.Duration) *minima {
-	m.drain = t
 	return m
 }
 
