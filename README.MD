@@ -1,6 +1,8 @@
+<h1> Minima </h1>
+
 <p align="center">
   <a href="https://gominima.org">
-  <img alt="Fiber" src="./assets/logo.png">
+  <img alt="Minima" src="https://github.com/gominima/minima/blob/master/assets/logo.png?raw=true" />
 </a>
 </p>
 
@@ -8,23 +10,19 @@
 Minima 🦄 is a reliable and lightweight framework for <a href="https://www.golang.org" target="_blank">Go</a> to carve the web 💻. Developed with core <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a>🔌and other native packages, and with 0 dependencies
 </h4>
 
-<br>
 <p align="center">
-<a href="https://goreportcard.com/badge/github.com/gominima/minima"> <img src="https://goreportcard.com/badge/github.com/gominima/minima"> </a>
-<a href="https://img.shields.io/github/go-mod/go-version/gominima/minima"> <img src="https://img.shields.io/github/go-mod/go-version/gominima/minima"></a>
-<a href="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"> <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
-<a href="https://discord.gg/gRyCr5APmg"> <img src="https://img.shields.io/discord/916969864512548904"></a>
-<img src="https://img.shields.io/tokei/lines/github/gominima/minima">
-<img src="https://img.shields.io/github/languages/code-size/gominima/minima">
+<a href="https://goreportcard.com/badge/github.com/gominima/minima"> <img src="https://goreportcard.com/badge/github.com/gominima/minima" /> </a>
+<a href="https://img.shields.io/github/go-mod/go-version/gominima/minima"> <img src="https://img.shields.io/github/go-mod/go-version/gominima/minima" /></a>
+<a href="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"> <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" /></a>
+<a href="https://discord.gg/gRyCr5APmg"> <img src="https://img.shields.io/discord/916969864512548904" /></a>
+<img src="https://img.shields.io/tokei/lines/github/gominima/minima" />
+<img src="https://img.shields.io/github/languages/code-size/gominima/minima" />
 <a href="https://gominima.org"> 
-<img src="https://img.shields.io/badge/Minima-Docs-blue"></a>
+<img src="https://img.shields.io/badge/Minima-Docs-blue" /></a>
 </p>
 
-
 <h1>⚙️ Setup</h1>
-<p>Kindy check if you have <a href="https://go.dev/">Go</a> version 1.15 or higher</p>
-
-
+<p>Please make sure you have <a href="https://go.dev/">Go</a> version 1.15 or higher</p>
 
 ```go
 mkdir <project-name> && cd  <project-name>
@@ -35,7 +33,6 @@ go get github.com/gominima/minima
 
 go run main.go
 ```
-<br>
 
 <h1>🦄 Quickstart </h1>
 
@@ -55,7 +52,7 @@ func main() {
 }
 
 ```
-<br>
+
 <h1>🪶 Features</h1>
 <ul>
 <li><b>Reliable -</b> Great modular api for building great server side applications</li>
@@ -66,18 +63,16 @@ func main() {
 <li><b>Auto Docs -</b> Docgen for generating all you routing docs from router to json or markdown files</li>
 </ul>
 
-<br>
-
 <h1>❓Why minima </h1>
 
 <p>
-Minima's name is inspired by the word minimal and is the motivation for building this framework. As a go dev, I was struggling to learn it in my early days due to the steeper learning curve while using net/http.
+Minima's name is inspired by the word minimal and is the motivation for building this framework. As a Golang developer, I was struggling to learn it in my early days due to the steeper learning curve while using net/http.
 </p>
 
 <p>Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible to net/http modules like gqlgen and other middlewares.</p>
 
 <p>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</p>
-<br>
+
 <h1>🍵 Examples</h1>
 
 <h4>Here are some basic examples related to routing and params</h4>
@@ -148,7 +143,7 @@ func main() {
 	app.Get("/getuser/?", func(response *minima.Response, request *minima.Request) {
 		//query params work a bit different instead of adding a param in route ur u just need to add a ? and fetch the param
 		userid := request.GetQuery("id")
-		
+
 		if userid == "" {
 			response.Error(404, "No user found")
 			panic("No user id found in request")
@@ -158,11 +153,12 @@ func main() {
 	})
 }
 ```
+
 <h2>📑 Minima interface</h2>
 
 <h4>Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a></h4>
 
-<h4>Here is minima's interface</h4>
+<h4>Minima's interface</h4>
 
 ```go
 type Minima interface {
@@ -207,7 +203,7 @@ type Minima interface {
 
 <h2>📑 Response and Request interface</h2>
 
-<h5>Both response and request interfaces of minima are written in net/http so that means you could use any of your old route middlewares in minima out of the box without any hustle.</h5>
+<h5>Both response and request interfaces of minima are written in net/http so you can use any of your old route middlewares in minima out of the box without any hustle.</h5>
 
 ```go
 
@@ -264,7 +260,7 @@ type Req interface {
 
 <h2>📑 Middlewares</h2>
 
-<h5>Minima's middleware are written in its own custom res and req interfaces but as they are written in standard libs maintained by go, you could use `res.Raw()` to get http.ResponseWriter instance and `req.Raw()` to get http.Request instance. which means all community written middlewares are compatible with Minima.</h5>
+<h5>Minima's middleware are written in its own custom `res` and `req` interfaces in mind with the standard libs maintained by golang, you can use `res.Raw()` to get `http.ResponseWriter` instance and `req.Raw()` to get `http.Request` instance, meaning all community written middlewares are compatible with Minima.</h5>
 
 <h5>Here is an example of standard net/http middleware being used with minima</h5>
 
@@ -277,11 +273,10 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 	w.Write([]byte(r.URL.Path))
 }
 ```
-<br>
 
 <h1>💫 Contributing</h1>
 
-<h5>If you wanna help grow this project or say a thank you :</h5>
+<h5>If you wanna help grow this project or say a thank you!</h5>
 <ol>
 <li>Give minima a <a href="https://github.com/gominima/minima/stargazers">Github star</a></li>
 <li>Fork minima and Contribute</li>
@@ -289,10 +284,7 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 <li>Join our <a href="https://discord.gg/gRyCr5APmg">discord</a> community </li>
 </ol>
 
-<br>
 <h1>🧾 License</h1>
 <h5>Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers</a>. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a></h5>
-
-<br>
 
 <h5 align="center">Happy coding ahead with Minima!</h5>
