@@ -1,5 +1,5 @@
-package minima
 
+<<<<<<< HEAD
 import (
 	"context"
 	"log"
@@ -149,3 +149,4 @@ func (m *minima) SetProp(key string, value interface{}) *minima {
 func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
+
