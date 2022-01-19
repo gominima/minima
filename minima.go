@@ -6,18 +6,7 @@ import (
 	"net/http"
 	"time"
 )
-/**
- 	@info The minima structure
-	@property {http.Server} [server] The server instance
-	@property {bool} [started] Whether the server has started yet
-	@property {time.Duration} [Timeout] The timeout duration
-	@property {router} [router] The router instance
-	@property {map[string]interface} [properties] The interal properties of the server
-	@property {Config} [Config] The config options
-	@property {string} [errorPath] The path for errors
-	@property {interface} [errorData] The data for errors
-	@property {Plugins} [Middleware] The additional middlewares
-*/
+
 type minima struct {
 	server     *http.Server
 	started    bool
@@ -40,11 +29,7 @@ func New() *minima {
 	return minima
 
 }
-/**
-	@info Listen to the port
-	@param {string} [addr] The port
-	@returns {error}
-*/
+
 func (m *minima) Listen(addr string) error {
 	if m.started {
 		panic("Minima server instance is already running")
@@ -55,12 +40,7 @@ func (m *minima) Listen(addr string) error {
 	return m.server.ListenAndServe()
 
 }
-/**
-	@info Server HTTP
-	@param {http.ResponseWriter} [w] The response writer
-	@param {http.Request} [q] The request
-	@returns {error}
-*/
+
 func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 	match := false
 
@@ -120,21 +100,37 @@ func (m *minima) Patch(path string, handler ...Handler) *minima {
 	m.router.Patch(path, handler...)
 	return m
 }
-func (m *minima) UseRouter(router *router) {
-=======
+
+func (m *minima) Post(path string, handler ...Handler) *minima {
+	m.router.Post(path, handler...)
+	return m
+}
+
+func (m *minima) Use(handler Handler) *minima {
+	m.Middleware.AddPlugin(handler)
+	return m
+}
 func (m *minima) UseRouter(router *Router) *minima {
->>>>>>> 8c7aafb0132fdea03a58145f8ab9901e321e8614
 	m.router.UseRouter(router)
 	return m
 
 }
 
 func (m *minima) Mount(path string, router *Router) *minima {
+	m.router.Mount(path, router)
 	return m
 
 }
+
+func (m *minima) UseConfig(config *Config) *minima {
+	for _, v := range config.Middleware {
+		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
+	}
+	m.router.UseRouter(config.Router)
+	return m
 }
 
+func (m *minima) ShutdownTimeout(t time.Duration) *minima {
 	m.drain = t
 	return m
 }

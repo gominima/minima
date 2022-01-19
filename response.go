@@ -7,17 +7,7 @@ import (
 	"net/http"
 	"text/template"
 )
-/**
-	@info The response structure
-	@property {http.ResponseWriter} [Ref] The response writer
-	@property {string} [url] The url
-	@property {string} [method] The method
-	@property {bool} [ended] Whether the response has ended
-	@property {Header} [header] The response header
-	@property {map[]string} [props] The properties
-	@property {string} [host] The host
-	@property {bool} [HasEnded] Whether the response has ended
-*/
+
 type Response struct {
 	ref      http.ResponseWriter
 	url      string
@@ -28,13 +18,7 @@ type Response struct {
 	host     string
 	HasEnded bool
 }
-/**
-	@info Make a new response
-	@param {http.ResponseWriter} [Ref] The response writer
-	@param {http.Request} [req] The http request
-	@param {map[]string} [props] The properties
-	@returns {Response}
-*/
+
 func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
 	res := &Response{}
 	res.ref = rs
@@ -63,11 +47,7 @@ func (res *Response) Send(content string) *Response {
 	res.WriteBytes(bytes)
 	return res
 }
-/**
-	@info Write bytes
-	@param {[]byte} [bytyes] The bytes to write
-	@returns {error}
-*/
+
 func (res *Response) WriteBytes(bytes []byte) error {
 	var errr error
 	_, err := res.ref.Write(bytes)
@@ -76,12 +56,7 @@ func (res *Response) WriteBytes(bytes []byte) error {
 	}
 	return errr
 }
-/**
-	@info Send content
-	@param {int} [status] The status code
-	@param {string} [contentType] The contentType
-	@param {[]byte} [content] The content to send
-*/
+
 func (res *Response) sendContent(status int, contentType string, content []byte) {
 	if res.header.BasicDone() {
 		res.header.Status(status)
@@ -102,30 +77,26 @@ func (res *Response) sendContent(status int, contentType string, content []byte)
 	}
 
 }
+
+func (res *Response) Json(content interface{}) *Response {
+	output, err := json.Marshal(content)
+	if err != nil {
+		res.sendContent(500, "application/json", []byte(""))
+	} else {
+		res.sendContent(200, "application/json", output)
 	}
 	return res
-<<<<<<< HEAD
-/**
-	@info Send an error and log it
-	@param {int} [status] The status code
-	@param {string} [str] The error to send
-*/
-func (res *Response) Error(status int, str string) {
-=======
-	@returns {http.ResponseWriter}
+}
+func (res *Response) Error(status int, str string) *Response {
+	res.sendContent(status, "text/html", []byte(str))
+	log.Panic(str)
+	return res
+}
+
 func (res *Response) Raw() http.ResponseWriter {
 	return res.ref
 }
-<<<<<<< HEAD
-/**
-	@info Render a path
-	@param {string} [path] The path
-	@param {interface} [data] The data
-*/
-func (res *Response) Render(path string, data interface{}) {
-=======
 func (res *Response) Render(path string, data interface{}) *Response {
->>>>>>> 8c7aafb0132fdea03a58145f8ab9901e321e8614
 	tmpl, err := template.ParseFiles(path)
 	if err != nil {
 		log.Panic("Given path was not found", err)
@@ -144,11 +115,7 @@ func (res *Response) Render(path string, data interface{}) *Response {
 	return res
 
 }
-/**
-	@info Redirect a request
-	@param {string} [url] The url
-	@returns {Response}
-*/
+
 func (res *Response) Redirect(url string) *Response {
 	res.header.Status(302)
 	res.header.Set("Location", url)

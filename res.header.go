@@ -51,6 +51,57 @@ func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
 	h.Done = false
 	return h
 }
+
+func (h *OutgoingHeader) Set(key string, value string) {
+	h.res.Header().Set(key, value)
+}
+
+func (h *OutgoingHeader) Get(key string) string {
+	return h.res.Header().Get(key)
+}
+
+func (h *OutgoingHeader) Del(key string) {
+	h.res.Header().Del(key)
+}
+
+func (h *OutgoingHeader) Clone(key string) {
+	h.res.Header().Clone()
+}
+
+func (h *OutgoingHeader) Setlength(len string) {
+	h.Set("Content-lenght", len)
+}
+
+func (h *OutgoingHeader) BasicDone() bool {
+	return h.Done
+}
+func (h *OutgoingHeader) Status(code int) {
+	h.status = code
+}
+func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
+	if !h.Done && !h.BasicDone() {
+		if h.status == 0 {
+			h.status = 200
+		}
+		fmt.Fprintf(h.res, "HTTP/%d.%d %03d %s\r\n", 1, 1, h.status, status[h.status])
+		h.Set("transfer-encoding", "chunked")
+		h.Set("connection", "keep-alive")
+	}
+}
+func (h *OutgoingHeader) Flush() bool {
+	if h.Body {
+		log.Panic("Cannot send OutgoingHeaders in middle of body")
+		return false
+	}
+	if !h.BasicDone() {
+		h.SendBaseOutgoingHeaders()
+	}
+	if h.Get("Content-Type") == "" {
+		h.Set("Content-Type", "text/html;charset=utf-8")
+	}
+	if err := h.res.Header().Write(h.res); err != nil {
+		return false
+	}
 	if f, ok := h.res.(http.Flusher); ok {
 		f.Flush()
 	}

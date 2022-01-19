@@ -5,15 +5,29 @@ import (
 	"regexp"
 	"strings"
 )
-/**
-	@info The Handler
-*/
+
 type Handler func(response *Response, request *Request)
-/**
-	@info Regex's the path
-	@param {string} [path] The path
-	@returns {string, []string}
-*/
+
+type Router struct {
+	NotFound http.HandlerFunc
+	routes   map[string][]*mux
+}
+
+func NewRouter() *Router {
+	Router := &Router{
+		routes: map[string][]*mux{
+			"GET":     make([]*mux, 0),
+			"POST":    make([]*mux, 0),
+			"PUT":     make([]*mux, 0),
+			"DELETE":  make([]*mux, 0),
+			"PATCH":   make([]*mux, 0),
+			"OPTIONS": make([]*mux, 0),
+			"HEAD":    make([]*mux, 0),
+		},
+	}
+	return Router
+}
+func RegexPath(path string) (string, []string) {
 	var items []string
 	var Params []string
 	var regexPath string
@@ -45,6 +59,21 @@ func (r *Router) Register(method string, path string, handlers ...Handler) *mux 
 	return newroute
 }
 
+func (r *Router) Get(path string, handlers ...Handler) *Router {
+	r.Register("GET", path, handlers...)
+	return r
+}
+
+func (r *Router) Post(path string, handlers ...Handler) *Router {
+	r.Register("POST", path, handlers...)
+	return r
+}
+
+func (r *Router) Put(path string, handlers ...Handler) *Router {
+	r.Register("PUT", path, handlers...)
+	return r
+}
+
 func (r *Router) Patch(path string, handlers ...Handler) {
 	r.Register("PATCH", path, handlers...)
 }
@@ -70,7 +99,6 @@ func (r *Router) GetRouterRoutes() map[string][]*mux {
 
 func (r *Router) UseRouter(Router *Router) *Router {
 	routes := Router.GetRouterRoutes()
->>>>>>> 8c7aafb0132fdea03a58145f8ab9901e321e8614
 	for routeType, list := range routes {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
@@ -79,6 +107,7 @@ func (r *Router) UseRouter(Router *Router) *Router {
 
 func (r *Router) Mount(basepath string, Router *Router) *Router {
 	routes := Router.GetRouterRoutes()
+	for routeType, list := range routes {
 		for _, v := range list {
 			v.Path = basepath + v.Path
 			r.Register(routeType, v.Path, v.Handlers...)
