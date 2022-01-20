@@ -88,7 +88,7 @@ func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
-func (h *OutgoingHeader) FlushHeader() bool {
+func (h *OutgoingHeader) Flush() bool {
 	if h.Body {
 		log.Panic("Cannot send OutgoingHeaders in middle of body")
 		return false
