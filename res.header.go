@@ -88,13 +88,10 @@ func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
-func (h *OutgoingHeader) Flush() bool {
+func (h *OutgoingHeader) FlushHeader() bool {
 	if h.Body {
 		log.Panic("Cannot send OutgoingHeaders in middle of body")
 		return false
-	}
-	if !h.BasicDone() {
-		h.SendBaseOutgoingHeaders()
 	}
 	if h.Get("Content-Type") == "" {
 		h.Set("Content-Type", "text/html;charset=utf-8")

@@ -10,7 +10,9 @@ func main() {
 	router := minima.NewRouter()
 	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
-		response.Send(p)
+	         request.Header().Set("Authentication", "Bearer token")
+		response.Send(p).Status(203)
+		response.FlushHeader()
 	})
 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
 		type hello struct {
@@ -29,7 +31,7 @@ func main() {
 // func UserGetRouter() *minima.Router {
 // 	//router instance which would be used by the main router
 // 	router := minima.NewRouter()
-// 	return router.Get("/user/:id/?", func(response *minima.Response, request *minima.Request) {
+// 	return router.Get("/user/:id/?", func(response *minima.response, request *minima.Request) {
 // 		//getting id param from route
 // 		id := request.GetParam("id")
 

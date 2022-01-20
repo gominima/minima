@@ -7,15 +7,26 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	// "strings"
 )
 
+/**
+@info The request param structure
+@property {string} [Path] Route path of the param
+@property {string} [key] Key for the param
+@property {string} [value] Value of the param
+*/
 type Param struct {
 	Path  string
 	key   string
 	value string
 }
 
+/**
+@info The request structure
+@property {*http.Request} [ref] The net/http request instance
+@property {string} [key] Key for the param
+@property {string} [value] Value of the param
+*/
 type Request struct {
 	ref        *http.Request
 	fileReader *multipart.Reader
