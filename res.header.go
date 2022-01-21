@@ -6,6 +6,13 @@ import (
 	"net/http"
 )
 
+/**
+@info The Outgoing header structure
+@property {http.Request} [req] The net/http request instance
+@property {http.ResponseWriter} [res] The net/http response instance
+@property {bool} [body] Whether body has been sent or not
+@property {int} [status] response status code
+*/
 type OutgoingHeader struct {
 	req    *http.Request
 	res    http.ResponseWriter
@@ -43,6 +50,13 @@ var status = map[int]string{
 	505: "HTTP Version Not Supported",
 }
 
+
+/**
+@info Make a new default request header instance
+@param {http.Request} [req] The net/http request instance
+@param {http.ResponseWriter} [res] The net/http response instance
+@returns {OutgoingHeader}
+*/
 func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
 	h := &OutgoingHeader{}
 	h.req = req
@@ -52,32 +66,76 @@ func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
 	return h
 }
 
-func (h *OutgoingHeader) Set(key string, value string) {
+/**
+@info Sets and new header to response 
+@param {string} [key] Key of the new header
+@param {string} [value] Value of the new header
+@returns {OutgoingHeader}
+*/
+func (h *OutgoingHeader) Set(key string, value string) *OutgoingHeader {
 	h.res.Header().Set(key, value)
+	return h
 }
 
+/**
+@info Sets new header to response 
+@param {string} [key] Key of the new header
+@param {string} [value] Value of the new header
+@returns {OutgoingHeader}
+*/
 func (h *OutgoingHeader) Get(key string) string {
 	return h.res.Header().Get(key)
 }
 
-func (h *OutgoingHeader) Del(key string) {
+/**
+@info Deletes header from respose
+@param {string} [key] Key of the header
+@returns {OutgoingHeader}
+*/
+func (h *OutgoingHeader) Del(key string) *OutgoingHeader{
 	h.res.Header().Del(key)
+	return h
 }
 
-func (h *OutgoingHeader) Clone(key string) {
-	h.res.Header().Clone()
+/**
+@info Clones all headers from response
+@returns {OutgoingHeader}
+*/
+func (h *OutgoingHeader) Clone()  http.Header {
+	return h.res.Header().Clone()
 }
 
-func (h *OutgoingHeader) Setlength(len string) {
+
+/**
+@info Sets content lenght
+@param {string} [len] The lenght of the content
+@returns {OutgoingHeader}
+*/
+func (h *OutgoingHeader) Setlength(len string) *OutgoingHeader {
 	h.Set("Content-lenght", len)
+	return h
 }
+
 
 func (h *OutgoingHeader) BasicDone() bool {
 	return h.Done
 }
-func (h *OutgoingHeader) Status(code int) {
+
+/**
+@info Sets response status
+@param {int} [code] The status code for the response
+@returns {OutgoingHeader}
+*/
+func (h *OutgoingHeader) Status(code int) *OutgoingHeader{
 	h.status = code
+	return h
 }
+
+
+/**
+@info Sends good stack of base headers
+@returns {}
+*/
 func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
 	if !h.Done && !h.BasicDone() {
 		if h.status == 0 {
@@ -88,9 +146,14 @@ func (h *OutgoingHeader) SendBaseOutgoingHeaders() {
 		h.Set("connection", "keep-alive")
 	}
 }
+
+/**
+@info Flushes and writes header to route
+@returns {bool}
+*/
 func (h *OutgoingHeader) Flush() bool {
 	if h.Body {
-		log.Panic("Cannot send OutgoingHeaders in middle of body")
+		log.Panic("Cannot send OutgoingHeaders in middle of Body")
 		return false
 	}
 	if !h.BasicDone() {
