@@ -45,7 +45,7 @@ func main() {
 	app := minima.New()
 
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
-		res.Send(200, "Hello World")
+		res.Status(200).Send("Hello World")
 	})
 
 	app.Listen(":3000")
