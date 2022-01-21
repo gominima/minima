@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type Handler func(response *Response, request *Request)
+type Handler func(res *Response, req *Request)
 
 type Router struct {
 	NotFound http.HandlerFunc

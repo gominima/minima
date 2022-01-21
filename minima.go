@@ -81,7 +81,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 			currentRequest := 0
 
 			res := response(w, q, &m.properties)
-			req := request(q, &m.properties)
+			req := request(q)
 			m.Middleware.ServePlugin(res, req)
 
 			m.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
