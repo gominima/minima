@@ -14,7 +14,7 @@ import (
 @property {*time.Duration} [Timeout] The router's breathing time
 @property {*Router} [router] The core router instance running with the server
 @property {map[string]interface{}} [properties] The properties for the server instance
-@property {*Conig} [Config] The core config file for middlewares and router instances
+@property {*Config} [Config] The core config file for middlewares and router instances
 @property {*time.Duration} [drain] The router's drain time
 */
 type minima struct {
