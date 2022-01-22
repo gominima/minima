@@ -84,7 +84,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 			req := request(q)
 			m.Middleware.ServePlugin(res, req)
 
-			m.router.Next(Params, requestQuery.Handlers[currentRequest], res, req)
+			m.router.next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
 			break
 
