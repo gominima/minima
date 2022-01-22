@@ -25,9 +25,9 @@ type Param struct {
 @info The request structure
 @property {*http.Request} [ref] The net/http request instance
 @property {multipart.Reader} [fileReader] file reader instance
-@property {map[string][]string} [body] Value of the request body 
-@property {string} [method] Request method 
-@property {[]*Params} [Params] Request path parameters 
+@property {map[string][]string} [body] Value of the request body
+@property {string} [method] Request method
+@property {[]*Params} [Params] Request path parameters
 @property {query} [url.Values] Request path query params
 @property {IncomingHeader} [header] Incoming headers of the request
 @property {json.Decoder} [json] Json decoder instance
@@ -146,7 +146,7 @@ func (r *Request) Raw() *http.Request {
 }
 
 /**
-@info Gets request path query 
+@info Gets request path query
 @param {string} [key] key of the request query
 @returns {string}
 */

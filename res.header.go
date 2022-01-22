@@ -50,7 +50,6 @@ var status = map[int]string{
 	505: "HTTP Version Not Supported",
 }
 
-
 /**
 @info Make a new default request header instance
 @param {http.Request} [req] The net/http request instance
@@ -67,7 +66,7 @@ func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
 }
 
 /**
-@info Sets and new header to response 
+@info Sets and new header to response
 @param {string} [key] Key of the new header
 @param {string} [value] Value of the new header
 @returns {OutgoingHeader}
@@ -78,7 +77,7 @@ func (h *OutgoingHeader) Set(key string, value string) *OutgoingHeader {
 }
 
 /**
-@info Sets new header to response 
+@info Sets new header to response
 @param {string} [key] Key of the new header
 @param {string} [value] Value of the new header
 @returns {OutgoingHeader}
@@ -92,7 +91,7 @@ func (h *OutgoingHeader) Get(key string) string {
 @param {string} [key] Key of the header
 @returns {OutgoingHeader}
 */
-func (h *OutgoingHeader) Del(key string) *OutgoingHeader{
+func (h *OutgoingHeader) Del(key string) *OutgoingHeader {
 	h.res.Header().Del(key)
 	return h
 }
@@ -101,10 +100,9 @@ func (h *OutgoingHeader) Del(key string) *OutgoingHeader{
 @info Clones all headers from response
 @returns {OutgoingHeader}
 */
-func (h *OutgoingHeader) Clone()  http.Header {
+func (h *OutgoingHeader) Clone() http.Header {
 	return h.res.Header().Clone()
 }
-
 
 /**
 @info Sets content lenght
@@ -116,7 +114,6 @@ func (h *OutgoingHeader) Setlength(len string) *OutgoingHeader {
 	return h
 }
 
-
 func (h *OutgoingHeader) BasicDone() bool {
 	return h.Done
 }
@@ -126,11 +123,10 @@ func (h *OutgoingHeader) BasicDone() bool {
 @param {int} [code] The status code for the response
 @returns {OutgoingHeader}
 */
-func (h *OutgoingHeader) Status(code int) *OutgoingHeader{
+func (h *OutgoingHeader) Status(code int) *OutgoingHeader {
 	h.status = code
 	return h
 }
-
 
 /**
 @info Sends good stack of base headers
