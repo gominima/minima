@@ -62,13 +62,8 @@ func (res *Response) Header() *OutgoingHeader {
 @returns {Response}
 */
 func (res *Response) Send(content string) *Response {
-
-	if !res.header.BasicDone() && res.header.CanSend() {
-		if res.header.Flush() {
-			log.Print("Failed to push headers")
-		}
-		res.header.Done = true
-		res.header.Body = true
+	if res.header.Get("Content-Type") == "" {
+		res.header.Set("Content-Type", "text/html;charset=utf-8")
 	}
 	var bytes = []byte(content)
 	res.WriteBytes(bytes)
@@ -89,19 +84,9 @@ func (res *Response) WriteBytes(bytes []byte) error {
 	return errr
 }
 
-func (res *Response) sendContent(status int, contentType string, content []byte) {
-	if res.header.BasicDone() {
-		res.header.Status(status)
-	}
-	if res.header.CanSend() {
-		res.header.Set("Content-Type", contentType)
-		if Done := res.header.Flush(); !Done {
-			log.Print("Failed to write headers")
-			res.header.Done = true
-			res.header.Body = true
-			return
-		}
-	}
+func (res *Response) sendContent(contentType string, content []byte) {
+
+	res.header.Set("Content-Type", contentType)
 	err := res.WriteBytes(content)
 	if err != nil {
 		log.Panicf("Failed to flush the buffer, error: %v", err)
@@ -118,9 +103,9 @@ func (res *Response) sendContent(status int, contentType string, content []byte)
 func (res *Response) Json(content interface{}) *Response {
 	output, err := json.Marshal(content)
 	if err != nil {
-		res.sendContent(500, "application/json", []byte(""))
+		res.sendContent("application/json", []byte(""))
 	} else {
-		res.sendContent(200, "application/json", output)
+		res.sendContent("application/json", output)
 	}
 	return res
 }
@@ -132,7 +117,7 @@ func (res *Response) Json(content interface{}) *Response {
 @returns {Response}
 */
 func (res *Response) Error(status int, err string) *Response {
-	res.sendContent(status, "text/html", []byte(err))
+	res.sendContent("text/html", []byte(err))
 	log.Panic(err)
 	return res
 }
@@ -156,7 +141,6 @@ func (res *Response) Render(path string, data interface{}) *Response {
 	if err != nil {
 		log.Panic("Given path was not found", err)
 		res.header.Status(500)
-		res.header.Flush()
 
 	}
 	var byt bytes.Buffer
@@ -164,7 +148,7 @@ func (res *Response) Render(path string, data interface{}) *Response {
 	if err != nil {
 		log.Print("Template render failed ", err)
 		res.header.Status(500)
-		res.header.Flush()
+
 	}
 	res.WriteBytes(byt.Bytes())
 	return res
@@ -179,7 +163,6 @@ func (res *Response) Render(path string, data interface{}) *Response {
 func (res *Response) Redirect(url string) *Response {
 	res.header.Status(302)
 	res.header.Set("Location", url)
-	res.header.Flush()
 	res.ended = true
 	return res
 }
