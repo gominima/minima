@@ -11,7 +11,9 @@ func main() {
 	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
 	         request.Header().Set("Authentication", "Bearer token")
-		response.Status(203).Send(p)
+
+		response.Status(404).Send(p)
+
 	
 	})
 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
