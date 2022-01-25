@@ -1,4 +1,4 @@
-<h1> Minima </h1>
+# Minima
 
 <p align="center">
   <a href="https://gominima.org">
@@ -21,7 +21,7 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 <img src="https://img.shields.io/badge/Minima-Docs-blue" /></a>
 </p>
 
-<h1>⚙️ Setup</h1>
+# ⚙️ Setup
 <p>Please make sure you have <a href="https://go.dev/">Go</a> version 1.15 or higher</p>
 
 ```go
@@ -34,7 +34,7 @@ go get github.com/gominima/minima
 go run main.go
 ```
 
-<h1>🦄 Quickstart </h1>
+# 🦄 Quickstart
 
 ```go
 package main
@@ -53,7 +53,7 @@ func main() {
 
 ```
 
-<h1>🪶 Features</h1>
+# 🪶 Features
 <ul>
 <li><b>Reliable -</b> Great modular api for building great server side applications</li>
 <li><b>Compatible with net/http</b>- use your plain old middlewares written in plain old net/http</li>
@@ -63,7 +63,7 @@ func main() {
 <li><b>Auto Docs -</b> Docgen for generating all you routing docs from router to json or markdown files</li>
 </ul>
 
-<h1>❓Why minima </h1>
+# ❓ Why Minima
 
 <p>
 Minima's name is inspired by the word minimal and is the motivation for building this framework. As a Golang developer, I was struggling to learn it in my early days due to the steeper learning curve while using net/http.
@@ -73,11 +73,11 @@ Minima's name is inspired by the word minimal and is the motivation for building
 
 <p>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</p>
 
-<h1>🍵 Examples</h1>
+# 🍵 Examples
 
 <h4>Here are some basic examples related to routing and params</h4>
 
-<h2>📑 Routing & Router</h2>
+## 📑 Routing & Router
 
 ```go
 func UserGetRouter() *minima.Router {
@@ -115,7 +115,7 @@ func main() {
 }
 ```
 
-<h2>📑 Params</h2>
+## 📑 Params
 
 ```go
 func main() {
@@ -134,7 +134,7 @@ func main() {
 }
 ```
 
-<h2>📑 Query Params</h2>
+## 📑 Query Params
 
 ```go
 func main() {
@@ -154,7 +154,7 @@ func main() {
 }
 ```
 
-<h2>📑 Minima interface</h2>
+## 📑 Minima Interface
 
 <h4>Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a></h4>
 
@@ -201,7 +201,7 @@ type Minima interface {
 }
 ```
 
-<h2>📑 Response and Request interface</h2>
+## 📑 Response and Request interface
 
 <h5>Both response and request interfaces of minima are written in net/http so you can use any of your old route middlewares in minima out of the box without any hustle.</h5>
 
@@ -258,7 +258,7 @@ type Req interface {
 }
 ```
 
-<h2>📑 Middlewares</h2>
+## 📑 Middlewares
 
 <h5>Minima's middleware are written in its own custom `res` and `req` interfaces in mind with the standard libs maintained by golang, you can use `res.Raw()` to get `http.ResponseWriter` instance and `req.Raw()` to get `http.Request` instance, meaning all community written middlewares are compatible with Minima.</h5>
 
@@ -274,7 +274,7 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 }
 ```
 
-<h1>💫 Contributing</h1>
+## 💫 Contributing
 
 <h5>If you wanna help grow this project or say a thank you!</h5>
 <ol>
@@ -284,7 +284,7 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 <li>Join our <a href="https://discord.gg/gRyCr5APmg">discord</a> community </li>
 </ol>
 
-<h1>🧾 License</h1>
+# 🧾 License
 <h5>Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers</a>. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a></h5>
 
 <h5 align="center">Happy coding ahead with Minima!</h5>
