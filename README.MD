@@ -25,7 +25,7 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 
 # ⚙️ Setup
 
-<p>Please make sure you have <a href="https://go.dev/">Go</a> version 1.15 or higher</p>
+Please make sure you have [Go](https://go.dev) version 1.15 or higher
 
 ```go
 mkdir <project-name> && cd  <project-name>
@@ -58,24 +58,20 @@ func main() {
 
 # 🪶 Features
 
-<ul>
-<li><b>Reliable -</b> Great modular api for building great server side applications</li>
-<li><b>Compatible with net/http</b>- use your plain old middlewares written in plain old net/http</li>
-<li><b>Lightweight -</b> clocked in ~ 1000 loc</li>
-<li><b>No Dependency -</b> Just your plain old go standard libraries</li>
-<li><b>Great Documentation -</b> Best in class precise <a href="https://gominima.org/">documentation</a></li>
-<li><b>Auto Docs -</b> Docgen for generating all you routing docs from router to json or markdown files</li>
-</ul>
+- **Reliable** - Great modular api for building great server side applications</li>
+- **Compatible with net/http** - use your plain old middlewares written in plain old net/http</li>
+- **Lightweight** - clocked in ~ 1000 loc</li>
+- **No Dependency** - Just your plain old go standard libraries</li>
+- **Great Documentation** - Best in class precise [documentation](https://gominima.org/)
+- **Auto Docs** - Docgen for generating all you routing docs from router to json or markdown files
 
 # ❓ Why Minima
 
-<p>
 Minima's name is inspired by the word minimal and is the motivation for building this framework. As a Golang developer, I was struggling to learn it in my early days due to the steeper learning curve while using net/http.
-</p>
 
-<p>Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible to net/http modules like gqlgen and other middlewares.</p>
+Also during checking out some other alternative frameworks, I found out that something like fiber wasn't compatible to net/http modules like gqlgen and other middlewares.
 
-<p>Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.</p>
+Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all net/http modules and other middleware without compromising on performance.
 
 # 🍵 Examples
 
@@ -160,7 +156,7 @@ func main() {
 
 ## 📑 Minima Interface
 
-**Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with <a href="https://pkg.go.dev/net/http" target="_blank">net/http</a>**
+**Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [net/http](https://pkg.go.dev/net/http)**
 
 ### Minima's interface
 
@@ -282,14 +278,14 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 
 **If you wanna help grow this project or say a thank you!**
 
-1. Give minima a <a href="https://github.com/gominima/minima/stargazers">Github star</a>
+1. Give minima a [GitHub star](https://github.com/gominima/minima/stargazers)
 2. Fork minima and Contribute
 3. Write a review or blog on minima
-4. Join our <a href="https://discord.gg/gRyCr5APmg">discord</a> community
+4. Join our [Discord](https://discord.gg/gRyCr5APmg) community
 
 # 🧾 License
 
-**Copyright (c) 2021-present <a href="https://github.com/apoorvcodes">Apoorv</a> and <a href="https://github.com/gominima/minima/graphs/contributers">Contributers</a>. Minima is a free and Open source software licensed under <a href="https://github.com/gominima/minima/blob/master/LICENSE">MIT License</a>**
+**Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a free and Open source software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
 
 <br />
 <br />
