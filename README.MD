@@ -25,7 +25,7 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 <img src="https://img.shields.io/badge/Minima-Docs-blue" /></a>
 </p>
 
-# ⚙️ Setup
+## ⚙️ Setup
 
 Please make sure you have [Go](https://go.dev) version 1.15 or higher
 
@@ -39,7 +39,7 @@ go get github.com/gominima/minima
 go run main.go
 ```
 
-# 🦄 Quickstart
+## 🦄 Quickstart
 
 ```go
 package main
@@ -58,7 +58,7 @@ func main() {
 
 ```
 
-# 🪶 Features
+## 🪶 Features
 
 - **Reliable** - great modular API for building great server side applications</li>
 - **Compatible with net/http** - use your plain old middlewares written in plain old `net/http`</li>
@@ -67,7 +67,7 @@ func main() {
 - **Great Documentation** - best in class precise [documentation](https://gominima.studio/)
 - **Auto Docs** - docgen for generating all of your routing docs from router to json or markdown files
 
-# ❓ Why Minima
+## ❓ Why Minima
 
 Minima's name is inspired by the word minimal and is the motivation for building this framework. As a Golang developer, I was struggling to learn it in my early days due to the steeper learning curve while using `net/http`.
 
@@ -75,11 +75,11 @@ Also while checking out some other alternate frameworks, I found out that someth
 
 Minima solves this problem as it has a very narrow learning curve as well as a robust structure that supports all `net/http` modules and other middlewares without compromising performance.
 
-# 🍵 Examples
+## 🍵 Examples
 
 **Here are some basic examples related to routing and params:**
 
-## 📑 Routing & Router
+### 📑 Routing & Router
 
 ```go
 func UserGetRouter() *minima.Router {
@@ -117,7 +117,7 @@ func main() {
 }
 ```
 
-## 📑 Params
+### 📑 Params
 
 ```go
 func main() {
@@ -136,7 +136,7 @@ func main() {
 }
 ```
 
-## 📑 Query Params
+### 📑 Query Params
 
 ```go
 func main() {
@@ -161,7 +161,7 @@ func main() {
 
 **Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [net/http](https://pkg.go.dev/net/http)**
 
-### Minima's interface
+### 📑 Minima's interface
 
 ```go
 type Minima interface {
@@ -204,7 +204,7 @@ type Minima interface {
 }
 ```
 
-## 📑 Response and Request Interface
+### 📑 Response and Request Interface
 
 **Both response and request interfaces of minima are written in `net/http` so you can use any of your old route middlewares in minima out of the box without any hassle.**
 
@@ -286,7 +286,7 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 3. Write a review or blog on minima
 4. Join our [Discord](https://discord.gg/gRyCr5APmg) community
 
-# 🧾 License
+## 🧾 License
 
 **Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a free and Open source software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
 
