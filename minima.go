@@ -32,17 +32,13 @@ type minima struct {
 @info Make a new default minima instance
 @returns {minima}
 */
-
 func New() *minima {
-	var router *Router = NewRouter()
-	var plugin *Plugins = use()
-	var Config *Config = NewConfig()
-	var minima *minima = &minima{router: router}
-	minima.Middleware = plugin
-	minima.drain = 0
-	minima.Config = Config
-	return minima
-
+	return &minima{
+		router:     NewRouter(),
+		Config:     NewConfig(),
+		Middleware: use(),
+		drain:      0,
+	}
 }
 
 /**
@@ -52,11 +48,12 @@ func New() *minima {
 */
 func (m *minima) Listen(addr string) error {
 	if m.started {
-		panic("Minima server instance is already running")
+		log.Panicf("Minimia's instance is already running at %s.", m.server.Addr)
 	}
-	server := &http.Server{Addr: addr, Handler: m}
-	m.server = server
+
+	m.server = &http.Server{Addr: addr, Handler: m}
 	m.started = true
+
 	return m.server.ListenAndServe()
 
 }
@@ -82,18 +79,17 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 
 			res := response(w, q, &m.properties)
 			req := request(q)
-			m.Middleware.ServePlugin(res, req)
 
+			m.Middleware.ServePlugin(res, req)
 			m.router.next(Params, requestQuery.Handlers[currentRequest], res, req)
 			currentRequest++
-			break
 
+			break
 		}
 	}
 
 	if !match {
 		w.Write([]byte("No matching route found"))
-
 	}
 }
 
@@ -259,7 +255,6 @@ func (m *minima) Shutdown(ctx context.Context) error {
 func (m *minima) SetProp(key string, value interface{}) *minima {
 	m.properties[key] = value
 	return m
-
 }
 
 /**

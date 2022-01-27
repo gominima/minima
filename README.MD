@@ -242,7 +242,7 @@ type Req interface {
 	GetParam(name string) string
 
 	// returns path url from the route
-	GetPathURl() string
+	GetPathURL() string
 
 	// returns raw request body
 	Body() map[string][]string

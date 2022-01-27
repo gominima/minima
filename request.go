@@ -2,7 +2,6 @@ package minima
 
 import (
 	"encoding/json"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -48,27 +47,32 @@ type Request struct {
 @param {http.Request} [http.Request] The net/http request instance
 @returns {Request}
 */
-func request(httRequest *http.Request) *Request {
-	req := &Request{}
-	req.ref = httRequest
-	req.header = &IncomingHeader{}
-	req.fileReader = nil
-	req.method = httRequest.Proto
-	req.query = httRequest.URL.Query()
-	for i, v := range httRequest.Header {
+func request(httpRequest *http.Request) *Request {
+	req := &Request{
+		ref:        httpRequest,
+		header:     &IncomingHeader{},
+		fileReader: nil,
+		method:     httpRequest.Proto,
+		query:      httpRequest.URL.Query(),
+	}
+
+	for i, v := range httpRequest.Header {
 		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
 	}
+
 	if req.header.Get("content-type") == "application/json" {
-		req.json = json.NewDecoder(httRequest.Body)
+		req.json = json.NewDecoder(httpRequest.Body)
 	} else {
-		httRequest.ParseForm()
+		httpRequest.ParseForm()
 	}
-	if len(httRequest.PostForm) > 0 && len(req.body) == 0 {
+
+	if len(httpRequest.PostForm) > 0 {
 		req.body = make(map[string][]string)
+		for key, value := range httpRequest.PostForm {
+			req.body[key] = value
+		}
 	}
-	for key, value := range httRequest.PostForm {
-		req.body[key] = value
-	}
+
 	return req
 
 }
@@ -79,20 +83,24 @@ func request(httRequest *http.Request) *Request {
 @returns {string}
 */
 func (r *Request) GetParam(key string) string {
-	var val string
+	var value string
+	pathURL := r.GetPathURL()
+
 	for _, v := range r.Params {
-		if v.Path == r.GetPathURl() && v.key == key {
-			val = v.value
+		if v.Path == pathURL && v.key == key {
+			value = v.value
+			break
 		}
 	}
-	return val
+
+	return value
 }
 
 /**
 @info Gets request path url
 @returns {string}
 */
-func (r *Request) GetPathURl() string {
+func (r *Request) GetPathURL() string {
 	return r.ref.URL.Path
 }
 
@@ -151,8 +159,29 @@ func (r *Request) Raw() *http.Request {
 @returns {string}
 */
 func (r *Request) GetQuery(key string) string {
-	if r.query[key][0] == "" {
-		log.Panic("No query param found with given key")
-	}
 	return r.query[key][0]
+}
+
+/**
+@info Get all the cookies from the request
+@returns {[]*http.Cookie}
+*/
+func (r *Request) Cookies() []*http.Cookie {
+	return r.Cookies()
+}
+
+/**
+@info Get a paticular cookie by its name
+@param {string} [name] name of the cookie
+@returns {*http.Cookie}
+*/
+func (r *Request) Cookie(name string) *http.Cookie {
+	var result *http.Cookie
+	for _, cookie := range r.Cookies() {
+		if cookie.Name == name {
+			result = cookie
+		}
+	}
+
+	return result
 }

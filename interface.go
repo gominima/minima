@@ -8,10 +8,10 @@ import (
 type Minima interface {
 	//Minima interface is built over net/http so every middleware is compatible with it
 
-	//initializes net/http server with address
+	//Initializes net/http server with address
 	Listen(address string) error
 
-	//handler interface
+	//Handler interface
 	ServeHTTP(w http.ResponseWriter, q *http.Request)
 
 	//Router methods
@@ -42,9 +42,9 @@ type Minima interface {
 }
 
 type Res interface {
-	//response interface is built over http.ResponseWriter for easy and better utility
+	//Response interface is built over http.ResponseWriter for easy and better utility
 
-	//returns minima.OutgoingHeader interface
+	//Returns minima.OutgoingHeader interface
 	Header() *OutgoingHeader
 
 	//Utility functions for easier usage
@@ -56,7 +56,7 @@ type Res interface {
 	//This functions return http.ResponseWriter instace that means you could use any of your alrady written middlewares in minima!!
 	Raw() http.ResponseWriter
 
-	//renders a html file with data to the page
+	//Renders a html file with data to the page
 	Render(path string, data interface{}) *Response
 
 	//Redirects to given url
@@ -64,29 +64,41 @@ type Res interface {
 
 	//Sets Header status
 	Status(code int) *Response
+
+	//Set a cookie
+	SetCookie(cookie *http.Cookie) *Response
+
+	//Clear a cookie
+	ClearCookie(cookie *http.Cookie) *Response
 }
 
 type Req interface {
 	//Minima request interface is built on http.Request
 
-	//returns param from route url
+	//Returns param from route url
 	GetParam(name string) string
 
-	//returns path url from the route
-	GetPathURl() string
+	//Returns path url from the route
+	GetPathURL() string
 
-	//returns raw request body
+	//Returns raw request body
 	Body() map[string][]string
 
-	//finds given key value from body and returns it
+	//Finds given key value from body and returns it
 	GetBodyValue(key string) []string
 
-	//returns instance of minima.IncomingHeader for incoming header requests
+	//Returns instance of minima.IncomingHeader for incoming header requests
 	Header() *IncomingHeader
 
-	//returns route method ex.get,post
+	//Returns route method ex.get,post
 	Method() string
 
 	//Gets query params from route and returns it
 	GetQuery(key string) string
+
+	//Get all cookies from the request
+	Cookies() []*http.Cookie
+
+	//Get a paticular cookie from the request
+	Cookie(name string) *http.Cookie
 }

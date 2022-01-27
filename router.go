@@ -25,7 +25,7 @@ type Router struct {
 return {Router}
 */
 func NewRouter() *Router {
-	Router := &Router{
+	return &Router{
 		routes: map[string][]*mux{
 			"GET":     make([]*mux, 0),
 			"POST":    make([]*mux, 0),
@@ -36,7 +36,6 @@ func NewRouter() *Router {
 			"HEAD":    make([]*mux, 0),
 		},
 	}
-	return Router
 }
 
 /**
@@ -47,21 +46,17 @@ return {string, []string}
 func RegexPath(path string) (string, []string) {
 	var items []string
 	var Params []string
-	var regexPath string
-	parts := strings.Split(path, "/")
-	for _, part := range parts {
-		if strings.HasPrefix(part, ":") {
-			name := strings.Trim(part, ":")
-			Params = append(Params, name)
-			items = append(items, `([^\/]+)`)
 
+	for _, part := range strings.Split(path, "/") {
+		if strings.HasPrefix(part, ":") {
+			Params = append(Params, strings.Trim(part, ":"))
+			items = append(items, `([^\/]+)`)
 		} else {
 			items = append(items, part)
 		}
-
 	}
-	regexPath = "^" + strings.Join(items, `\/`) + "$"
-	return regexPath, Params
+
+	return "^" + strings.Join(items, `\/`) + "$", Params
 }
 
 /**
@@ -77,6 +72,7 @@ func (r *Router) Register(method string, path string, handlers ...Handler) *mux 
 		Regex:    regexp.MustCompile(reg),
 		Params:   Params,
 	}
+
 	r.routes[method] = append(r.routes[method], newroute)
 	return newroute
 }
@@ -131,7 +127,7 @@ func (r *Router) Patch(path string, handlers ...Handler) {
 @returns {*Router}
 */
 func (r *Router) Options(path string, handlers ...Handler) *Router {
-	r.Register("Options", path, handlers...)
+	r.Register("OPTIONS", path, handlers...)
 	return r
 }
 
@@ -171,10 +167,10 @@ func (r *Router) GetRouterRoutes() map[string][]*mux {
 @returns {Router}
 */
 func (r *Router) UseRouter(Router *Router) *Router {
-	routes := Router.GetRouterRoutes()
-	for routeType, list := range routes {
+	for routeType, list := range Router.GetRouterRoutes() {
 		r.routes[routeType] = append(r.routes[routeType], list...)
 	}
+
 	return r
 }
 
@@ -185,27 +181,20 @@ func (r *Router) UseRouter(Router *Router) *Router {
 @returns {Router}
 */
 func (r *Router) Mount(basepath string, Router *Router) *Router {
-	routes := Router.GetRouterRoutes()
-	for routeType, list := range routes {
+	for routeType, list := range Router.GetRouterRoutes() {
 		for _, v := range list {
 			v.Path = basepath + v.Path
 			r.Register(routeType, v.Path, v.Handlers...)
 		}
-
 	}
+
 	return r
 }
 
 func (r *Router) next(p map[string]string, next Handler, res *Response, req *Request) {
-	Path := req.GetPathURl()
-	for k, v := range p {
-
-		addParam := &Param{
-			Path:  Path,
-			key:   k,
-			value: v,
-		}
-		req.Params = append(req.Params, addParam)
+	Path := req.GetPathURL()
+	for key, value := range p {
+		req.Params = append(req.Params, &Param{Path, key, value})
 	}
 
 	next(res, req)
