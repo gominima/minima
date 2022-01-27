@@ -86,7 +86,7 @@ func (res *Response) WriteBytes(bytes []byte) error {
 func (res *Response) sendContent(contentType string, content []byte) {
 	res.header.Set("Content-Type", contentType)
 	if err := res.WriteBytes(content); err != nil {
-		log.Panicf("Failed to flush the buffer, error: %v", err)
+		log.Panicf("Failed to flush the buffer: %v", err)
 		return
 	}
 }
@@ -135,13 +135,13 @@ func (res *Response) Raw() http.ResponseWriter {
 func (res *Response) Render(path string, data interface{}) *Response {
 	tmpl, err := template.ParseFiles(path)
 	if err != nil {
-		log.Panic("Given path was not found", err)
+		log.Panic("Path "+path+" was not found!", err)
 		res.header.Status(500)
 	}
 
 	var bytes bytes.Buffer
 	if err = tmpl.Execute(&bytes, data); err != nil {
-		log.Print("Template render failed ", err)
+		log.Print("Template render failed: ", err)
 		res.header.Status(500)
 	}
 

@@ -359,7 +359,7 @@
 			}
 		},
 		{
-			"Line": "func (r *Request) GetPathURl() string",
+			"Line": "func (r *Request) GetPathURL() string",
 			"Description": "Get the Path URL",
 			"Returns": {
 				"Type": "string"

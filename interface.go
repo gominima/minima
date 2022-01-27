@@ -73,7 +73,7 @@ type Req interface {
 	GetParam(name string) string
 
 	//Returns path url from the route
-	GetPathURl() string
+	GetPathURL() string
 
 	//Returns raw request body
 	Body() map[string][]string

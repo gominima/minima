@@ -24,13 +24,16 @@ type IncomingHeader struct {
 return {string}
 */
 func (h IncomingHeader) Get(key string) string {
+	var value string
+
 	for _, v := range h.headers {
 		if v.key == key {
-			return v.value
+			value = v.value
+			break
 		}
 	}
 
-	return ""
+	return value
 }
 
 /**

@@ -48,7 +48,7 @@ func New() *minima {
 */
 func (m *minima) Listen(addr string) error {
 	if m.started {
-		panic("Minima server instance is already running")
+		log.Panicf("Minimia's instance is already running at %s.", m.server.Addr)
 	}
 
 	m.server = &http.Server{Addr: addr, Handler: m}

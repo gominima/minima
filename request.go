@@ -2,7 +2,6 @@ package minima
 
 import (
 	"encoding/json"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -84,20 +83,24 @@ func request(httpRequest *http.Request) *Request {
 @returns {string}
 */
 func (r *Request) GetParam(key string) string {
-	var val string
+	var value string
+	pathURL := r.GetPathURL()
+
 	for _, v := range r.Params {
-		if v.Path == r.GetPathURl() && v.key == key {
-			val = v.value
+		if v.Path == pathURL && v.key == key {
+			value = v.value
+			break
 		}
 	}
-	return val
+
+	return value
 }
 
 /**
 @info Gets request path url
 @returns {string}
 */
-func (r *Request) GetPathURl() string {
+func (r *Request) GetPathURL() string {
 	return r.ref.URL.Path
 }
 
@@ -156,8 +159,5 @@ func (r *Request) Raw() *http.Request {
 @returns {string}
 */
 func (r *Request) GetQuery(key string) string {
-	if r.query[key][0] == "" {
-		log.Panic("No query param found with given key")
-	}
 	return r.query[key][0]
 }
