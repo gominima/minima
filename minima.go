@@ -184,6 +184,11 @@ func (m *minima) Use(handler Handler) *minima {
 	return m
 }
 
+func (m *minima) UseRaw(handler rawHandle) *minima {
+	m.Middleware.AddRawPlugin(handler)
+	return m
+}
+
 /**
 @info Injects the routes from the router to core stack
 @param {*Router} [router] Minima router instance

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gominima/minima"
+	"net/http"
 )
 
 func main() {
@@ -10,11 +11,9 @@ func main() {
 	router := minima.NewRouter()
 	app.Get("/test/:name", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
-	         request.Header().Set("Authentication", "Bearer token")
 
 		response.Status(404).Send(p)
 
-	
 	})
 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
 		type hello struct {
@@ -26,6 +25,10 @@ func main() {
 	})
 
 	app.Mount("/aa", router)
+	app.UseRaw(func(rw http.ResponseWriter, r *http.Request) {
+		rw.Write([]byte("j"))
+		fmt.Print(r.URL.Path)
+	})
 	app.Listen(":3000")
 
 }
@@ -52,4 +55,3 @@ func main() {
 // 		response.Json(userdata).Status(200)
 // 	})
 // }
-

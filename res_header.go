@@ -12,9 +12,8 @@ import (
 @property {int} [status] response status code
 */
 type OutgoingHeader struct {
-	req    *http.Request
-	res    http.ResponseWriter
-	
+	req *http.Request
+	res http.ResponseWriter
 }
 
 var status = map[int]string{

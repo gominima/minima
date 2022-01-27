@@ -1,11 +1,17 @@
 package minima
 
+import "net/http"
+
+type rawHandle func(rw http.ResponseWriter, r *http.Request)
+
 /**
 @info The Middleware structure
 @property {Handler} [handler] The handler to be used
 */
 type Middleware struct {
-	handler Handler
+	handler    Handler
+	israw      bool
+	rawHandler rawHandle
 }
 
 /**
@@ -29,7 +35,12 @@ func use() *Plugins {
 @param {Handler} [handler] The handler to add
 */
 func (p *Plugins) AddPlugin(handler Handler) {
-	middleware := &Middleware{handler: handler}
+	middleware := &Middleware{handler: handler, israw: false}
+	p.plugin = append(p.plugin, middleware)
+}
+
+func (p *Plugins) AddRawPlugin(handler rawHandle) {
+	middleware := &Middleware{rawHandler: handler, israw: true}
 	p.plugin = append(p.plugin, middleware)
 }
 
@@ -40,6 +51,10 @@ func (p *Plugins) AddPlugin(handler Handler) {
 */
 func (p *Plugins) ServePlugin(res *Response, req *Request) {
 	for _, v := range p.plugin {
-		v.handler(res, req)
+		if v.israw {
+			v.rawHandler(res.Raw(), req.Raw())
+		} else {
+			v.handler(res, req)
+		}
 	}
 }
