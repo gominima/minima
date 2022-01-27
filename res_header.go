@@ -52,10 +52,7 @@ var status = map[int]string{
 @returns {OutgoingHeader}
 */
 func NewResHeader(res http.ResponseWriter, req *http.Request) *OutgoingHeader {
-	h := &OutgoingHeader{}
-	h.req = req
-	h.res = res
-	return h
+	return &OutgoingHeader{req, res}
 }
 
 /**
@@ -103,7 +100,7 @@ func (h *OutgoingHeader) Clone() http.Header {
 @returns {OutgoingHeader}
 */
 func (h *OutgoingHeader) Setlength(len string) *OutgoingHeader {
-	h.Set("Content-lenght", len)
+	h.Set("Content-length", len)
 	return h
 }
 
@@ -134,8 +131,10 @@ func (h *OutgoingHeader) Flush() bool {
 	if h.Get("Content-Type") == "" {
 		h.Set("Content-Type", "text/html;charset=utf-8")
 	}
+
 	if f, ok := h.res.(http.Flusher); ok {
 		f.Flush()
 	}
+
 	return true
 }

@@ -48,27 +48,32 @@ type Request struct {
 @param {http.Request} [http.Request] The net/http request instance
 @returns {Request}
 */
-func request(httRequest *http.Request) *Request {
-	req := &Request{}
-	req.ref = httRequest
-	req.header = &IncomingHeader{}
-	req.fileReader = nil
-	req.method = httRequest.Proto
-	req.query = httRequest.URL.Query()
-	for i, v := range httRequest.Header {
+func request(httpRequest *http.Request) *Request {
+	req := &Request{
+		ref:        httpRequest,
+		header:     &IncomingHeader{},
+		fileReader: nil,
+		method:     httpRequest.Proto,
+		query:      httpRequest.URL.Query(),
+	}
+
+	for i, v := range httpRequest.Header {
 		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
 	}
+
 	if req.header.Get("content-type") == "application/json" {
-		req.json = json.NewDecoder(httRequest.Body)
+		req.json = json.NewDecoder(httpRequest.Body)
 	} else {
-		httRequest.ParseForm()
+		httpRequest.ParseForm()
 	}
-	if len(httRequest.PostForm) > 0 && len(req.body) == 0 {
+
+	if len(httpRequest.PostForm) > 0 {
 		req.body = make(map[string][]string)
+		for key, value := range httpRequest.PostForm {
+			req.body[key] = value
+		}
 	}
-	for key, value := range httRequest.PostForm {
-		req.body[key] = value
-	}
+
 	return req
 
 }

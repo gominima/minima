@@ -36,16 +36,15 @@ type Response struct {
 @param {map[string]interface{}} [props] The net/http response instance
 @returns {Response}
 */
-func response(rs http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
-	res := &Response{}
-	res.ref = rs
-	res.header = NewResHeader(rs, req)
-	res.url = req.URL.Path
-	res.method = req.Method
-	res.host = req.Host
-	res.props = props
-	return res
-
+func response(rw http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
+	return &Response{
+		ref:    rw,
+		header: NewResHeader(rw, req),
+		url:    req.URL.Path,
+		method: req.Method,
+		host:   req.Host,
+		props:  props,
+	}
 }
 
 /**
@@ -65,8 +64,8 @@ func (res *Response) Send(content string) *Response {
 	if res.header.Get("Content-Type") == "" {
 		res.header.Set("Content-Type", "text/html;charset=utf-8")
 	}
-	var bytes = []byte(content)
-	res.WriteBytes(bytes)
+
+	res.WriteBytes([]byte(content))
 	return res
 }
 
@@ -76,23 +75,20 @@ func (res *Response) Send(content string) *Response {
 @returns {Response}
 */
 func (res *Response) WriteBytes(bytes []byte) error {
-	var errr error
-	_, err := res.ref.Write(bytes)
-	if err != nil {
-		errr = err
+	var err error
+	if _, writeErr := res.ref.Write(bytes); writeErr != nil {
+		err = writeErr
 	}
-	return errr
+
+	return err
 }
 
 func (res *Response) sendContent(contentType string, content []byte) {
-
 	res.header.Set("Content-Type", contentType)
-	err := res.WriteBytes(content)
-	if err != nil {
+	if err := res.WriteBytes(content); err != nil {
 		log.Panicf("Failed to flush the buffer, error: %v", err)
 		return
 	}
-
 }
 
 /**
@@ -103,10 +99,10 @@ func (res *Response) sendContent(contentType string, content []byte) {
 func (res *Response) Json(content interface{}) *Response {
 	output, err := json.Marshal(content)
 	if err != nil {
-		res.sendContent("application/json", []byte(""))
-	} else {
-		res.sendContent("application/json", output)
+		output = []byte("")
 	}
+
+	res.sendContent("application/json", output)
 	return res
 }
 
@@ -141,16 +137,15 @@ func (res *Response) Render(path string, data interface{}) *Response {
 	if err != nil {
 		log.Panic("Given path was not found", err)
 		res.header.Status(500)
-
 	}
-	var byt bytes.Buffer
-	err = tmpl.Execute(&byt, data)
-	if err != nil {
+
+	var bytes bytes.Buffer
+	if err = tmpl.Execute(&bytes, data); err != nil {
 		log.Print("Template render failed ", err)
 		res.header.Status(500)
-
 	}
-	res.WriteBytes(byt.Bytes())
+
+	res.WriteBytes(bytes.Bytes())
 	return res
 
 }

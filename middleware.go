@@ -28,8 +28,7 @@ type Plugins struct {
 @info Initialise the plugins interface
 */
 func use() *Plugins {
-	p := &Plugins{}
-	return p
+	return &Plugins{}
 }
 
 /**
@@ -37,18 +36,15 @@ func use() *Plugins {
 @param {Handler} [handler] The handler to add
 */
 func (p *Plugins) AddPlugin(handler Handler) {
-	middleware := &Middleware{handler: handler, israw: false}
-	p.plugin = append(p.plugin, middleware)
+	p.plugin = append(p.plugin, &Middleware{handler: handler, israw: false})
 }
-
 
 /**
 @info Add a raw net/http plugin
 @param {rawHandle} [handler] The raw handler to add
 */
 func (p *Plugins) AddRawPlugin(handler rawHandle) {
-	middleware := &Middleware{rawHandler: handler, israw: true}
-	p.plugin = append(p.plugin, middleware)
+	p.plugin = append(p.plugin, &Middleware{rawHandler: handler, israw: true})
 }
 
 /**
