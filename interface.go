@@ -64,6 +64,12 @@ type Res interface {
 
 	//Sets Header status
 	Status(code int) *Response
+
+	//Set a cookie
+	SetCookie(cookie *http.Cookie) *Response
+
+	//Clear a cookie
+	ClearCookie(cookie *http.Cookie) *Response
 }
 
 type Req interface {
@@ -89,4 +95,10 @@ type Req interface {
 
 	//Gets query params from route and returns it
 	GetQuery(key string) string
+
+	//Get all cookies from the request
+	Cookies() []*http.Cookie
+
+	//Get a paticular cookie from the request
+	Cookie(name string) *http.Cookie
 }

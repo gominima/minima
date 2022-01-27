@@ -161,3 +161,27 @@ func (r *Request) Raw() *http.Request {
 func (r *Request) GetQuery(key string) string {
 	return r.query[key][0]
 }
+
+/**
+@info Get all the cookies from the request
+@returns {[]*http.Cookie}
+*/
+func (r *Request) Cookies() []*http.Cookie {
+	return r.Cookies()
+}
+
+/**
+@info Get a paticular cookie by its name
+@param {string} [name] name of the cookie
+@returns {*http.Cookie}
+*/
+func (r *Request) Cookie(name string) *http.Cookie {
+	var result *http.Cookie
+	for _, cookie := range r.Cookies() {
+		if cookie.Name == name {
+			result = cookie
+		}
+	}
+
+	return result
+}

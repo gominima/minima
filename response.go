@@ -171,3 +171,24 @@ func (res *Response) Status(status int) *Response {
 	res.header.Status(status)
 	return res
 }
+
+/**
+@info Set a cookie
+@param {*http.Cookie} [cookie]
+@returns {Response}
+*/
+func (res *Response) SetCookie(cookie *http.Cookie) *Response {
+	http.SetCookie(res.ref, cookie)
+	return res
+}
+
+/**
+@info Clear a cookie
+@param {*http.Cookie} [cookie]
+@returns {Response}
+*/
+func (res *Response) ClearCookie(cookie *http.Cookie) *Response {
+	cookie.MaxAge = -1
+	http.SetCookie(res.ref, cookie)
+	return res
+}
