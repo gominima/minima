@@ -184,6 +184,11 @@ func (m *minima) Use(handler Handler) *minima {
 	return m
 }
 
+/**
+@info Injects the raw net/http handler to middleware stack
+@param {rawHandle} [handler] net/http handler instance
+@returns {*minima}
+*/
 func (m *minima) UseRaw(handler rawHandle) *minima {
 	m.Middleware.AddRawPlugin(handler)
 	return m
