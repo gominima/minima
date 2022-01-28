@@ -286,6 +286,8 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 3. Write a review or blog on minima
 4. Join our [Discord](https://discord.gg/gRyCr5APmg) community
 
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 ## 🧾 License
 
 **Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a free and Open source software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
