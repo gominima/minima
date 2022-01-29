@@ -167,7 +167,7 @@ func (r *Request) GetQuery(key string) string {
 @returns {[]*http.Cookie}
 */
 func (r *Request) Cookies() []*http.Cookie {
-	return r.Cookies()
+	return r.ref.Cookies()
 }
 
 /**
