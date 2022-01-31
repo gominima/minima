@@ -1,5 +1,7 @@
 package minima
 
+
+
 import (
 	"regexp"
 	"strings"
@@ -49,7 +51,7 @@ func RegexPath(path string) (string, []string) {
 
 	for _, part := range strings.Split(path, "/") {
 		if strings.HasPrefix(part, ":") {
-			Params = append(Params, strings.Trim(part, ":"))
+			Params = append(Params, strings.Trim(part, "@"))
 			items = append(items, `([^\/]+)`)
 		} else {
 			items = append(items, part)

@@ -24,7 +24,7 @@ func main() {
 		response.Json(&hello{Name: q})
 	})
 
-	app.Mount("/aa", router)
+	app.Mount("/v1", router)
 	app.UseRaw(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Write([]byte("j"))
 		fmt.Print(r.URL.Path)
