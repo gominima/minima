@@ -17,8 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2.4.0
 
+      - name: Get Docgen
+        run: go get github.com/gominima/docgen 
+        
       - name: Run Docgen
-        run: go get github.com/gominima/docgen && go run github.com/gominima/docgen . $(github.ref)
+        run: go run github.com/gominima/docgen . $(github.ref)
 
       - name: Pushes docs file
         uses: dmnemec/copy_file_to_another_repo_action@main
