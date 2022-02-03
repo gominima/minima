@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Docgen
-        run: go get github.com/gominima/docgen && go run github.com/gominima/docgen . ${GITHUB_REF##*/}
+        run: go get github.com/gominima/docgen && go run github.com/gominima/docgen . $(github.ref)
 
       - name: Pushes docs file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: ${GITHUB_REF##*/}
+          source_file: ${{ github.ref }}
           destination_repo: 'gominima/docs'
           user_email: 'tanumegatank@gmail.com'
           user_name: 'megatank58'
