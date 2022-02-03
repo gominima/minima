@@ -4,10 +4,6 @@ on:
     branches:
       - "main"
       - "stable"
-  pull_request:
-    branches:
-      - "main"
-      - "stable"
 
 jobs:
   docs:
@@ -33,7 +29,7 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/}.json)"
         id: extract_branch
 
-      - name: Pushes docs file
+      - name: Push docs file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
