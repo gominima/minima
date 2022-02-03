@@ -16,7 +16,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: ${{ GITHUB_REF##*/ }}
+          source_file: ${GITHUB_REF##*/}
           destination_repo: 'gominima/docs'
           user_email: 'tanumegatank@gmail.com'
           user_name: 'megatank58'
