@@ -26,14 +26,19 @@ jobs:
         run: go get github.com/gominima/docgen 
         
       - name: Run Docgen
-        run: go run github.com/gominima/docgen . $(github.ref)
+        run: go run github.com/gominima/docgen . $(git rev-parse --abbrev-ref HEAD)
+        
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/}.json)"
+        id: extract_branch
 
       - name: Pushes docs file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: ${{ github.ref }}
+          source_file: ${{ steps.extract_branch.outputs.branch }}
           destination_repo: 'gominima/docs'
           user_email: 'tanumegatank@gmail.com'
           user_name: 'megatank58'
