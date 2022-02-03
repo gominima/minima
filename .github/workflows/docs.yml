@@ -26,7 +26,7 @@ jobs:
         run: go get github.com/gominima/docgen 
         
       - name: Run Docgen
-        run: go run github.com/gominima/docgen . $(git rev-parse --abbrev-ref HEAD)
+        run: go run github.com/gominima/docgen . $(git rev-parse --abbrev-ref HEAD).json
         
       - name: Extract branch name
         shell: bash
