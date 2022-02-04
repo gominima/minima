@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://gominima.studio">
-  <img alt="Minima" href="https://github.com/gominima/minima/blob/main/assets/logo.png?raw=true" />
+  <img alt="Minima" href="https://raw.githubusercontent.com/gominima/minima/main/assets/logo.png" />
 </a>
 </p>
 
