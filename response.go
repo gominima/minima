@@ -192,3 +192,83 @@ func (res *Response) ClearCookie(cookie *http.Cookie) *Response {
 	http.SetCookie(res.ref, cookie)
 	return res
 }
+
+/**
+@info Set status code as 200
+@returns 200
+*/
+func (res *Response) OK() int {
+	return statusCodes["OK"]
+}
+
+/**
+@info Set status code as 301
+@returns 301
+*/
+func (res *Response) MovedPermanently() int {
+	return statusCodes["Moved Permanently"]
+}
+
+/**
+@info Set status code as 307
+@returns 307
+*/
+func (res *Response) TemporaryRedirect() int {
+	return statusCodes["Temporary Redirect"]
+}
+
+/**
+@info Set status code as 400
+@returns 400
+*/
+func (res *Response) BadRequest() int {
+	return statusCodes["Bad Request"]
+}
+
+/**
+@info Set status code as 401
+@returns 401
+*/
+func (res *Response) Unauthorized() int {
+	return statusCodes["Unauthorized"]
+}
+
+/**
+@info Set status code as 403
+@returns 403
+*/
+func (res *Response) Forbidden() int {
+	return statusCodes["Forbidden"]
+}
+
+/**
+@info Set status code as 404
+@returns 404
+*/
+func (res *Response) NotFound() int {
+	return statusCodes["NOT FOUND"]
+}
+
+/**
+@info Set status code as 500
+@returns 500
+*/
+func (res *Response) InternalServerError() int {
+	return statusCodes["Internal Server Error"]
+}
+
+/**
+@info Set status code as 502
+@returns 502
+*/
+func (res *Response) BadGateway() int {
+	return statusCodes["Bad Gateway"]
+}
+
+/**
+@info Set status code as 503
+@returns 503
+*/
+func (res *Response) ServiceUnavailaible() int {
+	return statusCodes["Service Unavailaible"]
+}
