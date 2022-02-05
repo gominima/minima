@@ -45,6 +45,35 @@ var status = map[int]string{
 	505: "HTTP Version Not Supported",
 }
 
+var statusCodes = map[string]int{
+	"OK":                         200,
+	"Created":                    201,
+	"Accepted":                   202,
+	"No Content":                 204,
+	"Reset Content":              205,
+	"Partial Content":            206,
+	"Moved Permanently":          301,
+	"Found":                      302,
+	"Not Modified":               304,
+	"Use Proxy":                  305,
+	"Switch Proxy":               306,
+	"Temporary Redirect":         307,
+	"Permanent Redirect":         308,
+	"Bad Request":                400,
+	"Unauthorized":               401,
+	"Forbidden":                  403,
+	"NOT FOUND":                  404,
+	"Method Not Allowed":         405,
+	"Payload Too Large":          413,
+	"URI Too Long":               414,
+	"Internal Server Error":      500,
+	"Not Implemented":            501,
+	"Bad Gateway":                502,
+	"Service Unavailaible":       503,
+	"Gateway Timeout":            504,
+	"HTTP Version Not Supported": 505,
+}
+
 /**
 @info Make a new default request header instance
 @param {http.Request} [req] The net/http request instance
