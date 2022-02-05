@@ -195,80 +195,90 @@ func (res *Response) ClearCookie(cookie *http.Cookie) *Response {
 
 /**
 @info Set status code as 200
-@returns 200
+@returns {Response}
 */
-func (res *Response) OK() int {
-	return statusCodes["OK"]
+func (res *Response) OK() *Response {
+	res.Status(statusCodes["OK"])
+	return res
 }
 
 /**
 @info Set status code as 301
-@returns 301
+@returns {Response}
 */
-func (res *Response) MovedPermanently() int {
-	return statusCodes["Moved Permanently"]
+func (res *Response) MovedPermanently() *Response {
+	res.Status(statusCodes["Moved Permanently"])
+	return res
 }
 
 /**
 @info Set status code as 307
-@returns 307
+@returns {Response}
 */
-func (res *Response) TemporaryRedirect() int {
-	return statusCodes["Temporary Redirect"]
+func (res *Response) TemporaryRedirect() *Response {
+	res.Status(statusCodes["Temporary Redirect"])
+	return res
 }
 
 /**
 @info Set status code as 400
-@returns 400
+@returns {Response}
 */
-func (res *Response) BadRequest() int {
-	return statusCodes["Bad Request"]
+func (res *Response) BadRequest() *Response {
+	res.Status(statusCodes["Bad Request"])
+	return res
 }
 
 /**
 @info Set status code as 401
-@returns 401
+@returns {Response}
 */
-func (res *Response) Unauthorized() int {
-	return statusCodes["Unauthorized"]
+func (res *Response) Unauthorized() *Response {
+	res.Status(statusCodes["Unauthorized"])
+	return res
 }
 
 /**
 @info Set status code as 403
-@returns 403
+@returns {Response}
 */
-func (res *Response) Forbidden() int {
-	return statusCodes["Forbidden"]
+func (res *Response) Forbidden() *Response {
+	res.Status(statusCodes["Forbidden"])
+	return res
 }
 
 /**
 @info Set status code as 404
-@returns 404
+@returns {Response}
 */
-func (res *Response) NotFound() int {
-	return statusCodes["NOT FOUND"]
+func (res *Response) NotFound() *Response {
+	res.Status(statusCodes["NOT FOUND"])
+	return res
 }
 
 /**
 @info Set status code as 500
-@returns 500
+@returns {Response}
 */
-func (res *Response) InternalServerError() int {
-	return statusCodes["Internal Server Error"]
+func (res *Response) InternalServerError() *Response {
+	res.Status(statusCodes["Internal Server Error"])
+	return res
 }
 
 /**
 @info Set status code as 502
-@returns 502
+@returns {Response}
 */
-func (res *Response) BadGateway() int {
-	return statusCodes["Bad Gateway"]
+func (res *Response) BadGateway() *Response {
+	res.Status(statusCodes["Bad Gateway"])
+	return res
 }
 
 /**
 @info Set status code as 503
-@returns 503
+@returns {Response}
 */
-func (res *Response) ServiceUnavailaible() int {
-	return statusCodes["Service Unavailaible"]
+func (res *Response) ServiceUnavailaible() *Response {
+	res.Status(statusCodes["Service Unavailaible"])
+	return res
 }
