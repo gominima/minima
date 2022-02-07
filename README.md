@@ -310,7 +310,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## 🧾 License
 
-**Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a Free and Open Source Software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
+**Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors). Minima is a Free and Open Source Software licensed under [MIT License](https://github.com/gominima/minima/blob/main/LICENSE)**
 
 <br />
 <br />
