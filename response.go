@@ -155,12 +155,12 @@ func (res *Response) Render(path string, data interface{}) *Response {
 @info Ends connection to the route page
 @returns {error}
 */
-func (res *Response) CloseConn() error{
+func (res *Response) CloseConn() error {
 	var returnerr error
 	if w, ok := res.ref.(io.Closer); ok {
 		err := w.Close()
 		returnerr = err
-	} 
+	}
 	return returnerr
 }
 

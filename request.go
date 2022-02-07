@@ -89,7 +89,6 @@ func (r *Request) GetParam(key string) string {
 			break
 		}
 	}
-
 	return value
 }
 
