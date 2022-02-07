@@ -77,7 +77,7 @@ Minima solves this problem as it has a very narrow learning curve as well as a r
 
 ## 🍵 Examples
 
-**Here are some basic examples related to routing and params:**
+Here are some basic examples related to routing and params:
 
 ### 📑 Routing & Router
 
@@ -159,7 +159,7 @@ func main() {
 
 ## 📑 Minima Interface
 
-**Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [net/http](https://pkg.go.dev/net/http)**
+Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
 
 ### 📑 Minima's interface
 
@@ -206,7 +206,7 @@ type Minima interface {
 
 ### 📑 Response and Request Interface
 
-**Both response and request interfaces of minima are written in `net/http` so you can use any of your old route middlewares in minima out of the box without any hassle.**
+Both response and request interfaces of minima are written in `net/http` so you can use any of your old route middlewares in minima out of the box without any hassle.
 
 ```go
 
@@ -263,9 +263,9 @@ type Req interface {
 
 ## 📑 Middlewares
 
-**Minima's middlewares are written in its own custom `res` and `req` interfaces in accordance with the standard libraries maintained by Go. You can use `res.Raw()` to get the `http.ResponseWriter` instance and `req.Raw()` to getthe `http.Request` instance, meaning all community written middlewares are compatible with Minima.**
+Minima's middlewares are written in its own custom `res` and `req` interfaces in accordance with the standard libraries maintained by Go. You can use `res.Raw()` to get the `http.ResponseWriter` instance and `req.Raw()` to getthe `http.Request` instance, meaning all community written middlewares are compatible with Minima.
 
-**Here is an example of standard `net/http` middleware being used with minima:**
+Here is an example of standard `net/http` middleware being used with minima:
 
 ```go
 func MyMiddleWare(res *minima.Response, req *minima.Request) {
@@ -290,7 +290,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## 🧾 License
 
-**Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a free and Open source software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
+**Copyright (c) 2021-present [Apoorv](https://github.com/apoorvcodes) and [Contributors](https://github.com/gominima/minima/graphs/contributors"). Minima is a Free and Open Source Software licensed under [MIT License](https://github.com/gominima/minima/blob/master/LICENSE)**
 
 <br />
 <br />
