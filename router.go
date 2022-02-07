@@ -1,7 +1,5 @@
 package minima
 
-
-
 import (
 	"regexp"
 	"strings"
