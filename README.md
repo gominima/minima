@@ -282,9 +282,29 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 **If you wanna help grow this project or say a thank you!**
 
 1. Give minima a [GitHub star](https://github.com/gominima/minima/stargazers)
-2. Fork minima and Contribute
-3. Write a review or blog on minima
+2. Fork Minima and Contribute
+3. Write a review or blog on Minima
 4. Join our [Discord](https://discord.gg/gRyCr5APmg) community
+
+### Contributors
+
+#### Lead Maintainers
+
+- [@apoorvcodes](https://github.com/apoorvcodes)
+- [@savioxavier](https://github.com/savioxavier)
+- [@megatank58](https://github.com/megatank58)
+
+#### Community Contributors
+
+Thanks to all the contributors, without whom this project would not have been possible:
+
+<a href="https://github.com/gominima/minima/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gominima/minima" />
+</a>
+
+<br>
+
+Be a part of this contribution list by contributing today!
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
