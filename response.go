@@ -3,6 +3,7 @@ package minima
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"text/template"
@@ -148,6 +149,19 @@ func (res *Response) Render(path string, data interface{}) *Response {
 	res.WriteBytes(bytes.Bytes())
 	return res
 
+}
+
+/**
+@info Ends connection to the route page
+@returns {error}
+*/
+func (res *Response) CloseConn() error {
+	var returnerr error
+	if w, ok := res.ref.(io.Closer); ok {
+		err := w.Close()
+		returnerr = err
+	}
+	return returnerr
 }
 
 /**

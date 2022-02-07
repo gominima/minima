@@ -13,6 +13,7 @@ func main() {
 		p := request.GetParam("name")
 
 		response.Status(404).Send(p)
+		response.CloseConn()
 
 	})
 	router.Get("/user/?", func(response *minima.Response, request *minima.Request) {
