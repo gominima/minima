@@ -58,7 +58,7 @@ func main() {
 
 ```
 
-## 🪶 Features
+## 🔮 Features
 
 - **Reliable** - great modular API for building great server side applications</li>
 - **Compatible with net/http** - use your plain old middlewares written in plain old `net/http`</li>
@@ -157,11 +157,11 @@ func main() {
 }
 ```
 
-## 📑 Minima Interface
+## 📒 Minima Interface
 
 Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
 
-### 📑 Minima's interface
+### 🔖 Minima's Interface
 
 ```go
 type Minima interface {
@@ -204,7 +204,7 @@ type Minima interface {
 }
 ```
 
-### 📑 Response and Request Interface
+### 🔖 Response and Request Interfaces
 
 Both response and request interfaces of minima are written in `net/http` so you can use any of your old route middlewares in minima out of the box without any hassle.
 
@@ -261,7 +261,7 @@ type Req interface {
 }
 ```
 
-## 📑 Middlewares
+## 🔌 Middlewares
 
 Minima's middlewares are written in its own custom `res` and `req` interfaces in accordance with the standard libraries maintained by Go. You can use `res.Raw()` to get the `http.ResponseWriter` instance and `req.Raw()` to getthe `http.Request` instance, meaning all community written middlewares are compatible with Minima.
 
