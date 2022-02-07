@@ -15,7 +15,6 @@ import (
 @property {string} [value] Value of the param
 */
 type Param struct {
-	Path  string
 	key   string
 	value string
 }
@@ -84,10 +83,8 @@ func request(httpRequest *http.Request) *Request {
 */
 func (r *Request) GetParam(key string) string {
 	var value string
-	pathURL := r.GetPathURL()
-
 	for _, v := range r.Params {
-		if v.Path == pathURL && v.key == key {
+		if v.key == key {
 			value = v.value
 			break
 		}
