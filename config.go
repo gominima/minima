@@ -8,7 +8,7 @@ package minima
 */
 type Config struct {
 	Middleware []Handler
-	Router     *Router
+	Router     []*Router
 }
 
 /**

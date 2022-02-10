@@ -222,7 +222,9 @@ func (m *minima) UseConfig(config *Config) *minima {
 	for _, v := range config.Middleware {
 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
 	}
-	m.router.UseRouter(config.Router)
+	for _, rt := range config.Router {
+		m.router.UseRouter(rt)
+	}
 	return m
 }
 
