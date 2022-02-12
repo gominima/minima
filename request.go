@@ -35,7 +35,7 @@ type Request struct {
 	fileReader *multipart.Reader
 	body       map[string][]string
 	method     string
-	Params     []*Param
+	Params     map[string]string
 	query      url.Values
 	header     *IncomingHeader
 	json       *json.Decoder
@@ -82,14 +82,7 @@ func request(httpRequest *http.Request) *Request {
 @returns {string}
 */
 func (r *Request) GetParam(key string) string {
-	var value string
-	for _, v := range r.Params {
-		if v.key == key {
-			value = v.value
-			break
-		}
-	}
-	return value
+	return r.Params[key]
 }
 
 /**

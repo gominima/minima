@@ -193,7 +193,7 @@ func (r *Router) Mount(basepath string, Router *Router) *Router {
 
 func (r *Router) next(p map[string]string, next Handler, res *Response, req *Request) {
 	for key, value := range p {
-		req.Params = append(req.Params, &Param{key, value})
+		req.Params[key] = value
 	}
 
 	next(res, req)
