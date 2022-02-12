@@ -1,8 +1,7 @@
 package minima
 
 import (
-	"regexp"
-	"strings"
+	"fmt"
 )
 
 /**
@@ -17,7 +16,7 @@ type Handler func(res *Response, req *Request)
 @property {map[string][]*mux} [route] The mux routes
 */
 type Router struct {
-	routes map[string][]*mux
+	routes map[string]*Routes
 }
 
 /**
@@ -26,37 +25,16 @@ return {Router}
 */
 func NewRouter() *Router {
 	return &Router{
-		routes: map[string][]*mux{
-			"GET":     make([]*mux, 0),
-			"POST":    make([]*mux, 0),
-			"PUT":     make([]*mux, 0),
-			"DELETE":  make([]*mux, 0),
-			"PATCH":   make([]*mux, 0),
-			"OPTIONS": make([]*mux, 0),
-			"HEAD":    make([]*mux, 0),
+		routes: map[string]*Routes{
+			"GET":     NewRoutes(),
+			"POST":    NewRoutes(),
+			"PUT":     NewRoutes(),
+			"DELETE":  NewRoutes(),
+			"PATCH":   NewRoutes(),
+			"OPTIONS": NewRoutes(),
+			"HEAD":    NewRoutes(),
 		},
 	}
-}
-
-/**
-@info Compiles path to regex
-@param {string} [path] The route path
-return {string, []string}
-*/
-func RegexPath(path string) (string, []string) {
-	var items []string
-	var Params []string
-
-	for _, part := range strings.Split(path, "/") {
-		if strings.HasPrefix(part, ":") {
-			Params = append(Params, strings.Trim(part, ":"))
-			items = append(items, `([^\/]+)`)
-		} else {
-			items = append(items, part)
-		}
-	}
-
-	return "^" + strings.Join(items, `\/`) + "$", Params
 }
 
 /**
@@ -64,17 +42,14 @@ func RegexPath(path string) (string, []string) {
 @param {string} [path] The route path
 return {string, []string}
 */
-func (r *Router) Register(method string, path string, handlers ...Handler) *mux {
-	reg, Params := RegexPath(path)
-	var newroute = &mux{
-		Path:     path,
-		Handlers: handlers,
-		Regex:    regexp.MustCompile(reg),
-		Params:   Params,
+func (r *Router) Register(method string, path string, handler Handler) error {
+	routes, ok := r.routes[method]
+	if !ok {
+		return fmt.Errorf("method %s not valid", method)
 	}
 
-	r.routes[method] = append(r.routes[method], newroute)
-	return newroute
+	routes.Add(path, handler)
+	return nil
 }
 
 /**
@@ -83,8 +58,8 @@ func (r *Router) Register(method string, path string, handlers ...Handler) *mux 
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Get(path string, handlers ...Handler) *Router {
-	r.Register("GET", path, handlers...)
+func (r *Router) Get(path string, handler Handler) *Router {
+	r.Register("GET", path, handler)
 	return r
 }
 
@@ -94,8 +69,8 @@ func (r *Router) Get(path string, handlers ...Handler) *Router {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Post(path string, handlers ...Handler) *Router {
-	r.Register("POST", path, handlers...)
+func (r *Router) Post(path string, handler Handler) *Router {
+	r.Register("POST", path, handler)
 	return r
 }
 
@@ -105,8 +80,8 @@ func (r *Router) Post(path string, handlers ...Handler) *Router {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Put(path string, handlers ...Handler) *Router {
-	r.Register("PUT", path, handlers...)
+func (r *Router) Put(path string, handler Handler) *Router {
+	r.Register("PUT", path, handler)
 	return r
 }
 
@@ -116,8 +91,8 @@ func (r *Router) Put(path string, handlers ...Handler) *Router {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Patch(path string, handlers ...Handler) {
-	r.Register("PATCH", path, handlers...)
+func (r *Router) Patch(path string, handler Handler) {
+	r.Register("PATCH", path, handler)
 }
 
 /**
@@ -126,8 +101,8 @@ func (r *Router) Patch(path string, handlers ...Handler) {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Options(path string, handlers ...Handler) *Router {
-	r.Register("OPTIONS", path, handlers...)
+func (r *Router) Options(path string, handler Handler) *Router {
+	r.Register("OPTIONS", path, handler)
 	return r
 }
 
@@ -137,8 +112,8 @@ func (r *Router) Options(path string, handlers ...Handler) *Router {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Head(path string, handlers ...Handler) *Router {
-	r.Register("HEAD", path, handlers...)
+func (r *Router) Head(path string, handler Handler) *Router {
+	r.Register("HEAD", path, handler)
 	return r
 }
 
@@ -148,8 +123,8 @@ func (r *Router) Head(path string, handlers ...Handler) *Router {
 @param {...Handler} [handler] The handler for the given route
 @returns {*Router}
 */
-func (r *Router) Delete(path string, handlers ...Handler) *Router {
-	r.Register("DELETE", path, handlers...)
+func (r *Router) Delete(path string, handler Handler) *Router {
+	r.Register("DELETE", path, handler)
 	return r
 }
 
@@ -157,44 +132,36 @@ func (r *Router) Delete(path string, handlers ...Handler) *Router {
 @info Returns all the routes in router
 @returns {map[string][]*mux}
 */
-func (r *Router) GetRouterRoutes() map[string][]*mux {
+func (r *Router) GetRouterRoutes() map[string]*Routes {
 	return r.routes
 }
 
-/**
-@info Appends all routes to core router instance
-@param {Router} [Router] The router instance to append
-@returns {Router}
-*/
-func (r *Router) UseRouter(Router *Router) *Router {
-	for routeType, list := range Router.GetRouterRoutes() {
-		r.routes[routeType] = append(r.routes[routeType], list...)
-	}
+// /**
+// @info Appends all routes to core router instance
+// @param {Router} [Router] The router instance to append
+// @returns {Router}
+// */
+// func (r *Router) UseRouter(Router *Router) *Router {
+// 	for routeType, list := range Router.GetRouterRoutes() {
+// 		r.routes[routeType] = append(r.routes[routeType], list...)
+// 	}
 
-	return r
-}
+// 	return r
+// }
 
-/**
-@info Mounts all routes to a specific path
-@param {string} [basepath] The prefix route path
-@param {Router} [Router] The router instance to append
-@returns {Router}
-*/
-func (r *Router) Mount(basepath string, Router *Router) *Router {
-	for routeType, list := range Router.GetRouterRoutes() {
-		for _, v := range list {
-			v.Path = basepath + v.Path
-			r.Register(routeType, v.Path, v.Handlers...)
-		}
-	}
+// /**
+// @info Mounts all routes to a specific path
+// @param {string} [basepath] The prefix route path
+// @param {Router} [Router] The router instance to append
+// @returns {Router}
+// */
+// func (r *Router) Mount(basepath string, Router *Router) *Router {
+// 	for routeType, list := range Router.GetRouterRoutes() {
+// 		for _, v := range list {
+// 			v.Path = basepath + v.Path
+// 			r.Register(routeType, v.Path, v.Handlers...)
+// 		}
+// 	}
 
-	return r
-}
-
-func (r *Router) next(p map[string]string, next Handler, res *Response, req *Request) {
-	for key, value := range p {
-		req.Params = append(req.Params, &Param{key, value})
-	}
-
-	next(res, req)
-}
+// 	return r
+// }

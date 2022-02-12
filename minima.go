@@ -64,30 +64,21 @@ func (m *minima) Listen(addr string) error {
 @returns {}
 */
 func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
-	match := false
+	f, params, match := m.router.routes[q.Method].Get(q.URL.Path)
 
-	for _, requestQuery := range m.router.routes[q.Method] {
-		if isMatchRoute, Params := requestQuery.matchingPath(q.URL.Path); isMatchRoute {
-			match = isMatchRoute
-			if err := q.ParseForm(); err != nil {
-				log.Printf("Error parsing form: %s", err)
-				return
-			}
-
-			currentRequest := 0
-
-			res := response(w, q, &m.properties)
-			req := request(q)
-
-			m.Middleware.ServePlugin(res, req)
-			m.router.next(Params, requestQuery.Handlers[currentRequest], res, req)
-			currentRequest++
-
-			break
+	if match {
+		if err := q.ParseForm(); err != nil {
+			log.Printf("Error parsing form: %s", err)
+			return
 		}
-	}
 
-	if !match {
+		res := response(w, q, &m.properties)
+		req := request(q)
+		req.Params = params
+
+		m.Middleware.ServePlugin(res, req)
+		f(res, req)
+	} else {
 		w.Write([]byte("No matching route found"))
 	}
 }
@@ -98,8 +89,8 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Get(path string, handler ...Handler) *minima {
-	m.router.Get(path, handler...)
+func (m *minima) Get(path string, handler Handler) *minima {
+	m.router.Get(path, handler)
 	return m
 }
 
@@ -109,8 +100,8 @@ func (m *minima) Get(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Put(path string, handler ...Handler) *minima {
-	m.router.Put(path, handler...)
+func (m *minima) Put(path string, handler Handler) *minima {
+	m.router.Put(path, handler)
 	return m
 }
 
@@ -120,8 +111,8 @@ func (m *minima) Put(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Options(path string, handler ...Handler) *minima {
-	m.router.Options(path, handler...)
+func (m *minima) Options(path string, handler Handler) *minima {
+	m.router.Options(path, handler)
 	return m
 }
 
@@ -131,8 +122,8 @@ func (m *minima) Options(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Head(path string, handler ...Handler) *minima {
-	m.router.Head(path, handler...)
+func (m *minima) Head(path string, handler Handler) *minima {
+	m.router.Head(path, handler)
 	return m
 }
 
@@ -142,8 +133,8 @@ func (m *minima) Head(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Delete(path string, handler ...Handler) *minima {
-	m.router.Delete(path, handler...)
+func (m *minima) Delete(path string, handler Handler) *minima {
+	m.router.Delete(path, handler)
 	return m
 }
 
@@ -153,8 +144,8 @@ func (m *minima) Delete(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Patch(path string, handler ...Handler) *minima {
-	m.router.Patch(path, handler...)
+func (m *minima) Patch(path string, handler Handler) *minima {
+	m.router.Patch(path, handler)
 	return m
 }
 
@@ -164,8 +155,8 @@ func (m *minima) Patch(path string, handler ...Handler) *minima {
 @param {...Handler} [handler] The handler for the given route
 @returns {*minima}
 */
-func (m *minima) Post(path string, handler ...Handler) *minima {
-	m.router.Post(path, handler...)
+func (m *minima) Post(path string, handler Handler) *minima {
+	m.router.Post(path, handler)
 	return m
 }
 
@@ -189,43 +180,43 @@ func (m *minima) UseRaw(handler rawHandle) *minima {
 	return m
 }
 
-/**
-@info Injects the routes from the router to core stack
-@param {*Router} [router] Minima router instance
-@returns {*minima}
-*/
-func (m *minima) UseRouter(router *Router) *minima {
-	m.router.UseRouter(router)
-	return m
+// /**
+// @info Injects the routes from the router to core stack
+// @param {*Router} [router] Minima router instance
+// @returns {*minima}
+// */
+// func (m *minima) UseRouter(router *Router) *minima {
+// 	m.router.UseRouter(router)
+// 	return m
 
-}
+// }
 
-/**
-@info Mounts router to a specific path
-@param {string} [path] The route path
-@param {*Router} [router] Minima router instance
-@returns {*minima}
-*/
-func (m *minima) Mount(path string, router *Router) *minima {
-	m.router.Mount(path, router)
-	return m
+// /**
+// @info Mounts router to a specific path
+// @param {string} [path] The route path
+// @param {*Router} [router] Minima router instance
+// @returns {*minima}
+// */
+// func (m *minima) Mount(path string, router *Router) *minima {
+// 	m.router.Mount(path, router)
+// 	return m
 
-}
+// }
 
-/**
-@info Injects middlewares and routers directly to core instance
-@param {*Config} [config] The config instance
-@returns {*minima}
-*/
-func (m *minima) UseConfig(config *Config) *minima {
-	for _, v := range config.Middleware {
-		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
-	}
-	for _, rt := range config.Router {
-		m.router.UseRouter(rt)
-	}
-	return m
-}
+// /**
+// @info Injects middlewares and routers directly to core instance
+// @param {*Config} [config] The config instance
+// @returns {*minima}
+// */
+// func (m *minima) UseConfig(config *Config) *minima {
+// 	for _, v := range config.Middleware {
+// 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
+// 	}
+// 	for _, rt := range config.Router {
+// 		m.router.UseRouter(rt)
+// 	}
+// 	return m
+// }
 
 /**
 @info The drain timeout for the core instance
