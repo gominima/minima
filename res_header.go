@@ -67,10 +67,9 @@ func (h *OutgoingHeader) Set(key string, value string) *OutgoingHeader {
 }
 
 /**
-@info Sets new header to response
-@param {string} [key] Key of the new header
-@param {string} [value] Value of the new header
-@returns {OutgoingHeader}
+@info Gets the header from response headers
+@param {string} [key] Key of the header
+@returns {string}
 */
 func (h *OutgoingHeader) Get(key string) string {
 	return h.res.Header().Get(key)
