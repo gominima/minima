@@ -32,21 +32,18 @@ func TestRoutes(t *testing.T) {
 		},
 	}
 
-	var result string
 	routes := NewRoutes()
 	for _, test := range tests {
 		test := test
 		routes.Add(test.route, func(res *Response, req *Request) {
-			require.Equal(t, test.variables, req.Params)
-			result = test.route
 		})
 	}
 
 	for _, test := range tests {
 		t.Run(test.route, func(t *testing.T) {
-			ok := routes.Run(test.path, nil, &Request{})
+			_, params, ok := routes.Get(test.path)
 			require.True(t, ok)
-			require.Equal(t, test.route, result)
+			require.Equal(t, test.variables, params)
 		})
 	}
 }

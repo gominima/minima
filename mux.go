@@ -75,24 +75,24 @@ func (r *Routes) Add(path string, f Handler) {
 	})
 }
 
-func (r *Routes) Run(path string, res *Response, req *Request) bool {
+func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 	var routes []Route
 	remaining := path
 	for {
 		var ok bool
 		routes, ok = r.roots[remaining]
 		if ok {
-			return matchRoutes(path, routes, res, req)
+			return matchRoutes(path, routes)
 
 		}
 
 		if len(remaining) < 2 {
-			return false
+			return nil, nil, false
 		}
 
 		index := strings.LastIndex(remaining, "/")
 		if index < 0 {
-			return false
+			return nil, nil, false
 		}
 
 		if index > 0 {
@@ -106,9 +106,7 @@ func (r *Routes) Run(path string, res *Response, req *Request) bool {
 func matchRoutes(
 	path string,
 	routes []Route,
-	res *Response,
-	req *Request,
-) bool {
+) (Handler, map[string]string, bool) {
 	for _, r := range routes {
 		params := strings.Split(
 			strings.TrimPrefix(
@@ -122,12 +120,10 @@ func matchRoutes(
 			for i, n := range r.partNames {
 				paramNames[n] = params[i]
 			}
-			req.Params = paramNames
-			r.function(res, req)
-			return true
+			return r.function, paramNames, true
 		}
 	}
-	return false
+	return nil, nil, false
 }
 
 func cleanArray(a []string) []string {
