@@ -188,9 +188,8 @@ func (r *Request) SetHeader(key string, value string) *Request {
 /**
 @info Get a paticular Header by its key
 @param {string} [key] key of the Header
-@returns {*Request}
+@returns {string}
 */
-func (r *Request) GetHeader(key string) *Request {
-	r.header.Get(key)
-	return r
+func (r *Request) GetHeader(key string) string {
+	return r.header.Get(key)
 }

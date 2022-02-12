@@ -118,7 +118,7 @@ func (h *OutgoingHeader) Status(code int) *OutgoingHeader {
 @info Sends good stack of base headers
 @returns {}
 */
-func (h *OutgoingHeader) SetBaseHeaders() {
+func (h *OutgoingHeader) BaseHeaders() {
 	h.Set("transfer-encoding", "chunked")
 	h.Set("connection", "keep-alive")
 }
