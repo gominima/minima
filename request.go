@@ -118,14 +118,6 @@ func (r *Request) GetBodyValue(key string) []string {
 }
 
 /**
-@info Gets raw IncomingHeader instance
-@returns {IncomingHeader}
-*/
-func (r *Request) Header() *IncomingHeader {
-	return r.header
-}
-
-/**
 @info Gets raw json decoder instance
 @returns {json.Decoder}
 */
@@ -167,17 +159,38 @@ func (r *Request) Cookies() []*http.Cookie {
 }
 
 /**
-@info Get a paticular cookie by its name
-@param {string} [name] name of the cookie
+@info Get a paticular cookie by its key
+@param {string} [key] key of the cookie
 @returns {*http.Cookie}
 */
-func (r *Request) Cookie(name string) *http.Cookie {
+func (r *Request) Cookie(key string) *http.Cookie {
 	var result *http.Cookie
 	for _, cookie := range r.Cookies() {
-		if cookie.Name == name {
+		if cookie.Name == key {
 			result = cookie
 		}
 	}
 
 	return result
+}
+
+/**
+@info Set a paticular Header
+@param {string} [key] key of the Header
+@param {string} [value] value of the Header
+@returns {*Request}
+*/
+func (r *Request) SetHeader(key string, value string) *Request {
+	r.header.Set(key, value)
+	return r
+}
+
+/**
+@info Get a paticular Header by its key
+@param {string} [key] key of the Header
+@returns {*Request}
+*/
+func (r *Request) GetHeader(key string) *Request {
+	r.header.Get(key)
+	return r
 }
