@@ -49,11 +49,70 @@ func response(rw http.ResponseWriter, req *http.Request, props *map[string]inter
 }
 
 /**
-@info Returns a outgoing header instance
-@returns {OutgoingHeader}
+@info Gets header from response
+@param {string} [key] Key of the header
+@returns {string}
 */
-func (res *Response) Header() *OutgoingHeader {
-	return res.header
+func (res *Response) GetHeader(key string) string {
+	return res.header.Get(key)
+}
+
+/**
+@info Sets headers for response
+@param {string} [key] Key of the header
+@param {string} [value] Value of the header
+@returns {string}
+*/
+func (res *Response) SetHeader(key string, value string) *Response {
+	res.header.Set(key, value)
+	return res
+}
+
+/**
+@info Gets header from response
+@param {string} [key] Key of the header
+@returns {string}
+*/
+func (res *Response) DelHeader(key string) *Response {
+	res.header.Del(key)
+	return res
+}
+
+/**
+@info Clones all header from response
+@returns {http.Header}
+*/
+func (res *Response) CloneHeaders() http.Header {
+	return res.header.Clone()
+
+}
+
+/**
+@info Sets length of the response body
+@param {string} [len] length value of the header
+@returns {*Response}
+*/
+func (res *Response) Setlength(len string) *Response {
+	res.header.Setlength(len)
+	return res
+}
+
+/**
+@info Sets a good stack of base headers for response
+@returns {*Response}
+*/
+func (res *Response) SetBaseHeaders() *Response {
+	res.header.BaseHeaders()
+	return res
+}
+
+/**
+@info Flushes headers to the response body
+@returns {*Response}
+*/
+func (res *Response) FlushHeaders() *Response {
+	res.header.Flush()
+	return res
 }
 
 /**
