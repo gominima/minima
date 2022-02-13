@@ -16,10 +16,10 @@ func main() {
 		response.CloseConn()
 
 	})
-	router.Get("/", func(res *minima.Response, req *minima.Request) {
+	router.Get("/hi", func(res *minima.Response, req *minima.Request) {
 		res.OK().Send("Hello World")
 	})
-	app.UseRouter(router)
+	app.Mount("/api", router)
 	app.Listen(":3000")
 
 }

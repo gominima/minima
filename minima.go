@@ -191,17 +191,17 @@ func (m *minima) UseRouter(router *Router) *minima {
 
 }
 
-// /**
-// @info Mounts router to a specific path
-// @param {string} [path] The route path
-// @param {*Router} [router] Minima router instance
-// @returns {*minima}
-// */
-// func (m *minima) Mount(path string, router *Router) *minima {
-// 	m.router.Mount(path, router)
-// 	return m
+/**
+@info Mounts router to a specific path
+@param {string} [path] The route path
+@param {*Router} [router] Minima router instance
+@returns {*minima}
+*/
+func (m *minima) Mount(path string, router *Router) *minima {
+	m.router.Mount(path, router)
+	return m
 
-// }
+}
 
 // /**
 // @info Injects middlewares and routers directly to core instance

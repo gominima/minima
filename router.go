@@ -152,19 +152,21 @@ func (r *Router) UseRouter(Router *Router) *Router {
 	return r
 }
 
-// /**
-// @info Mounts all routes to a specific path
-// @param {string} [basepath] The prefix route path
-// @param {Router} [Router] The router instance to append
-// @returns {Router}
-// */
-// func (r *Router) Mount(basepath string, Router *Router) *Router {
-// 	for routeType, list := range Router.GetRouterRoutes() {
-// 		for _, v := range list {
-// 			v.Path = basepath + v.Path
-// 			r.Register(routeType, v.Path, v.Handlers...)
-// 		}
-// 	}
 
-// 	return r
-// }
+/**
+@info Mounts router to a specific path
+@param {string} [path] The route path
+@param {*Router} [router] Minima router instance
+@returns {*Router}
+*/
+func (r *Router) Mount(path string , Router *Router) *Router {
+	for t, v := range Router.GetRouterRoutes() {
+		for i, vl := range v.roots {
+			for _, handle := range vl {
+				r.Register(t, path+i, handle.function)
+			}
+		}
+	}
+	return r
+}
+
