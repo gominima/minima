@@ -180,16 +180,16 @@ func (m *minima) UseRaw(handler rawHandle) *minima {
 	return m
 }
 
-// /**
-// @info Injects the routes from the router to core stack
-// @param {*Router} [router] Minima router instance
-// @returns {*minima}
-// */
-// func (m *minima) UseRouter(router *Router) *minima {
-// 	m.router.UseRouter(router)
-// 	return m
+/**
+@info Injects the routes from the router to core stack
+@param {*Router} [router] Minima router instance
+@returns {*minima}
+*/
+func (m *minima) UseRouter(router *Router) *minima {
+	m.router.UseRouter(router)
+	return m
 
-// }
+}
 
 // /**
 // @info Mounts router to a specific path

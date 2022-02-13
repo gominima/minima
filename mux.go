@@ -103,10 +103,7 @@ func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 	}
 }
 
-func matchRoutes(
-	path string,
-	routes []Route,
-) (Handler, map[string]string, bool) {
+func matchRoutes(path string, routes []Route) (Handler, map[string]string, bool) {
 	for _, r := range routes {
 		params := strings.Split(
 			strings.TrimPrefix(

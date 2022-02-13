@@ -136,18 +136,21 @@ func (r *Router) GetRouterRoutes() map[string]*Routes {
 	return r.routes
 }
 
-// /**
-// @info Appends all routes to core router instance
-// @param {Router} [Router] The router instance to append
-// @returns {Router}
-// */
-// func (r *Router) UseRouter(Router *Router) *Router {
-// 	for routeType, list := range Router.GetRouterRoutes() {
-// 		r.routes[routeType] = append(r.routes[routeType], list...)
-// 	}
-
-// 	return r
-// }
+/**
+@info Appends all routes to core router instance
+@param {Router} [Router] The router instance to append
+@returns {Router}
+*/
+func (r *Router) UseRouter(Router *Router) *Router {
+	for t, v := range Router.GetRouterRoutes() {
+		for i, vl := range v.roots {
+			for _, handle := range vl {
+				r.Register(t, i, handle.function)
+			}
+		}
+	}
+	return r
+}
 
 // /**
 // @info Mounts all routes to a specific path
