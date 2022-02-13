@@ -1,9 +1,7 @@
 package main
 
 import (
-
 	"github.com/gominima/minima"
-
 )
 
 func main() {
@@ -18,6 +16,9 @@ func main() {
 	})
 	router.Get("/hi", func(res *minima.Response, req *minima.Request) {
 		res.OK().Send("Hello World")
+	})
+	app.NotFound(func(res *minima.Response, req *minima.Request) {
+		res.NotFound().Send("Not found handler")
 	})
 	app.Mount("/api", router)
 	app.Listen(":3000")

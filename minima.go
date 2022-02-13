@@ -79,7 +79,14 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 		m.Middleware.ServePlugin(res, req)
 		f(res, req)
 	} else {
-		w.Write([]byte("No matching route found"))
+		res := response(w, q, &m.properties)
+		req := request(q)
+		if m.router.notfound != nil {
+			m.router.notfound(res, req)
+		} else {
+			w.Write([]byte("No matching route found"))
+		}
+
 	}
 }
 
@@ -162,7 +169,7 @@ func (m *minima) Post(path string, handler Handler) *minima {
 
 /**
 @info Injects the given handler to middleware stack
-@param {Handler} [handler] Minima handler instance or net/http handler instance
+@param {Handler} [handler] Minima handler instance
 @returns {*minima}
 */
 func (m *minima) Use(handler Handler) *minima {
@@ -177,6 +184,16 @@ func (m *minima) Use(handler Handler) *minima {
 */
 func (m *minima) UseRaw(handler rawHandle) *minima {
 	m.Middleware.AddRawPlugin(handler)
+	return m
+}
+
+/**
+@info Injects the NotFound handler to the minima instance
+@param {Handler} [handler] Minima handler instance
+@returns {*minima}
+*/
+func (m *minima) NotFound(handler Handler) *minima {
+	m.router.NotFound(handler)
 	return m
 }
 

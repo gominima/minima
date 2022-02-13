@@ -16,7 +16,8 @@ type Handler func(res *Response, req *Request)
 @property {map[string][]*mux} [route] The mux routes
 */
 type Router struct {
-	routes map[string]*Routes
+	notfound Handler
+	routes   map[string]*Routes
 }
 
 /**
@@ -50,6 +51,11 @@ func (r *Router) Register(method string, path string, handler Handler) error {
 
 	routes.Add(path, handler)
 	return nil
+}
+
+func (r *Router) NotFound(handler Handler) *Router {
+	r.notfound = handler
+	return r
 }
 
 /**
@@ -152,14 +158,13 @@ func (r *Router) UseRouter(Router *Router) *Router {
 	return r
 }
 
-
 /**
 @info Mounts router to a specific path
 @param {string} [path] The route path
 @param {*Router} [router] Minima router instance
 @returns {*Router}
 */
-func (r *Router) Mount(path string , Router *Router) *Router {
+func (r *Router) Mount(path string, Router *Router) *Router {
 	for t, v := range Router.GetRouterRoutes() {
 		for i, vl := range v.roots {
 			for _, handle := range vl {
@@ -169,4 +174,3 @@ func (r *Router) Mount(path string , Router *Router) *Router {
 	}
 	return r
 }
-
