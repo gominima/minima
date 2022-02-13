@@ -4,23 +4,42 @@ import (
 	"strings"
 )
 
-
+/**
+@info The Route structure
+@property {string} [prefix] The prefix of the route
+@property {[]sting} [partnames] The route paths split into parts
+@property {function} [Handler] The handler to be used
+*/
 type Route struct {
 	prefix    string
 	partNames []string
 	function  Handler
 }
 
+/**
+@info The Routes root structure
+@property {map[string][]Route} [roots] The map of array routes
+*/
 type Routes struct {
 	roots map[string][]Route
 }
 
+/**
+@info Makes a new Routes instance
+@returns {*Routes}
+*/
 func NewRoutes() *Routes {
 	return &Routes{
 		roots: make(map[string][]Route),
 	}
 }
 
+/**
+@info Adds a new route to the routes table
+@param {string} [path] Path of the route
+@param {Handler} [handler] Handler of the route
+@returns {}
+*/
 func (r *Routes) Add(path string, f Handler) {
 	parts := strings.Split(path, "/")
 	var rootParts []string
@@ -42,6 +61,11 @@ func (r *Routes) Add(path string, f Handler) {
 	})
 }
 
+/**
+@info Gets handler and params from the routes table
+@param {string} [path] Path of the route to find
+@returns {Handler, map[string]string, bool}
+*/
 func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 	var routes []Route
 	remaining := path
@@ -70,6 +94,12 @@ func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 	}
 }
 
+/**
+@info Matches routes to the request
+@param {string} [path] Path of the request route to find
+@param {[]Route} [routes] The array of routes to match
+@returns {Handler, map[string]string, bool}
+*/
 func matchRoutes(path string, routes []Route) (Handler, map[string]string, bool) {
 	for _, r := range routes {
 		params := strings.Split(
