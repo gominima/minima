@@ -40,7 +40,12 @@ func NewRoutes() *Routes {
 @param {Handler} [handler] Handler of the route
 @returns {}
 */
-func (r *Routes) Add(path string, f Handler) {
+func (r *Routes) Add(p string, f Handler) {
+	var path string
+	path = p
+	if p[len(p)-1:] == "/" && p != "/" {
+		path = strings.TrimSuffix(p, p[len(p)-1:])
+	}
 	parts := strings.Split(path, "/")
 	var rootParts []string
 	var varParts []string
