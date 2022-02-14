@@ -50,7 +50,7 @@ func main() {
 	app := minima.New()
 
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
-		res.Status(200).Send("Hello World")
+		res.OK().Send("Hello World")
 	})
 
 	app.Listen(":3000")
@@ -98,10 +98,10 @@ func UserGetRouter() *minima.Router {
 		if err != nil {
 			panic(err)
 			// check for errors
-			response.Status(404).Send("No user found with particular id")
+			response.NotFound().Send("No user found with particular id")
 		}
 		// send user data
-		response.Json(userdata).Status(200)
+		response.Json(userdata).OK()
 	})
 }
 
