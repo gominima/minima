@@ -9,17 +9,6 @@ import (
 )
 
 /**
-@info The request param structure
-@property {string} [Path] Route path of the param
-@property {string} [key] Key for the param
-@property {string} [value] Value of the param
-*/
-type Param struct {
-	key   string
-	value string
-}
-
-/**
 @info The request structure
 @property {*http.Request} [ref] The net/http request instance
 @property {multipart.Reader} [fileReader] file reader instance
