@@ -160,7 +160,6 @@ outer:
 	return nil, nil, false
 }
 
-
 /**
 @info Cleans the array and finds non nill values
 @param {string} [path] The array of string to slice and clean

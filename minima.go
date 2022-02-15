@@ -79,8 +79,8 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 
 	if match {
 		if err := q.ParseForm(); err != nil {
-		  log.Printf("Error parsing form: %s", err)
-		  return
+			log.Printf("Error parsing form: %s", err)
+			return
 		}
 
 		res := response(w, q, &m.properties)
@@ -185,16 +185,6 @@ func (m *minima) Post(path string, handler Handler) *minima {
 */
 func (m *minima) Use(handler Handler) *minima {
 	m.Middleware.AddPlugin(handler)
-	return m
-}
-
-/**
-@info Injects the raw net/http handler to middleware stack
-@param {rawHandle} [handler] net/http handler instance
-@returns {*minima}
-*/
-func (m *minima) UseRaw(handler rawHandle) *minima {
-	m.Middleware.AddRawPlugin(handler)
 	return m
 }
 

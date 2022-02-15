@@ -291,8 +291,13 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 #### Lead Maintainers
 
 - [@apoorvcodes](https://github.com/apoorvcodes)
-- [@savioxavier](https://github.com/savioxavier)
 - [@megatank58](https://github.com/megatank58)
+
+#### Core Team
+- [@apoorvcodes](https://github.com/apoorvcodes)
+- [@megatank58](https://github.com/megatank58)
+- [@Shubhaankar-Sharma](https://github.com/Shubhaankar-Sharma)
+- [@savioxavier](https://github.com/savioxavier)
 
 #### Community Contributors
 
@@ -301,7 +306,6 @@ Thanks to all the contributors, without whom this project would not have been po
 <a href="https://github.com/gominima/minima/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gominima/minima" />
 </a>
-
 <br>
 
 Be a part of this contribution list by contributing today!
@@ -315,6 +319,3 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 <br />
 <br />
 
-<p align="center">
-<strong>Happy coding ahead with Minima!</strong>
-</p>
