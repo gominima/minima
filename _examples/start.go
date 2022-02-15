@@ -7,7 +7,7 @@ import (
 func main() {
 	app := minima.New()
 	router := minima.NewRouter()
-	app.Get("/test/:name/ok/:id", func(response *minima.Response, request *minima.Request) {
+	app.Get("/test/:name/user/:id", func(response *minima.Response, request *minima.Request) {
 		p := request.GetParam("name")
 		v := request.GetParam("id")
 		response.NotFound().Send("Hello").Send(p).Send(v)

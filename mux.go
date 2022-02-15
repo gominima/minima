@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+/**
+@info The Param structure
+@property {string} [name] The name of the param
+@property {bool} [fixed] Whether the param is fixed or not
+*/
 type param struct {
 	name  string
 	fixed bool
@@ -12,7 +17,7 @@ type param struct {
 /**
 @info The Route structure
 @property {string} [prefix] The prefix of the route
-@property {[]sting} [partnames] The route paths split into parts
+@property {[]param} [partnames] The route paths split into parts
 @property {function} [Handler] The handler to be used
 */
 type Route struct {
@@ -153,6 +158,12 @@ outer:
 	return nil, nil, false
 }
 
+
+/**
+@info Cleans the array and finds non nill values
+@param {string} [path] The array of string to slice and clean
+@returns {[]string}
+*/
 func cleanArray(a []string) []string {
 	var valid []string
 	for _, s := range a {
