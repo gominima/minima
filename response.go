@@ -215,12 +215,12 @@ func (res *Response) Render(path string, data interface{}) *Response {
 @returns {error}
 */
 func (res *Response) CloseConn() error {
-	var returnerr error
+	var returnErr error
 	if w, ok := res.ref.(io.Closer); ok {
 		err := w.Close()
-		returnerr = err
+		returnErr = err
 	}
-	return returnerr
+	return returnErr
 }
 
 /**
