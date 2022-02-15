@@ -199,6 +199,16 @@ func (m *minima) NotFound(handler Handler) *minima {
 }
 
 /**
+@info Injects the NotFound handler to the minima instance
+@param {Handler} [handler] Minima handler instance
+@returns {*minima}
+*/
+func (m *minima) NotFound(handler Handler) *minima {
+	m.router.NotFound(handler)
+	return m
+}
+
+/**
 @info Injects the routes from the router to core stack
 @param {*Router} [router] Minima router instance
 @returns {*minima}

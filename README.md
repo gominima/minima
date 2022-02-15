@@ -50,7 +50,7 @@ func main() {
 	app := minima.New()
 
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
-		res.Status(200).Send("Hello World")
+		res.OK().Send("Hello World")
 	})
 
 	app.Listen(":3000")
@@ -85,11 +85,13 @@ Here are some basic examples related to routing and params:
 func UserGetRouter() *minima.Router {
 	// router instance which would be used by the main router
 	router := minima.NewRouter()
-	return router.Get("/user/:id?q", func(response *minima.Response, request *minima.Request) {
+
+	return router.Get("/user/:id", func(response *minima.Response, request *minima.Request) {
 		// getting the id parameter from route
 		id := request.GetParam("id")
 
 		// instead of adding a param in route, you just need to add ?q slug to the path
+
 		username := request.GetQuery("name")
 
 		// get user from database
@@ -98,10 +100,10 @@ func UserGetRouter() *minima.Router {
 		if err != nil {
 			panic(err)
 			// check for errors
-			response.Status(404).Send("No user found with particular id")
+			response.NotFound().Send("No user found with particular id")
 		}
 		// send user data
-		response.Json(userdata).Status(200)
+		response.Json(userdata).OK()
 	})
 }
 
@@ -142,9 +144,10 @@ func main() {
 func main() {
 	app := minima.New()
 
-	app.Get("/getuser?q", func(response *minima.Response, request *minima.Request) {
+	app.Get("/getuser", func(response *minima.Response, request *minima.Request) {
 		// query params work a bit differently
 		// instead of adding a param in route, you just need to add ?q slug to the path
+
 		userid := request.GetQuery("id")
 
 		if userid == "" {
