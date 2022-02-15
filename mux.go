@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+type param struct {
+	name  string
+	fixed bool
+}
+
 /**
 @info The Route structure
 @property {string} [prefix] The prefix of the route
@@ -12,7 +17,7 @@ import (
 */
 type Route struct {
 	prefix    string
-	partNames []string
+	partNames []param
 	function  Handler
 }
 
@@ -48,10 +53,25 @@ func (r *Routes) Add(p string, f Handler) {
 	}
 	parts := strings.Split(path, "/")
 	var rootParts []string
-	var varParts []string
+	var varParts []param
+	var paramsFound bool
 	for _, p := range parts {
 		if strings.HasPrefix(p, ":") {
-			varParts = append(varParts, strings.TrimPrefix(p, ":"))
+			paramsFound = true
+		}
+
+		if paramsFound {
+			if strings.HasPrefix(p, ":") {
+				varParts = append(varParts, param{
+					name:  strings.TrimPrefix(p, ":"),
+					fixed: false,
+				})
+			} else {
+				varParts = append(varParts, param{
+					name:  p,
+					fixed: true,
+				})
+			}
 		} else {
 			rootParts = append(rootParts, p)
 		}
@@ -106,6 +126,7 @@ func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 @returns {Handler, map[string]string, bool}
 */
 func matchRoutes(path string, routes []Route) (Handler, map[string]string, bool) {
+outer:
 	for _, r := range routes {
 		params := strings.Split(
 			strings.TrimPrefix(
@@ -116,8 +137,15 @@ func matchRoutes(path string, routes []Route) (Handler, map[string]string, bool)
 
 		if len(valid) == len(r.partNames) {
 			paramNames := make(map[string]string)
-			for i, n := range r.partNames {
-				paramNames[n] = params[i]
+			for i, p := range r.partNames {
+				if p.fixed {
+					if params[i] != p.name {
+						continue outer
+					} else {
+						continue
+					}
+				}
+				paramNames[p.name] = params[i]
 			}
 			return r.function, paramNames, true
 		}
