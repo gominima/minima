@@ -79,8 +79,8 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 
 	if match {
 		if err := q.ParseForm(); err != nil {
-			log.Printf("Error parsing form: %s", err)
-			return
+		  log.Printf("Error parsing form: %s", err)
+		  return
 		}
 
 		res := response(w, q, &m.properties)
