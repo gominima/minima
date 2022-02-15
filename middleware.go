@@ -7,8 +7,6 @@ type rawHandle func(rw http.ResponseWriter, r *http.Request)
 /**
 @info The Middleware structure
 @property {Handler} [handler] The handler to be used
-@property {bool} [israw] Whether the handler is raw net/http or not
-@property {rawHandle} [rawHandler] The raw handler to be used
 */
 type Middleware struct {
 	handler Handler
