@@ -52,7 +52,7 @@ func NewRoutes() *Routes {
 func (r *Routes) Add(p string, f Handler) {
 	var path string
 	path = p
-  if p[len(p)-2:] == "?q" && p != "/" {
+	if p[len(p)-2:] == "?q" && p != "/" {
 		path = strings.TrimSuffix(p, p[len(p)-2:])
 	}
 	if p[len(p)-1:] == "/" && p != "/" {
