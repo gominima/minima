@@ -30,6 +30,17 @@ type minima struct {
 
 /**
 @info Make a new default minima instance
+@example `
+func main() {
+	app := minima.New()
+
+	app.Get("/", func(res *minima.Response, req *minima.Request) {
+		res.Status(200).Send("Hello World")
+	})
+
+	app.Listen(":3000")
+}
+`
 @returns {minima}
 */
 func New() *minima {
@@ -220,20 +231,20 @@ func (m *minima) Mount(path string, router *Router) *minima {
 
 }
 
-// /**
-// @info Injects middlewares and routers directly to core instance
-// @param {*Config} [config] The config instance
-// @returns {*minima}
-// */
-// func (m *minima) UseConfig(config *Config) *minima {
-// 	for _, v := range config.Middleware {
-// 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
-// 	}
-// 	for _, rt := range config.Router {
-// 		m.router.UseRouter(rt)
-// 	}
-// 	return m
-// }
+/**
+@info Injects middlewares and routers directly to core instance
+@param {*Config} [config] The config instance
+@returns {*minima}
+*/
+func (m *minima) UseConfig(config *Config) *minima {
+	for _, v := range config.Middleware {
+		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
+	}
+	for _, rt := range config.Router {
+		m.router.UseRouter(rt)
+	}
+	return m
+}
 
 /**
 @info The drain timeout for the core instance

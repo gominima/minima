@@ -13,7 +13,8 @@ type Handler func(res *Response, req *Request)
 
 /**
 @info The router structure
-@property {map[string][]*mux} [route] The mux routes
+@property {map[string][]*Routes} [routes] The mux routes
+@property {Handler} [notfound] The handler for the non matching routes
 */
 type Router struct {
 	notfound Handler

@@ -18,7 +18,7 @@ type param struct {
 @info The Route structure
 @property {string} [prefix] The prefix of the route
 @property {[]param} [partnames] The route paths split into parts
-@property {function} [Handler] The handler to be used
+@property {Handler} [function] The handler to be used
 */
 type Route struct {
 	prefix    string
@@ -48,7 +48,6 @@ func NewRoutes() *Routes {
 @info Adds a new route to the routes table
 @param {string} [path] Path of the route
 @param {Handler} [handler] Handler of the route
-@returns {}
 */
 func (r *Routes) Add(p string, f Handler) {
 	var path string
