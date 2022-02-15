@@ -90,7 +90,7 @@ func UserGetRouter() *minima.Router {
 		// getting the id parameter from route
 		id := request.GetParam("id")
 
-		// instead of adding a param in route, you just need to add ?q slug to the path
+		// instead of adding a param in route, you just need to fetch them
 
 		username := request.GetQuery("name")
 
@@ -146,7 +146,7 @@ func main() {
 
 	app.Get("/getuser", func(response *minima.Response, request *minima.Request) {
 		// query params work a bit differently
-		// instead of adding a param in route, you just need to add ?q slug to the path
+		// instead of adding a param in route, you just need to fetch them
 
 		userid := request.GetQuery("id")
 
