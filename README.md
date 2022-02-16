@@ -85,11 +85,13 @@ Here are some basic examples related to routing and params:
 func UserGetRouter() *minima.Router {
 	// router instance which would be used by the main router
 	router := minima.NewRouter()
+
 	return router.Get("/user/:id", func(response *minima.Response, request *minima.Request) {
 		// getting the id parameter from route
 		id := request.GetParam("id")
 
-		// as query params are not part of the request path, they wont be added to the route
+		// instead of adding a param in route, you just need to fetch it
+
 		username := request.GetQuery("name")
 
 		// get user from database
@@ -144,7 +146,8 @@ func main() {
 
 	app.Get("/getuser", func(response *minima.Response, request *minima.Request) {
 		// query params work a bit differently
-		// instead of adding a param in route, you just need to fetch the param
+		// instead of adding a param in route, you just need to fetch it
+
 		userid := request.GetQuery("id")
 
 		if userid == "" {
@@ -291,8 +294,13 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 #### Lead Maintainers
 
 - [@apoorvcodes](https://github.com/apoorvcodes)
-- [@savioxavier](https://github.com/savioxavier)
 - [@megatank58](https://github.com/megatank58)
+
+#### Core Team
+- [@apoorvcodes](https://github.com/apoorvcodes)
+- [@megatank58](https://github.com/megatank58)
+- [@Shubhaankar-Sharma](https://github.com/Shubhaankar-Sharma)
+- [@savioxavier](https://github.com/savioxavier)
 
 #### Community Contributors
 
@@ -301,7 +309,6 @@ Thanks to all the contributors, without whom this project would not have been po
 <a href="https://github.com/gominima/minima/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gominima/minima" />
 </a>
-
 <br>
 
 Be a part of this contribution list by contributing today!
@@ -315,6 +322,3 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 <br />
 <br />
 
-<p align="center">
-<strong>Happy coding ahead with Minima!</strong>
-</p>

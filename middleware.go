@@ -7,13 +7,9 @@ type rawHandle func(rw http.ResponseWriter, r *http.Request)
 /**
 @info The Middleware structure
 @property {Handler} [handler] The handler to be used
-@property {bool} [israw] Whether the handler is raw net/http or not
-@property {rawHandle} [rawHandler] The raw handler to be used
 */
 type Middleware struct {
-	handler    Handler
-	israw      bool
-	rawHandler rawHandle
+	handler Handler
 }
 
 /**
@@ -36,15 +32,7 @@ func use() *Plugins {
 @param {Handler} [handler] The handler to add
 */
 func (p *Plugins) AddPlugin(handler Handler) {
-	p.plugin = append(p.plugin, &Middleware{handler: handler, israw: false})
-}
-
-/**
-@info Add a raw net/http plugin
-@param {rawHandle} [handler] The raw handler to add
-*/
-func (p *Plugins) AddRawPlugin(handler rawHandle) {
-	p.plugin = append(p.plugin, &Middleware{rawHandler: handler, israw: true})
+	p.plugin = append(p.plugin, &Middleware{handler: handler})
 }
 
 /**
@@ -54,10 +42,8 @@ func (p *Plugins) AddRawPlugin(handler rawHandle) {
 */
 func (p *Plugins) ServePlugin(res *Response, req *Request) {
 	for _, v := range p.plugin {
-		if v.israw {
-			v.rawHandler(res.Raw(), req.Raw())
-		} else {
-			v.handler(res, req)
-		}
+
+		v.handler(res, req)
+
 	}
 }

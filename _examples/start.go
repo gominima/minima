@@ -14,8 +14,8 @@ func main() {
 		response.CloseConn()
 
 	})
-	router.Get("/hi/", func(res *minima.Response, req *minima.Request) {
-		res.OK().Send("Hello World")
+	router.Get("/hi", func(res *minima.Response, req *minima.Request) {
+		res.OK().Send("Hello World").Send(req.GetQuery("name"))
 	})
 	app.NotFound(func(res *minima.Response, req *minima.Request) {
 		res.NotFound().Send("Not found handler")
