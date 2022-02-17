@@ -24,7 +24,6 @@ type minima struct {
 	router     *Router
 	properties map[string]interface{}
 	Config     *Config
-	Middleware *Plugins
 	drain      time.Duration
 }
 
@@ -47,7 +46,6 @@ func New() *minima {
 	return &minima{
 		router:     NewRouter(),
 		Config:     NewConfig(),
-		Middleware: use(),
 		drain:      0,
 	}
 }
@@ -87,7 +85,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 		req := request(q)
 		req.Params = params
 
-		m.Middleware.ServePlugin(res, req)
+		// m.Middleware.ServePlugin(res, req)
 		f(res, req)
 	} else {
 		res := response(w, q, &m.properties)
@@ -178,15 +176,15 @@ func (m *minima) Post(path string, handler Handler) *minima {
 	return m
 }
 
-/**
-@info Injects the given handler to middleware stack
-@param {Handler} [handler] Minima handler instance
-@returns {*minima}
-*/
-func (m *minima) Use(handler Handler) *minima {
-	m.Middleware.AddPlugin(handler)
-	return m
-}
+// /**
+// @info Injects the given handler to middleware stack
+// @param {Handler} [handler] Minima handler instance
+// @returns {*minima}
+// */
+// func (m *minima) Use(handler Handler) *minima {
+// 	m.Middleware.AddPlugin(handler)
+// 	return m
+// }
 
 /**
 @info Injects the NotFound handler to the minima instance
@@ -221,20 +219,20 @@ func (m *minima) Mount(path string, router *Router) *minima {
 
 }
 
-/**
-@info Injects middlewares and routers directly to core instance
-@param {*Config} [config] The config instance
-@returns {*minima}
-*/
-func (m *minima) UseConfig(config *Config) *minima {
-	for _, v := range config.Middleware {
-		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
-	}
-	for _, rt := range config.Router {
-		m.router.UseRouter(rt)
-	}
-	return m
-}
+// /**
+// @info Injects middlewares and routers directly to core instance
+// @param {*Config} [config] The config instance
+// @returns {*minima}
+// */
+// func (m *minima) UseConfig(config *Config) *minima {
+// 	for _, v := range config.Middleware {
+// 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
+// 	}
+// 	for _, rt := range config.Router {
+// 		m.router.UseRouter(rt)
+// 	}
+// 	return m
+// }
 
 /**
 @info The drain timeout for the core instance
