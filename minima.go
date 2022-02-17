@@ -18,13 +18,15 @@ import (
 @property {*time.Duration} [drain] The router's drain time
 */
 type minima struct {
-	server     *http.Server
-	started    bool
-	Timeout    time.Duration
-	router     *Router
-	properties map[string]interface{}
-	Config     *Config
-	drain      time.Duration
+	server        *http.Server
+	started       bool
+	Timeout       time.Duration
+	router        *Router
+	minmiddleware []Handler
+	rawmiddleware []http.HandlerFunc
+	properties    map[string]interface{}
+	Config        *Config
+	drain         time.Duration
 }
 
 /**
@@ -44,9 +46,9 @@ func main() {
 */
 func New() *minima {
 	return &minima{
-		router:     NewRouter(),
-		Config:     NewConfig(),
-		drain:      0,
+		router: NewRouter(),
+		Config: NewConfig(),
+		drain:  0,
 	}
 }
 
@@ -85,7 +87,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
 		req := request(q)
 		req.Params = params
 
-		// m.Middleware.ServePlugin(res, req)
+		m.ServeMiddleware(res, req)
 		f(res, req)
 	} else {
 		res := response(w, q, &m.properties)
@@ -219,20 +221,19 @@ func (m *minima) Mount(path string, router *Router) *minima {
 
 }
 
-// /**
-// @info Injects middlewares and routers directly to core instance
-// @param {*Config} [config] The config instance
-// @returns {*minima}
-// */
-// func (m *minima) UseConfig(config *Config) *minima {
-// 	for _, v := range config.Middleware {
-// 		m.Middleware.plugin = append(m.Middleware.plugin, &Middleware{handler: v})
-// 	}
-// 	for _, rt := range config.Router {
-// 		m.router.UseRouter(rt)
-// 	}
-// 	return m
-// }
+/**
+@info Injects middlewares and routers directly to core instance
+@param {*Config} [config] The config instance
+@returns {*minima}
+*/
+func (m *minima) UseConfig(config *Config) *minima {
+	m.minmiddleware = append(m.minmiddleware, config.Middleware...)
+	m.rawmiddleware = append(m.rawmiddleware, config.HttpHandler...)
+	for _, router := range config.Router {
+		m.UseRouter(router)
+	}
+	return m
+}
 
 /**
 @info The drain timeout for the core instance
@@ -272,4 +273,26 @@ func (m *minima) SetProp(key string, value interface{}) *minima {
 */
 func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
+}
+
+func (m *minima) Use(handler ...Handler) {
+	m.minmiddleware = append(m.minmiddleware, handler...)
+}
+
+func (m *minima) UseRaw(handler ...http.HandlerFunc) {
+	m.rawmiddleware = append(m.rawmiddleware, handler...)
+}
+func (m *minima) ServeMiddleware(res *Response, req *Request) {
+	if len(m.rawmiddleware) == 0 {
+		return
+	}
+	for _, raw := range m.rawmiddleware {
+		raw(res.ref, req.ref)
+	}
+	if len(m.minmiddleware) == 0 {
+		return
+	}
+	for _, min := range m.minmiddleware {
+		min(res, req)
+	}
 }

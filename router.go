@@ -2,7 +2,6 @@ package minima
 
 import (
 	"fmt"
-	"net/http"
 )
 
 /**
@@ -19,8 +18,6 @@ type Handler func(res *Response, req *Request)
 */
 type Router struct {
 	notfound Handler
-	minmiddleware  []Handler
-	rawmiddleware  []func(http.Handler) http.Handler
 	routes   map[string]*Routes
 }
 
