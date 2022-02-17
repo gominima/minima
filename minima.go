@@ -13,6 +13,8 @@ import (
 @property {bool} [started] Whether the server has started or not
 @property {*time.Duration} [Timeout] The router's breathing time
 @property {*Router} [router] The core router instance running with the server
+@property {[]Handler} [minmiddleware] The standard minima handler stack
+@property {[]http.HandlerFunc} [rawmiddleware] The raw net/http minima handler stack
 @property {map[string]interface{}} [properties] The properties for the server instance
 @property {*Config} [Config] The core config file for middlewares and router instances
 @property {*time.Duration} [drain] The router's drain time
@@ -275,13 +277,30 @@ func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
 
+/**
+@info Injects minima middleware to the stack
+@param {...Handler} [handler] The handler stack to append
+@returns {}
+*/
 func (m *minima) Use(handler ...Handler) {
 	m.minmiddleware = append(m.minmiddleware, handler...)
 }
 
+/**
+@info Injects net/http middleware to the stack
+@param {...http.HandlerFunc} [handler] The handler stack to append
+@returns {}
+*/
 func (m *minima) UseRaw(handler ...http.HandlerFunc) {
 	m.rawmiddleware = append(m.rawmiddleware, handler...)
 }
+
+/**
+@info Serves and injects the middlewares to minima logic
+@param {Response} [res] The minima response instance
+@param {Request} [req] The minima req instance
+@returns {}
+*/
 func (m *minima) ServeMiddleware(res *Response, req *Request) {
 	if len(m.rawmiddleware) == 0 {
 		return
