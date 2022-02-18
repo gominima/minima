@@ -23,6 +23,7 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 <img src="https://img.shields.io/github/languages/code-size/gominima/minima" />
 <a href="https://gominima.studio">
 <img src="https://img.shields.io/badge/Minima-Docs-blue" /></a>
+<a href="https://gominima.studio"><img src="https://api.netlify.com/api/v1/badges/34ade51b-20a8-4fad-8cfd-0d574c9c40ed/deploy-status" /></a>
 </p>
 
 ## ⚙️ Setup
