@@ -67,7 +67,6 @@ func (m *minima) Listen(addr string) error {
 	m.started = true
 
 	return m.server.ListenAndServe()
-
 }
 
 /**
@@ -76,30 +75,29 @@ func (m *minima) Listen(addr string) error {
 @param {http.Request} [r] The net/http request instance
 @returns {}
 */
-func (m *minima) ServeHTTP(w http.ResponseWriter, q *http.Request) {
-	f, params, match := m.router.routes[q.Method].Get(q.URL.Path)
+func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
 
 	if match {
-		if err := q.ParseForm(); err != nil {
+		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
 		}
 
-		res := response(w, q, &m.properties)
-		req := request(q)
+		res := response(w, r, &m.properties)
+		req := request(r)
 		req.Params = params
 
 		m.ServeMiddleware(res, req)
 		f(res, req)
 	} else {
-		res := response(w, q, &m.properties)
-		req := request(q)
+		res := response(w, r, &m.properties)
+		req := request(r)
 		if m.router.notfound != nil {
 			m.router.notfound(res, req)
 		} else {
 			w.Write([]byte("No matching route found"))
 		}
-
 	}
 }
 
@@ -180,16 +178,6 @@ func (m *minima) Post(path string, handler Handler) *minima {
 	return m
 }
 
-// /**
-// @info Injects the given handler to middleware stack
-// @param {Handler} [handler] Minima handler instance
-// @returns {*minima}
-// */
-// func (m *minima) Use(handler Handler) *minima {
-// 	m.Middleware.AddPlugin(handler)
-// 	return m
-// }
-
 /**
 @info Injects the NotFound handler to the minima instance
 @param {Handler} [handler] Minima handler instance
@@ -208,7 +196,6 @@ func (m *minima) NotFound(handler Handler) *minima {
 func (m *minima) UseRouter(router *Router) *minima {
 	m.router.UseRouter(router)
 	return m
-
 }
 
 /**
@@ -220,7 +207,6 @@ func (m *minima) UseRouter(router *Router) *minima {
 func (m *minima) Mount(path string, router *Router) *minima {
 	m.router.Mount(path, router)
 	return m
-
 }
 
 /**
