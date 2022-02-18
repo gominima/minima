@@ -84,7 +84,6 @@ func (res *Response) DelHeader(key string) *Response {
 */
 func (res *Response) CloneHeaders() http.Header {
 	return res.header.Clone()
-
 }
 
 /**
@@ -207,7 +206,6 @@ func (res *Response) Render(path string, data interface{}) *Response {
 
 	res.WriteBytes(bytes.Bytes())
 	return res
-
 }
 
 /**
