@@ -15,7 +15,7 @@ var testServer *httptest.Server
 func setupMinima() *minima {
 	app := New()
 	app.Get("/", func(res *Response, req *Request) {
-		res.Status(200).Send("Hello World")
+		res.OK().Send("Hello World")
 	})
 	return app
 }

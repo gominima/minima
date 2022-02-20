@@ -75,6 +75,17 @@ func (r *Request) GetParam(key string) string {
 }
 
 /**
+@info Sets param for route path
+@param {string} [key] Key of the route param
+@param {string} [value] Value of the route param
+@returns {Respone}
+*/
+func (r *Request) SetParam(key string, value string) *Request {
+	r.Params[key] = value
+	return r
+}
+
+/**
 @info Gets request path url
 @returns {string}
 */
