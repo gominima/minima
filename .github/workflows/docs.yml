@@ -36,7 +36,7 @@ jobs:
         with:
           source_file: ${{ steps.extract_branch.outputs.branch }}
           destination_repo: 'gominima/docs'
-          user_email: 'tanumegatank@gmail.com'
-          user_name: 'megatank58'
+          user_email: 'tofu.develops@gmail.com'
+          user_name: 'apoorvcodes'
           commit_message: 'chore: docs'
         
