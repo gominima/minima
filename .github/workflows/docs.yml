@@ -32,6 +32,7 @@ jobs:
       - name: Set outputs for upload job
         id: env
         run: |
+          echo "::set-output name=REPO_NAME::${basename `git rev-parse --show-toplevel`}"
           echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
           echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
           echo "::set-output name=SHA::${GITHUB_SHA}"
@@ -55,7 +56,7 @@ jobs:
 
       - name: Commit and push
         run: |
-          mv $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json out
+          mv ${REPO_NAME}-${BRANCH_NAME}.json out
           cd out
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
