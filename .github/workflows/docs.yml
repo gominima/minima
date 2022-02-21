@@ -9,6 +9,11 @@ jobs:
   docs:
     name: Generate Docs
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'gominima'
+    outputs:
+      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2.4.0
@@ -22,21 +27,38 @@ jobs:
         run: go get github.com/gominima/docgen 
         
       - name: Run Docgen
-        run: go run github.com/gominima/docgen . $(git rev-parse --abbrev-ref HEAD).json
-    
-      - name: Set name of JSON file
-        shell: bash
-        run: echo "##[set-output name=json;]$(echo ${github.event.repository.name}-${GITHUB_REF#refs/heads/}.json)"
-        id: extract_json
+        run: go run github.com/gominima/docgen . $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json
+        
+      - name: Set outputs for upload job
+        id: env
+        run: |
+          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
+          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
+          echo "::set-output name=SHA::${GITHUB_SHA}"
+  
+  upload:
+    name: Upload Documentation
+    needs: docs
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ needs.build.outputs.SHA }}
+    steps:
 
-      - name: Push docs file
-        uses: dmnemec/copy_file_to_another_repo_action@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      - name: Checkout docs repository
+        uses: actions/checkout@v2
         with:
-          source_file: ${{ steps.extract_json.outputs.json }}
-          destination_repo: 'gominima/docs'
-          user_email: 'tofu.develops@gmail.com'
-          user_name: 'apoorvcodes'
-          commit_message: 'chore: docs'
+          repository: 'gominima/docs'
+          token: ${{ secrets.API_TOKEN_GITHUB }}
+          path: 'out'
+
+      - name: Commit and push
+        run: |
+          cd out
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git push
         
