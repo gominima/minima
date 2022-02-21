@@ -23,10 +23,10 @@ jobs:
         with:
           go-version: 1.17
 
-      - name: Get Docgen
+      - name: Get docgen
         run: go get github.com/gominima/docgen 
         
-      - name: Run Docgen
+      - name: Run docgen
         run: go run github.com/gominima/docgen . $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json
         
       - name: Set outputs for upload job
@@ -55,6 +55,7 @@ jobs:
 
       - name: Commit and push
         run: |
+          mv $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json out
           cd out
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
