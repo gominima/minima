@@ -58,7 +58,8 @@ jobs:
 
       - name: Commit and push
         run: |
-          mv "${REPO_NAME}-${BRANCH_NAME}.json out"
+          ls
+          mv ${REPO_NAME}-${BRANCH_NAME}.json out
           cd out
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
