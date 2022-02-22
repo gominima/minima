@@ -30,25 +30,6 @@ jobs:
       - name: Run docgen
         run: go run github.com/gominima/docgen . $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json
         
-      - name: Set outputs for upload job
-        id: env
-        run: |
-          echo "::set-output name=REPO_NAME::$(basename `git rev-parse --show-toplevel`)"
-          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
-          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
-          echo "::set-output name=SHA::${GITHUB_SHA}"
-  
-  upload:
-    name: Upload Documentation
-    needs: docs
-    runs-on: ubuntu-latest
-    env:
-      REPO_NAME: ${{ needs.build.outputs.REPO_NAME }}
-      BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
-      SHA: ${{ needs.build.outputs.SHA }}
-    steps:
-
       - name: Checkout docs repository
         uses: actions/checkout@v2
         with:
@@ -58,12 +39,10 @@ jobs:
 
       - name: Commit and push
         run: |
-          ls
-          mv ${REPO_NAME}-${BRANCH_NAME}.json out
+          mv $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json out
           cd out
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
-          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
           git push
-        
