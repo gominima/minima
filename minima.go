@@ -79,6 +79,7 @@ func (m *minima) Listen(addr string) error {
 func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
 	if match {
+		m.testfun(m).ServeHTTP(w,r)
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
@@ -304,6 +305,5 @@ func (m *minima) ServeMiddleware(res *Response, req *Request) {
 }
 
 func (m*minima) Test(handler func(http.Handler) http.Handler) {
-	
 	m.testfun = handler
 }
