@@ -25,6 +25,7 @@ type minima struct {
 	Timeout       time.Duration
 	router        *Router
 	minmiddleware []Handler
+	testfun       func(http.Handler) http.Handler
 	rawmiddleware []http.HandlerFunc
 	properties    map[string]interface{}
 	Config        *Config
@@ -77,17 +78,16 @@ func (m *minima) Listen(addr string) error {
 */
 func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
-
 	if match {
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
 		}
-
+		m.testfun(m).ServeHTTP(w,r)
 		res := response(w, r, &m.properties)
 		req := request(r)
 		req.Params = params
-
+               
 		m.ServeMiddleware(res, req)
 		f(res, req)
 	} else {
@@ -99,6 +99,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("No matching route found"))
 		}
 	}
+	
 }
 
 /**
@@ -300,4 +301,9 @@ func (m *minima) ServeMiddleware(res *Response, req *Request) {
 	for _, min := range m.minmiddleware {
 		min(res, req)
 	}
+}
+
+func (m*minima) Test(handler func(http.Handler) http.Handler) {
+	
+	m.testfun = handler
 }

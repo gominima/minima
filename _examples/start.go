@@ -2,25 +2,27 @@ package main
 
 import (
 	"github.com/gominima/minima"
+	"net/http"
 )
 
 func main() {
 	app := minima.New()
-	router := minima.NewRouter()
-	app.Get("/test/:name/user/:id", func(response *minima.Response, request *minima.Request) {
-		p := request.GetParam("name")
-		v := request.GetParam("id")
-		response.NotFound().Send("Hello").Send(p).Send(v)
-		response.CloseConn()
-
+	app.Get("/",func(res *minima.Response, req *minima.Request) {
+		res.Send("Hello")
 	})
-	router.Get("/hi", func(res *minima.Response, req *minima.Request) {
-		res.OK().Send("Hello World").Send(req.GetQuery("name"))
-	})
-	app.NotFound(func(res *minima.Response, req *minima.Request) {
-		res.NotFound().Send("Not found handler")
-	})
-	app.Mount("/api", router)
+	app.Test(test())
 	app.Listen(":3000")
-
 }
+
+
+func test() func(next http.Handler) http.Handler {
+    
+	return func(next http.Handler) http.Handler {
+	    fn := func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello"))
+		
+		next.ServeHTTP(w, r)
+	    }
+	    return http.HandlerFunc(fn)
+	}
+    }
