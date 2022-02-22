@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'gominima'
     outputs:
+      REPO_NAME: ${{ steps.env.outputs.REPO_NAME }}
       BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
       SHA: ${{ steps.env.outputs.SHA }}
@@ -42,6 +43,7 @@ jobs:
     needs: docs
     runs-on: ubuntu-latest
     env:
+      REPO_NAME: ${{ needs.build.outputs.REPO_NAME }}
       BRANCH_NAME: ${{ needs.build.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}
