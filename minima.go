@@ -14,7 +14,7 @@ import (
 @property {*time.Duration} [Timeout] The router's breathing time
 @property {*Router} [router] The core router instance running with the server
 @property {[]Handler} [minmiddleware] The standard minima handler stack
-@property {[]http.HandlerFunc} [rawmiddleware] The raw net/http minima handler stack
+@property {[]middlewarefunc} [rawmiddleware] The raw net/http minima handler stack
 @property {map[string]interface{}} [properties] The properties for the server instance
 @property {*Config} [Config] The core config file for middlewares and router instances
 @property {*time.Duration} [drain] The router's drain time
@@ -25,8 +25,7 @@ type minima struct {
 	Timeout       time.Duration
 	router        *Router
 	minmiddleware []Handler
-	testfun       func(http.Handler) http.Handler
-	rawmiddleware []http.HandlerFunc
+	rawmiddleware []middleware
 	properties    map[string]interface{}
 	Config        *Config
 	drain         time.Duration
@@ -79,16 +78,14 @@ func (m *minima) Listen(addr string) error {
 func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
 	if match {
-		m.testfun(m).ServeHTTP(w,r)
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
 		}
-		m.testfun(m).ServeHTTP(w,r)
 		res := response(w, r, &m.properties)
 		req := request(r)
 		req.Params = params
-               
+
 		m.ServeMiddleware(res, req)
 		f(res, req)
 	} else {
@@ -100,7 +97,6 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("No matching route found"))
 		}
 	}
-	
 }
 
 /**
@@ -218,7 +214,7 @@ func (m *minima) Mount(path string, router *Router) *minima {
 */
 func (m *minima) UseConfig(config *Config) *minima {
 	m.minmiddleware = append(m.minmiddleware, config.Middleware...)
-	m.rawmiddleware = append(m.rawmiddleware, config.HttpHandler...)
+	// m.rawmiddleware = append(m.rawmiddleware, config.HttpHandler...)
 	for _, router := range config.Router {
 		m.UseRouter(router)
 	}
@@ -275,15 +271,6 @@ func (m *minima) Use(handler ...Handler) {
 }
 
 /**
-@info Injects net/http middleware to the stack
-@param {...http.HandlerFunc} [handler] The handler stack to append
-@returns {}
-*/
-func (m *minima) UseRaw(handler ...http.HandlerFunc) {
-	m.rawmiddleware = append(m.rawmiddleware, handler...)
-}
-
-/**
 @info Serves and injects the middlewares to minima logic
 @param {Response} [res] The minima response instance
 @param {Request} [req] The minima req instance
@@ -294,7 +281,7 @@ func (m *minima) ServeMiddleware(res *Response, req *Request) {
 		return
 	}
 	for _, raw := range m.rawmiddleware {
-		raw(res.ref, req.ref)
+		raw.Middleware(m).ServeHTTP(res.ref, req.ref)
 	}
 	if len(m.minmiddleware) == 0 {
 		return
@@ -302,8 +289,4 @@ func (m *minima) ServeMiddleware(res *Response, req *Request) {
 	for _, min := range m.minmiddleware {
 		min(res, req)
 	}
-}
-
-func (m*minima) Test(handler func(http.Handler) http.Handler) {
-	m.testfun = handler
 }
