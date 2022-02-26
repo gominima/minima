@@ -277,14 +277,11 @@ func (m *minima) Use(handler ...Handler) {
 @returns {}
 */
 func (m *minima) ServeMiddleware(res *Response, req *Request) {
-	if len(m.rawmiddleware) == 0 {
+	if len(m.rawmiddleware) == 0 && len(m.minmiddleware) == 0 {
 		return
 	}
 	for _, raw := range m.rawmiddleware {
 		raw.Middleware(m).ServeHTTP(res.ref, req.ref)
-	}
-	if len(m.minmiddleware) == 0 {
-		return
 	}
 	for _, min := range m.minmiddleware {
 		min(res, req)
