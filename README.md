@@ -30,7 +30,7 @@ Minima 🦄 is a reliable and lightweight framework for <a href="https://www.gol
 
 Please make sure you have [Go](https://go.dev) version 1.15 or higher
 
-```go
+```sh
 mkdir <project-name> && cd  <project-name>
 
 go mod init github.com/<user-name>/<repo-name>
