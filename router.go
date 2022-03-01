@@ -5,18 +5,17 @@ import (
 	"net/http"
 )
 
-/**
-@info The Handler func structure
-@property {Response} [res] The response instance
-@property {Request} [req] The request instance
-*/
+
 type Handler func(res *Response, req *Request)
 
 /**
-@info The router structure
-@property {map[string][]*Routes} [routes] The mux routes
-@property {Handler} [notfound] The handler for the non matching routes
-*/
+ * @info The router structure
+ * @property {map[string][]*Routes} [routes] The mux routes
+ * @property {Handler} [notfound] The handler for the non matching routes
+ * @property {[]Handler} [minmiddleware] The minima handler middleware stack
+ * @property {[]func(http.Handler) http.Handler} [middleware] The http.Handler middleware stack
+ * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
+ */
 type Router struct {
 	notfound      Handler
 	handler       http.Handler
