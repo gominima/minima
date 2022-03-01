@@ -53,7 +53,7 @@ func (c *ChainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 /**
  * @info Builds the whole chain into one singular http.Handler
- * @param {[]func(http.Handler) http.Handler} [middleware] The array of middleware stack
+ * @param {[]func(http.Handler)http.Handler} [middleware] The array of middleware stack
  * @param {http.Handler} [endpoint] The endpoint of the chain stack
  * @returns {http.Handler}
  */

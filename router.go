@@ -13,7 +13,7 @@ type Handler func(res *Response, req *Request)
  * @property {map[string][]*Routes} [routes] The mux routes
  * @property {Handler} [notfound] The handler for the non matching routes
  * @property {[]Handler} [minmiddleware] The minima handler middleware stack
- * @property {[]func(http.Handler) http.Handler} [middleware] The http.Handler middleware stack
+ * @property {[]func(http.Handler)http.Handler} [middleware] The http.Handler middleware stack
  * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
  */
 type Router struct {
@@ -193,7 +193,7 @@ func (r *Router) use(handler ...Handler) {
 
 /**
  * @info Injects net/http middleware to the stack
- * @param {...http.HandlerFunc} [handler] The handler stack to append
+ * @param {...func(http.Handler)http.Handler} [handler] The handler stack to append
  * @returns {}
  */
 func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
