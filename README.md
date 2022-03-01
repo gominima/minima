@@ -346,6 +346,7 @@ app.UseRaw(HttpHandler())
 - [@megatank58](https://github.com/megatank58)
 
 #### Core Team
+
 - [@apoorvcodes](https://github.com/apoorvcodes)
 - [@megatank58](https://github.com/megatank58)
 - [@Shubhaankar-Sharma](https://github.com/Shubhaankar-Sharma)
@@ -370,4 +371,3 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 <br />
 <br />
-
