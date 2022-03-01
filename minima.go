@@ -25,7 +25,6 @@ type minima struct {
 	Timeout       time.Duration
 	router        *Router
 	minmiddleware []Handler
-	rawmiddleware []middleware
 	properties    map[string]interface{}
 	Config        *Config
 	drain         time.Duration
@@ -277,12 +276,6 @@ func (m *minima) Use(handler ...Handler) {
 @returns {}
 */
 func (m *minima) ServeMiddleware(res *Response, req *Request) {
-	if len(m.rawmiddleware) == 0 && len(m.minmiddleware) == 0 {
-		return
-	}
-	for _, raw := range m.rawmiddleware {
-		raw.Middleware(m).ServeHTTP(res.ref, req.ref)
-	}
 	for _, min := range m.minmiddleware {
 		min(res, req)
 	}
