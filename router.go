@@ -18,6 +18,7 @@ type Handler func(res *Response, req *Request)
 */
 type Router struct {
 	notfound Handler
+	minima *minima
 	routes   map[string]*Routes
 }
 
@@ -25,7 +26,7 @@ type Router struct {
 @info Make new default router interface
 return {Router}
 */
-func NewRouter() *Router {
+func NewRouter(m*minima) *Router {
 	return &Router{
 		routes: map[string]*Routes{
 			"GET":     NewRoutes(),
@@ -36,6 +37,7 @@ func NewRouter() *Router {
 			"OPTIONS": NewRoutes(),
 			"HEAD":    NewRoutes(),
 		},
+		minima: m,
 	}
 }
 
@@ -45,7 +47,7 @@ func NewRouter() *Router {
 return {string, []string}
 */
 func (r *Router) Register(method string, path string, handler Handler) error {
-	routes, ok := r.routes[method]
+	routes, ok := r.routes[method]	
 	if !ok {
 		return fmt.Errorf("method %s not valid", method)
 	}

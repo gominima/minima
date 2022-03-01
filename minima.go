@@ -25,6 +25,8 @@ type minima struct {
 	Timeout       time.Duration
 	router        *Router
 	minmiddleware []Handler
+	handler http.Handler
+	middlewares []func(http.Handler) http.Handler
 	properties    map[string]interface{}
 	Config        *Config
 	drain         time.Duration
@@ -46,11 +48,12 @@ func main() {
 @returns {minima}
 */
 func New() *minima {
-	return &minima{
-		router: NewRouter(),
+	m := &minima{
 		Config: NewConfig(),
 		drain:  0,
 	}
+	m.router = NewRouter(m)
+	return m
 }
 
 /**
@@ -80,6 +83,10 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
+		}
+		m.buildHandler()
+		if m.handler != nil {
+			m.handler.ServeHTTP(w,r)
 		}
 		res := response(w, r, &m.properties)
 		req := request(r)
@@ -269,6 +276,10 @@ func (m *minima) Use(handler ...Handler) {
 	m.minmiddleware = append(m.minmiddleware, handler...)
 }
 
+
+func (m*minima) UseRaw(handler ...func(http.Handler) http.Handler) {
+	m.middlewares = append(m.middlewares, handler...)
+}
 /**
 @info Serves and injects the middlewares to minima logic
 @param {Response} [res] The minima response instance
@@ -279,4 +290,12 @@ func (m *minima) ServeMiddleware(res *Response, req *Request) {
 	for _, min := range m.minmiddleware {
 		min(res, req)
 	}
+}
+
+func (m *minima) middlewareHttp(w http.ResponseWriter, r *http.Request) {
+   
+}
+
+func (m*minima) buildHandler() {
+	m.handler = chain(m.middlewares, http.HandlerFunc(m.middlewareHttp))
 }
