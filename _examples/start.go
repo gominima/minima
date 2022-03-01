@@ -9,11 +9,10 @@ import (
 
 func main() {
 	app := minima.New()
-	app.Use(SimpleTest())
+	app.UseRaw(SimpleTest())
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 	})
-	
 	app.Listen(":3000")
 }
 
@@ -25,5 +24,3 @@ func SimpleTest() func(http.Handler) http.Handler {
 		})
 	}
 }
-
-

@@ -13,22 +13,17 @@ import (
 @property {bool} [started] Whether the server has started or not
 @property {*time.Duration} [Timeout] The router's breathing time
 @property {*Router} [router] The core router instance running with the server
-@property {[]Handler} [minmiddleware] The standard minima handler stack
-@property {[]middlewarefunc} [rawmiddleware] The raw net/http minima handler stack
 @property {map[string]interface{}} [properties] The properties for the server instance
 @property {*Config} [Config] The core config file for middlewares and router instances
 @property {*time.Duration} [drain] The router's drain time
 */
 type minima struct {
-	server        *http.Server
-	started       bool
-	Timeout       time.Duration
-	router        *Router
-	handler http.Handler
-	minmiddleware []Handler
-	middlewares []func(http.Handler) http.Handler
-	properties    map[string]interface{}
-	drain         time.Duration
+	server     *http.Server
+	started    bool
+	Timeout    time.Duration
+	router     *Router
+	properties map[string]interface{}
+	drain      time.Duration
 }
 
 /**
@@ -76,21 +71,20 @@ func (m *minima) Listen(addr string) error {
 */
 func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
+	res := response(w, r)
+	req := request(r)
 	if match {
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
 		}
-		m.buildHandler()
-		if m.handler != nil {
-			m.handler.ServeHTTP(w,r)
+		if m.router.handler != nil {
+			m.router.handler.ServeHTTP(w, r)
 		}
-		res := response(w, r, &m.properties)
-		req := request(r)
 		req.Params = params
 		f(res, req)
 	} else {
-		res := response(w, r, &m.properties)
+		res := response(w, r)
 		req := request(r)
 		if m.router.notfound != nil {
 			m.router.notfound(res, req)
@@ -107,6 +101,7 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 @returns {*minima}
 */
 func (m *minima) Get(path string, handler Handler) *minima {
+
 	m.router.Get(path, handler)
 	return m
 }
@@ -208,7 +203,6 @@ func (m *minima) Mount(path string, router *Router) *minima {
 	return m
 }
 
-
 /**
 @info The drain timeout for the core instance
 @param {time.Duration} [time] The time period for drain
@@ -249,14 +243,14 @@ func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
 
-
 /**
  * @info Injects Minima middleware to the stack
  * @param {...Handler} [handler] The handler stack to append
  * @returns {}
  */
- func (m *minima) Use(handler ...Handler) {
-	m.minmiddleware = append(m.minmiddleware, handler...)
+func (m *minima) Use(handler ...Handler) *minima {
+	m.router.use(handler...)
+	return m
 }
 
 /**
@@ -264,17 +258,7 @@ func (m *minima) GetProp(key string) interface{} {
  * @param {...http.HandlerFunc} [handler] The handler stack to append
  * @returns {}
  */
-func (m *minima) UseRaw(handler ...func(http.Handler) http.Handler) {
-	m.middlewares = append(m.middlewares, handler...)
-}
-
-//A dummy function that runs at the end of the middleware stack
-func middlewareHTTP(w http.ResponseWriter, r *http.Request) {}
-
-
-/**
- * @info Builds whole middleware stack chain into single handler
- */
-func (m*minima) buildHandler() {
-	m.handler = chain(m.middlewares, http.HandlerFunc(middlewareHTTP))
+func (m *minima) UseRaw(handler ...func(http.Handler) http.Handler) *minima {
+	m.router.useRaw(handler...)
+	return m
 }

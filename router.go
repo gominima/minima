@@ -2,6 +2,7 @@ package minima
 
 import (
 	"fmt"
+	"net/http"
 )
 
 /**
@@ -17,8 +18,11 @@ type Handler func(res *Response, req *Request)
 @property {Handler} [notfound] The handler for the non matching routes
 */
 type Router struct {
-	notfound Handler
-	routes   map[string]*Routes
+	notfound      Handler
+	handler       http.Handler
+	minmiddleware []Handler
+	middlewares   []func(http.Handler) http.Handler
+	routes        map[string]*Routes
 }
 
 /**
@@ -36,7 +40,6 @@ func NewRouter() *Router {
 			"OPTIONS": NewRoutes(),
 			"HEAD":    NewRoutes(),
 		},
-		
 	}
 }
 
@@ -46,7 +49,10 @@ func NewRouter() *Router {
 return {string, []string}
 */
 func (r *Router) Register(method string, path string, handler Handler) error {
-	routes, ok := r.routes[method]	
+	if r.handler == nil {
+		r.buildHandler()
+	}
+	routes, ok := r.routes[method]
 	if !ok {
 		return fmt.Errorf("method %s not valid", method)
 	}
@@ -175,4 +181,41 @@ func (r *Router) Mount(path string, Router *Router) *Router {
 		}
 	}
 	return r
+}
+
+/**
+ * @info Injects Minima middleware to the stack
+ * @param {...Handler} [handler] The handler stack to append
+ * @returns {}
+ */
+func (r *Router) use(handler ...Handler) {
+	r.minmiddleware = append(r.minmiddleware, handler...)
+}
+
+/**
+ * @info Injects net/http middleware to the stack
+ * @param {...http.HandlerFunc} [handler] The handler stack to append
+ * @returns {}
+ */
+func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
+	if r.handler != nil {
+		panic("Minima: Middlewares can't go after the routes are mounted")
+	}
+	r.middlewares = append(r.middlewares, handler...)
+}
+
+//A dummy function that runs at the end of the middleware stack
+func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {
+	resp := response(w, rq)
+	req := request(rq)
+	for _, fn := range r.minmiddleware {
+		fn(resp, req)
+	}
+}
+
+/**
+ * @info Builds whole middleware stack chain into single handler
+ */
+func (r *Router) buildHandler() {
+	r.handler = chain(r.middlewares, http.HandlerFunc(r.middlewareHTTP))
 }

@@ -1,12 +1,9 @@
 package minima
 
-
 // This chain implementation is borrowed/ inspired from https://github.com/go-chi/chi, so kindly check that project aswell
 import "net/http"
 
-
 type Middlewares []func(http.Handler) http.Handler
-
 
 /**
  * @info Create a middleware chain
@@ -14,8 +11,6 @@ type Middlewares []func(http.Handler) http.Handler
 func Chain(middlewares ...func(http.Handler) http.Handler) Middlewares {
 	return Middlewares(middlewares)
 }
-
-
 
 /**
  * @info Creates a new chain handler instance
@@ -25,7 +20,6 @@ func Chain(middlewares ...func(http.Handler) http.Handler) Middlewares {
 func (mws Middlewares) Handler(h http.Handler) http.Handler {
 	return &ChainHandler{h, chain(mws, h), mws}
 }
-
 
 /**
  * @info Creates a new chain handler instance from handlerfunc
@@ -57,7 +51,6 @@ func (c *ChainHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c.chain.ServeHTTP(w, r)
 }
 
-
 /**
  * @info Builds the whole chain into one singular http.Handler
  * @param {[]func(http.Handler) http.Handler} [middleware] The array of middleware stack
@@ -76,5 +69,3 @@ func chain(middlewares []func(http.Handler) http.Handler, endpoint http.Handler)
 
 	return h
 }
-
-

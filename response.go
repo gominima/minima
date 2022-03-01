@@ -15,7 +15,6 @@ import (
 @property {string} [url] The route url
 @property {string} [method] The route http method
 @property {OutgoingHeader} [header] The response header instance
-@property {*map[string]interface{}} [props] The minima instance props
 @property {string} [host] The minima host
 @property {bool} [HasEnded] Whether the response has ended
 */
@@ -25,7 +24,6 @@ type Response struct {
 	method   string
 	ended    bool
 	header   *OutgoingHeader
-	props    *map[string]interface{}
 	host     string
 	HasEnded bool
 }
@@ -34,17 +32,15 @@ type Response struct {
 @info Make a new default response instance
 @param {http.Request} [req] The net/http request instance
 @param {http.ResponseWriter} [rs] The net/http response instance
-@param {map[string]interface{}} [props] The net/http response instance
 @returns {Response}
 */
-func response(rw http.ResponseWriter, req *http.Request, props *map[string]interface{}) *Response {
+func response(rw http.ResponseWriter, req *http.Request) *Response {
 	return &Response{
 		ref:    rw,
 		header: NewResHeader(rw, req),
 		url:    req.URL.Path,
 		method: req.Method,
 		host:   req.Host,
-		props:  props,
 	}
 }
 
