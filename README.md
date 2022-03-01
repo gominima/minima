@@ -87,24 +87,23 @@ func UserGetRouter() *minima.Router {
 	// router instance which would be used by the main router
 	router := minima.NewRouter()
 
-	return router.Get("/user/:id", func(response *minima.Response, request *minima.Request) {
+	return router.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
 		// getting the id parameter from route
-		id := request.GetParam("id")
+		id := req.GetParam("id")
 
 		// instead of adding a param in route, you just need to fetch it
 
-		username := request.GetQuery("name")
+		username := req.GetQueryParam("name")
 
 		// get user from database
 		userdata, err := db.FindUser(id, username)
 
 		if err != nil {
-			panic(err)
 			// check for errors
-			response.NotFound().Send("No user found with particular id")
+			res.NotFound().Send("No user found with particular id")
 		}
 		// send user data
-		response.Json(userdata).OK()
+		res.OK().Json(userdata)
 	})
 }
 
@@ -126,11 +125,11 @@ func main() {
 func main() {
 	app := minima.New()
 
-	app.Get("/getuser/:id", func(response *minima.Response, request *minima.Request) {
-		userid := request.GetParam("id")
+	app.Get("/getuser/:id", func(res *minima.Response, req *minima.Request) {
+		userid := req.GetParam("id")
 		// check if user id is available
 		if userid == "" {
-			response.Error(404, "No user found")
+			res.Error(404, "No user found")
 			panic("No user id found in request")
 		}
 		fmt.Print(userid)
@@ -149,10 +148,10 @@ func main() {
 		// query params work a bit differently
 		// instead of adding a param in route, you just need to fetch it
 
-		userid := request.GetQuery("id")
+		userid := req.GetQuery("id")
 
 		if userid == "" {
-			response.Error(404, "No user found")
+			res.Error(404, "No user found")
 			panic("No user id found in request")
 		}
 		fmt.Print(userid)
@@ -190,6 +189,12 @@ type Minima interface {
 	// middlewares initializes before route handler is mounted
 	Use(handler Handler) *minima
 
+       //Takes http.Handler and appends it to middleware chain
+	UseRaw(handler func(http.Handler) http.Handler) *minima
+
+        // an custom handler when route is not matched
+	NotFound(handler Handler)*minima
+
 	// mounts routes to specific base path
 	Mount(basePath string, router *Router) *minima
 
@@ -217,8 +222,20 @@ Both response and request interfaces of minima are written in `net/http` so you 
 type Res interface {
 	// response interface is built over http.ResponseWriter for easy and better utility
 
-	// returns minima.OutgoingHeader interface
-	Header() *OutgoingHeader
+	// Header methods
+	GetHeader(key string) string // gets a header from response body
+        
+	SetHeader(key string, value string)  *Response // sets a new header to response body
+
+	DelHeader(key string)  *Response // Deletes a header from response body
+        
+	CloneHeaders() http.Header // clones all headers of the response body
+
+	Setlenght(len string) *Response // sets content length of the response body
+
+	SetBaseHeaders() *Response // sets a good stack of base headers for response body
+
+	FlushHeaders() // flushes headers
 
 	// utility functions for easier usage
 	Send(content string) *Response      //send content
@@ -231,19 +248,38 @@ type Res interface {
 
 	// renders an html file with data to the page
 	Render(path string, data interface{}) *Response
+        
+	// custom method when there's an error
+	Error(content interface{}) *Response
+        
+	// closes io.Writer connection from the route
+	CloseConn() *Response
 
 	// redirects to given url
 	Redirect(url string) *Response
 
 	// sets header status
 	Status(code int) *Response
+
+	//cookie methods
+	SetCookie(cookie *http.Cookie) *Response // sets a new cookie to the response
+
+	
+	SetCookie(cookie *http.Cookie) *Response // clears a cookie to the response
+
 }
 
 type Req interface {
 	// minima request interface is built on http.Request
 
-	// returns param from route url
+	// returns param from route 
 	GetParam(name string) string
+        
+	// sets a new param to the request instance
+	SetParam(key string, value) string
+	
+	//returns query param from route url
+	GetQueryParam(key string) string
 
 	// returns path url from the route
 	GetPathURL() string
@@ -260,8 +296,17 @@ type Req interface {
 	// returns route method ex.get,post
 	Method() string
 
-	// gets query params from route and returns it
-	GetQuery(key string) string
+	// Header methods
+	SetHeader(key string, value string) *Response //sets a new header to request body
+        
+	//Get a header from request body
+	GetHeader(key string) string
+
+	//Cookie methods
+        Cookies() []*http.Cookie // gets all cookies from request body
+
+	GetCookie(key string) *http.Cookie // gets a specific cookie from request body
+
 }
 ```
 
@@ -301,6 +346,7 @@ app.UseRaw(HttpHandler())
 - [@megatank58](https://github.com/megatank58)
 
 #### Core Team
+
 - [@apoorvcodes](https://github.com/apoorvcodes)
 - [@megatank58](https://github.com/megatank58)
 - [@Shubhaankar-Sharma](https://github.com/Shubhaankar-Sharma)
@@ -325,4 +371,3 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 <br />
 <br />
-
