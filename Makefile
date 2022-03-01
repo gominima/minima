@@ -1,3 +1,4 @@
+# minima is a free and open source software under MIT license
 all: say_version build test clean
 
 tests: build test clean
