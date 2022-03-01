@@ -18,7 +18,6 @@ type Handler func(res *Response, req *Request)
 */
 type Router struct {
 	notfound Handler
-	minima *minima
 	routes   map[string]*Routes
 }
 
@@ -26,7 +25,7 @@ type Router struct {
 @info Make new default router interface
 return {Router}
 */
-func NewRouter(m*minima) *Router {
+func NewRouter() *Router {
 	return &Router{
 		routes: map[string]*Routes{
 			"GET":     NewRoutes(),
@@ -37,7 +36,7 @@ func NewRouter(m*minima) *Router {
 			"OPTIONS": NewRoutes(),
 			"HEAD":    NewRoutes(),
 		},
-		minima: m,
+		
 	}
 }
 

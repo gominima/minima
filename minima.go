@@ -24,11 +24,10 @@ type minima struct {
 	started       bool
 	Timeout       time.Duration
 	router        *Router
-	minmiddleware []Handler
 	handler http.Handler
+	minmiddleware []Handler
 	middlewares []func(http.Handler) http.Handler
 	properties    map[string]interface{}
-	Config        *Config
 	drain         time.Duration
 }
 
@@ -48,12 +47,10 @@ func main() {
 @returns {minima}
 */
 func New() *minima {
-	m := &minima{
-		Config: NewConfig(),
+	return &minima{
 		drain:  0,
+		router: NewRouter(),
 	}
-	m.router = NewRouter(m)
-	return m
 }
 
 /**
@@ -91,8 +88,6 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		res := response(w, r, &m.properties)
 		req := request(r)
 		req.Params = params
-
-		m.ServeMiddleware(res, req)
 		f(res, req)
 	} else {
 		res := response(w, r, &m.properties)
@@ -213,19 +208,6 @@ func (m *minima) Mount(path string, router *Router) *minima {
 	return m
 }
 
-/**
-@info Injects middlewares and routers directly to core instance
-@param {*Config} [config] The config instance
-@returns {*minima}
-*/
-func (m *minima) UseConfig(config *Config) *minima {
-	m.minmiddleware = append(m.minmiddleware, config.Middleware...)
-	// m.rawmiddleware = append(m.rawmiddleware, config.HttpHandler...)
-	for _, router := range config.Router {
-		m.UseRouter(router)
-	}
-	return m
-}
 
 /**
 @info The drain timeout for the core instance
@@ -267,35 +249,32 @@ func (m *minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
 
+
 /**
-@info Injects minima middleware to the stack
-@param {...Handler} [handler] The handler stack to append
-@returns {}
-*/
-func (m *minima) Use(handler ...Handler) {
+ * @info Injects Minima middleware to the stack
+ * @param {...Handler} [handler] The handler stack to append
+ * @returns {}
+ */
+ func (m *minima) Use(handler ...Handler) {
 	m.minmiddleware = append(m.minmiddleware, handler...)
 }
 
-
-func (m*minima) UseRaw(handler ...func(http.Handler) http.Handler) {
+/**
+ * @info Injects net/http middleware to the stack
+ * @param {...http.HandlerFunc} [handler] The handler stack to append
+ * @returns {}
+ */
+func (m *minima) UseRaw(handler ...func(http.Handler) http.Handler) {
 	m.middlewares = append(m.middlewares, handler...)
 }
+
+//A dummy function that runs at the end of the middleware stack
+func middlewareHTTP(w http.ResponseWriter, r *http.Request) {}
+
+
 /**
-@info Serves and injects the middlewares to minima logic
-@param {Response} [res] The minima response instance
-@param {Request} [req] The minima req instance
-@returns {}
-*/
-func (m *minima) ServeMiddleware(res *Response, req *Request) {
-	for _, min := range m.minmiddleware {
-		min(res, req)
-	}
-}
-
-func (m *minima) middlewareHttp(w http.ResponseWriter, r *http.Request) {
-   
-}
-
+ * @info Builds whole middleware stack chain into single handler
+ */
 func (m*minima) buildHandler() {
-	m.handler = chain(m.middlewares, http.HandlerFunc(m.middlewareHttp))
+	m.handler = chain(m.middlewares, http.HandlerFunc(middlewareHTTP))
 }
