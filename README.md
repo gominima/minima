@@ -87,24 +87,23 @@ func UserGetRouter() *minima.Router {
 	// router instance which would be used by the main router
 	router := minima.NewRouter()
 
-	return router.Get("/user/:id", func(response *minima.Response, request *minima.Request) {
+	return router.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
 		// getting the id parameter from route
-		id := request.GetParam("id")
+		id := req.GetParam("id")
 
 		// instead of adding a param in route, you just need to fetch it
 
-		username := request.GetQuery("name")
+		username := req.GetQueryParam("name")
 
 		// get user from database
 		userdata, err := db.FindUser(id, username)
 
 		if err != nil {
-			panic(err)
 			// check for errors
-			response.NotFound().Send("No user found with particular id")
+			res.NotFound().Send("No user found with particular id")
 		}
 		// send user data
-		response.Json(userdata).OK()
+		res.OK().Json(userdata)
 	})
 }
 
@@ -126,11 +125,11 @@ func main() {
 func main() {
 	app := minima.New()
 
-	app.Get("/getuser/:id", func(response *minima.Response, request *minima.Request) {
-		userid := request.GetParam("id")
+	app.Get("/getuser/:id", func(res *minima.Response, req *minima.Request) {
+		userid := req.GetParam("id")
 		// check if user id is available
 		if userid == "" {
-			response.Error(404, "No user found")
+			res.Error(404, "No user found")
 			panic("No user id found in request")
 		}
 		fmt.Print(userid)
@@ -149,10 +148,10 @@ func main() {
 		// query params work a bit differently
 		// instead of adding a param in route, you just need to fetch it
 
-		userid := request.GetQuery("id")
+		userid := req.GetQuery("id")
 
 		if userid == "" {
-			response.Error(404, "No user found")
+			res.Error(404, "No user found")
 			panic("No user id found in request")
 		}
 		fmt.Print(userid)
