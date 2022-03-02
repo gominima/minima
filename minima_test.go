@@ -40,7 +40,7 @@ import (
 
 var testServer *httptest.Server
 
-func setupMinima() *minima {
+func setupMinima() *Minima {
 	app := New()
 	app.Get("/", func(res *Response, req *Request) {
 		res.OK().Send("Hello World")
