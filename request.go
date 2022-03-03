@@ -53,7 +53,8 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	query      url.Values
+	Query      map[string][]string
+	rawQuery   url.Values
 	header     *IncomingHeader
 	json       *json.Decoder
 }
@@ -69,7 +70,9 @@ func request(httpRequest *http.Request) *Request {
 		header:     &IncomingHeader{},
 		fileReader: nil,
 		method:     httpRequest.Proto,
-		query:      httpRequest.URL.Query(),
+		rawQuery:      httpRequest.URL.Query(),
+		Query: make(map[string][]string),
+
 	}
 
 	for i, v := range httpRequest.Header {
@@ -87,6 +90,9 @@ func request(httpRequest *http.Request) *Request {
 		for key, value := range httpRequest.PostForm {
 			req.body[key] = value
 		}
+	}
+	for i,v := range req.rawQuery {
+		req.Query[i] = v
 	}
 
 	return req
@@ -168,7 +174,21 @@ func (r *Request) Raw() *http.Request {
 @returns {string}
 */
 func (r *Request) GetQueryParam(key string) string {
-	return r.query[key][0]
+	var rvalue string
+	if len(r.Query[key][0]) != 0 {
+		rvalue = r.Query[key][0]
+		return rvalue
+	}
+	return rvalue
+}
+
+/**
+@info Gets request path query in an array
+@param {string} [key] key of the request query
+@returns {string}
+*/
+func (r *Request) GetRawQuery(key string) []string {
+	return r.Query[key]
 }
 
 /**
