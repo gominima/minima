@@ -46,7 +46,6 @@ type Handler func(res *Response, req *Request)
 type Router struct {
 	notfound      Handler
 	handler       http.Handler
-	minmiddleware []Handler
 	middlewares   []func(http.Handler) http.Handler
 	routes        map[string]*Routes
 }
@@ -209,21 +208,14 @@ func (r *Router) Mount(path string, Router *Router) *Router {
 	return r
 }
 
-/**
- * @info Injects Minima middleware to the stack
- * @param {...Handler} [handler] The handler stack to append
- * @returns {}
- */
-func (r *Router) use(handler ...Handler) {
-	r.minmiddleware = append(r.minmiddleware, handler...)
-}
+
 
 /**
  * @info Injects net/http middleware to the stack
  * @param {...func(http.Handler)http.Handler} [handler] The handler stack to append
  * @returns {}
  */
-func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
+func (r *Router) use(handler ...func(http.Handler) http.Handler) {
 	if r.handler != nil {
 		panic("Minima: Middlewares can't go after the routes are mounted")
 	}
@@ -231,13 +223,7 @@ func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
 }
 
 //A dummy function that runs at the end of the middleware stack
-func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {
-	resp := response(w, rq)
-	req := request(rq)
-	for _, fn := range r.minmiddleware {
-		fn(resp, req)
-	}
-}
+func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {}
 
 /**
  * @info Builds whole middleware stack chain into single handler
