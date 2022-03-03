@@ -373,7 +373,7 @@ func (res *Response) BadGateway() *Response {
 @info Set status code as 503
 @returns {Response}
 */
-func (res *Response) ServiceUnavailaible() *Response {
-	res.Status(statusCodes["Service Unavailaible"])
+func (res *Response) ServiceUnavailable() *Response {
+	res.Status(statusCodes["Service Unavailable"])
 	return res
 }
