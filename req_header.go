@@ -29,9 +29,9 @@ SOFTWARE.
 */
 
 /**
-@info The request headers structure
-@property {string} [key] Key for the header
-@property {string} [value] Value of the header
+ * @info The request headers structure
+ * @property {string} [key] Key for the header
+ * @property {string} [value] Value of the header
 */
 type ReqHeader struct {
 	key   string
@@ -39,16 +39,16 @@ type ReqHeader struct {
 }
 
 /**
-@info The Incoming header structure
-@property {[]*ReqHeader} [headers] Array of request headers
+ * @info The Incoming header structure
+ * @property {[]*ReqHeader} [headers] Array of request headers
 */
 type IncomingHeader struct {
 	headers []*ReqHeader
 }
 
 /**
-@info Gets request header from given key
-@property {string} [key] Key for the header
+ * @info Gets request header from given key
+ * @property {string} [key] Key for the header
 return {string}
 */
 func (h IncomingHeader) Get(key string) string {
@@ -65,9 +65,9 @@ func (h IncomingHeader) Get(key string) string {
 }
 
 /**
-@info Declares request header from given key
-@property {string} [key] Key for the header
-@property {string} [value] Value of the header
+ * @info Declares request header from given key
+ * @property {string} [key] Key for the header
+ * @property {string} [value] Value of the header
 */
 func (h *IncomingHeader) Set(key string, v string) {
 	h.headers = append(h.headers, &ReqHeader{key: key, value: v})
