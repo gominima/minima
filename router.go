@@ -52,7 +52,7 @@ type Router struct {
 }
 
 /**
-@info Make new default router interface
+ * @info Make new default router interface
 return {Router}
 */
 func NewRouter() *Router {
@@ -70,8 +70,8 @@ func NewRouter() *Router {
 }
 
 /**
-@info Registers a new route to router interface
-@param {string} [path] The route path
+ * @info Registers a new route to router interface
+ * @param {string} [path] The route path
 return {string, []string}
 */
 func (r *Router) Register(method string, path string, handler Handler) error {
@@ -93,10 +93,10 @@ func (r *Router) NotFound(handler Handler) *Router {
 }
 
 /**
-@info Adds route with Get method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Get method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Get(path string, handler Handler) *Router {
 	r.Register("GET", path, handler)
@@ -104,10 +104,10 @@ func (r *Router) Get(path string, handler Handler) *Router {
 }
 
 /**
-@info Adds route with Post method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Post method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Post(path string, handler Handler) *Router {
 	r.Register("POST", path, handler)
@@ -115,10 +115,10 @@ func (r *Router) Post(path string, handler Handler) *Router {
 }
 
 /**
-@info Adds route with Put method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Put method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Put(path string, handler Handler) *Router {
 	r.Register("PUT", path, handler)
@@ -126,20 +126,20 @@ func (r *Router) Put(path string, handler Handler) *Router {
 }
 
 /**
-@info Adds route with Patch method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Patch method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Patch(path string, handler Handler) {
 	r.Register("PATCH", path, handler)
 }
 
 /**
-@info Adds route with Options method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Options method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Options(path string, handler Handler) *Router {
 	r.Register("OPTIONS", path, handler)
@@ -147,10 +147,10 @@ func (r *Router) Options(path string, handler Handler) *Router {
 }
 
 /**
-@info Adds route with Head method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Head method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Head(path string, handler Handler) *Router {
 	r.Register("HEAD", path, handler)
@@ -158,10 +158,10 @@ func (r *Router) Head(path string, handler Handler) *Router {
 }
 
 /**
-@info Adds route with Delete method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*Router}
+ * @info Adds route with Delete method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*Router}
 */
 func (r *Router) Delete(path string, handler Handler) *Router {
 	r.Register("DELETE", path, handler)
@@ -169,17 +169,17 @@ func (r *Router) Delete(path string, handler Handler) *Router {
 }
 
 /**
-@info Returns all the routes in router
-@returns {map[string][]*mux}
+ * @info Returns all the routes in router
+ * @returns {map[string][]*mux}
 */
 func (r *Router) GetRouterRoutes() map[string]*Routes {
 	return r.routes
 }
 
 /**
-@info Appends all routes to core router instance
-@param {Router} [Router] The router instance to append
-@returns {Router}
+ * @info Appends all routes to core router instance
+ * @param {Router} [Router] The router instance to append
+ * @returns {Router}
 */
 func (r *Router) UseRouter(Router *Router) *Router {
 	for t, v := range Router.GetRouterRoutes() {
@@ -193,10 +193,10 @@ func (r *Router) UseRouter(Router *Router) *Router {
 }
 
 /**
-@info Mounts router to a specific path
-@param {string} [path] The route path
-@param {*Router} [router] Minima router instance
-@returns {*Router}
+ * @info Mounts router to a specific path
+ * @param {string} [path] The route path
+ * @param {*Router} [router] Minima router instance
+ * @returns {*Router}
 */
 func (r *Router) Mount(path string, Router *Router) *Router {
 	for t, v := range Router.GetRouterRoutes() {

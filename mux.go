@@ -33,9 +33,9 @@ import (
 )
 
 /**
-@info The Param structure
-@property {string} [name] The name of the param
-@property {bool} [fixed] Whether the param is fixed or not
+ * @info The Param structure
+ * @property {string} [name] The name of the param
+ * @property {bool} [fixed] Whether the param is fixed or not
 */
 type param struct {
 	name  string
@@ -43,10 +43,10 @@ type param struct {
 }
 
 /**
-@info The Route structure
-@property {string} [prefix] The prefix of the route
-@property {[]param} [partnames] The route paths split into parts
-@property {Handler} [function] The handler to be used
+ * @info The Route structure
+ * @property {string} [prefix] The prefix of the route
+ * @property {[]param} [partnames] The route paths split into parts
+ * @property {Handler} [function] The handler to be used
 */
 type Route struct {
 	prefix    string
@@ -55,16 +55,16 @@ type Route struct {
 }
 
 /**
-@info The Routes root structure
-@property {map[string][]Route} [roots] The map of array routes
+ * @info The Routes root structure
+ * @property {map[string][]Route} [roots] The map of array routes
 */
 type Routes struct {
 	roots map[string][]Route
 }
 
 /**
-@info Makes a new Routes instance
-@returns {*Routes}
+ * @info Makes a new Routes instance
+ * @returns {*Routes}
 */
 func NewRoutes() *Routes {
 	return &Routes{
@@ -73,9 +73,9 @@ func NewRoutes() *Routes {
 }
 
 /**
-@info Adds a new route to the routes table
-@param {string} [path] Path of the route
-@param {Handler} [handler] Handler of the route
+ * @info Adds a new route to the routes table
+ * @param {string} [path] Path of the route
+ * @param {Handler} [handler] Handler of the route
 */
 func (r *Routes) Add(path string, f Handler) {
 	parts := strings.Split(path, "/")
@@ -114,9 +114,9 @@ func (r *Routes) Add(path string, f Handler) {
 }
 
 /**
-@info Gets handler and params from the routes table
-@param {string} [path] Path of the route to find
-@returns {Handler, map[string]string, bool}
+ * @info Gets handler and params from the routes table
+ * @param {string} [path] Path of the route to find
+ * @returns {Handler, map[string]string, bool}
 */
 func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 	var routes []Route
@@ -147,10 +147,10 @@ func (r *Routes) Get(path string) (Handler, map[string]string, bool) {
 }
 
 /**
-@info Matches routes to the request
-@param {string} [path] Path of the request route to find
-@param {[]Route} [routes] The array of routes to match
-@returns {Handler, map[string]string, bool}
+ * @info Matches routes to the request
+ * @param {string} [path] Path of the request route to find
+ * @param {[]Route} [routes] The array of routes to match
+ * @returns {Handler, map[string]string, bool}
 */
 func matchRoutes(path string, routes []Route) (Handler, map[string]string, bool) {
 outer:
@@ -181,9 +181,9 @@ outer:
 }
 
 /**
-@info Cleans the array and finds non nill values
-@param {string} [path] The array of string to slice and clean
-@returns {[]string}
+ * @info Cleans the array and finds non nill values
+ * @param {string} [path] The array of string to slice and clean
+ * @returns {[]string}
 */
 func cleanArray(a []string) []string {
 	var valid []string

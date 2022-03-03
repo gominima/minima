@@ -37,15 +37,15 @@ import (
 )
 
 /**
-@info The request structure
-@property {*http.Request} [ref] The net/http request instance
-@property {multipart.Reader} [fileReader] file reader instance
-@property {map[string][]string} [body] Value of the request body
-@property {string} [method] Request method
-@property {[]*Params} [Params] Request path parameters
-@property {query} [url.Values] Request path query params
-@property {IncomingHeader} [header] Incoming headers of the request
-@property {json.Decoder} [json] Json decoder instance
+ * @info The request structure
+ * @property {*http.Request} [ref] The net/http request instance
+ * @property {multipart.Reader} [fileReader] file reader instance
+ * @property {map[string][]string} [body] Value of the request body
+ * @property {string} [method] Request method
+ * @property {[]*Params} [Params] Request path parameters
+ * @property {query} [url.Values] Request path query params
+ * @property {IncomingHeader} [header] Incoming headers of the request
+ * @property {json.Decoder} [json] Json decoder instance
 */
 type Request struct {
 	ref        *http.Request
@@ -60,9 +60,9 @@ type Request struct {
 }
 
 /**
-@info Make a new default request instance
-@param {http.Request} [http.Request] The net/http request instance
-@returns {Request}
+ * @info Make a new default request instance
+ * @param {http.Request} [http.Request] The net/http request instance
+ * @returns {Request}
 */
 func request(httpRequest *http.Request) *Request {
 	req := &Request{
@@ -100,19 +100,19 @@ func request(httpRequest *http.Request) *Request {
 }
 
 /**
-@info Gets param from route path
-@param {string} [key] Key of the route param
-@returns {string}
+ * @info Gets param from route path
+ * @param {string} [key] Key of the route param
+ * @returns {string}
 */
 func (r *Request) GetParam(key string) string {
 	return r.Params[key]
 }
 
 /**
-@info Sets param for route path
-@param {string} [key] Key of the route param
-@param {string} [value] Value of the route param
-@returns {Respone}
+ * @info Sets param for route path
+ * @param {string} [key] Key of the route param
+ * @param {string} [value] Value of the route param
+ * @returns {Respone}
 */
 func (r *Request) SetParam(key string, value string) *Request {
 	r.Params[key] = value
@@ -120,58 +120,58 @@ func (r *Request) SetParam(key string, value string) *Request {
 }
 
 /**
-@info Gets request path url
-@returns {string}
+ * @info Gets request path url
+ * @returns {string}
 */
 func (r *Request) GetPathURL() string {
 	return r.ref.URL.Path
 }
 
 /**
-@info Gets raw request body
-@returns {map[string][]string}
+ * @info Gets raw request body
+ * @returns {map[string][]string}
 */
 func (r *Request) Body() map[string][]string {
 	return r.body
 }
 
 /**
-@info Gets specified request body
-@param {string} [key] Key of the request body
-@returns {[]string}
+ * @info Gets specified request body
+ * @param {string} [key] Key of the request body
+ * @returns {[]string}
 */
 func (r *Request) GetBodyValue(key string) []string {
 	return r.body[key]
 }
 
 /**
-@info Gets raw json decoder instance
-@returns {json.Decoder}
+ * @info Gets raw json decoder instance
+ * @returns {json.Decoder}
 */
 func (r *Request) Json() *json.Decoder {
 	return r.json
 }
 
 /**
-@info Gets method of request
-@returns {string}
+ * @info Gets method of request
+ * @returns {string}
 */
 func (r *Request) Method() string {
 	return r.method
 }
 
 /**
-@info Gets raw net/http request instance
-@returns {http.Request}
+ * @info Gets raw net/http request instance
+ * @returns {http.Request}
 */
 func (r *Request) Raw() *http.Request {
 	return r.ref
 }
 
 /**
-@info Gets request path query
-@param {string} [key] key of the request query
-@returns {string}
+ * @info Gets request path query
+ * @param {string} [key] key of the request query
+ * @returns {string}
 */
 func (r *Request) GetQueryParam(key string) string {
 	var rvalue string
@@ -183,26 +183,26 @@ func (r *Request) GetQueryParam(key string) string {
 }
 
 /**
-@info Gets request path query in an array
-@param {string} [key] key of the request query
-@returns {string}
+ * @info Gets request path query in an array
+ * @param {string} [key] key of the request query
+ * @returns {string}
 */
 func (r *Request) GetRawQuery(key string) []string {
 	return r.Query[key]
 }
 
 /**
-@info Get all the cookies from the request
-@returns {[]*http.Cookie}
+ * @info Get all the cookies from the request
+ * @returns {[]*http.Cookie}
 */
 func (r *Request) Cookies() []*http.Cookie {
 	return r.ref.Cookies()
 }
 
 /**
-@info Get a paticular cookie by its key
-@param {string} [key] key of the cookie
-@returns {*http.Cookie}
+ * @info Get a paticular cookie by its key
+ * @param {string} [key] key of the cookie
+ * @returns {*http.Cookie}
 */
 func (r *Request) GetCookie(key string) *http.Cookie {
 	var result *http.Cookie
@@ -216,10 +216,10 @@ func (r *Request) GetCookie(key string) *http.Cookie {
 }
 
 /**
-@info Set a paticular Header
-@param {string} [key] key of the Header
-@param {string} [value] value of the Header
-@returns {*Request}
+ * @info Set a paticular Header
+ * @param {string} [key] key of the Header
+ * @param {string} [value] value of the Header
+ * @returns {*Request}
 */
 func (r *Request) SetHeader(key string, value string) *Request {
 	r.header.Set(key, value)
@@ -227,9 +227,9 @@ func (r *Request) SetHeader(key string, value string) *Request {
 }
 
 /**
-@info Get a paticular Header by its key
-@param {string} [key] key of the Header
-@returns {string}
+ * @info Get a paticular Header by its key
+ * @param {string} [key] key of the Header
+ * @returns {string}
 */
 func (r *Request) GetHeader(key string) string {
 	return r.header.Get(key)
