@@ -68,7 +68,7 @@ var statusCodes = map[string]int{
 	"Internal Server Error":      500,
 	"Not Implemented":            501,
 	"Bad Gateway":                502,
-	"Service Unavailaible":       503,
+	"Service Unavailable":       503,
 	"Gateway Timeout":            504,
 	"HTTP Version Not Supported": 505,
 }
