@@ -70,9 +70,8 @@ func request(httpRequest *http.Request) *Request {
 		header:     &IncomingHeader{},
 		fileReader: nil,
 		method:     httpRequest.Proto,
-		rawQuery:      httpRequest.URL.Query(),
-		Query: make(map[string][]string),
-
+		rawQuery:   httpRequest.URL.Query(),
+		Query:      make(map[string][]string),
 	}
 
 	for i, v := range httpRequest.Header {
@@ -91,7 +90,7 @@ func request(httpRequest *http.Request) *Request {
 			req.body[key] = value
 		}
 	}
-	for i,v := range req.rawQuery {
+	for i, v := range req.rawQuery {
 		req.Query[i] = v
 	}
 

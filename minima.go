@@ -271,22 +271,24 @@ func (m *Minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
 
+
+
 /**
- *  * @info Injects Minima middleware to the stack
- *  * @param {...Handler} [handler] The handler stack to append
- *  * @returns {}
+ * @info Injects net/http middleware to the stack
+ * @param {...http.HandlerFunc} [handler] The handler stack to append
+ * @returns {}
  */
-func (m *Minima) Use(handler ...Handler) *Minima {
+func (m *Minima) UseRaw(handler ...func(http.Handler) http.Handler) *Minima {
 	m.router.use(handler...)
 	return m
 }
 
 /**
- *  * @info Injects net/http middleware to the stack
- *  * @param {...http.HandlerFunc} [handler] The handler stack to append
- *  * @returns {}
+ * @info Injects minima middleware to the stack
+ * @param {Handler} [handler] The handler stack to append
+ * @returns {}
  */
-func (m *Minima) UseRaw(handler ...func(http.Handler) http.Handler) *Minima {
-	m.router.useRaw(handler...)
+ func (m *Minima) Use(handler Handler) *Minima {
+	m.router.use(Build(handler))
 	return m
 }

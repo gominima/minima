@@ -1,6 +1,5 @@
 package main
 
-
 /**
 * Minima is a free and open source software under Mit license
 
@@ -26,7 +25,7 @@ SOFTWARE.
 
 * Authors @apoorvcodes @megatank58
 * Maintainers @Panquesito7 @savioxavier @Shubhaankar-Sharma @apoorvcodes @megatank58
-* Thank you for showing interest in minima and for this beautiful community 
+* Thank you for showing interest in minima and for this beautiful community
 */
 
 import (
