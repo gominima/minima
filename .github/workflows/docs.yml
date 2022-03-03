@@ -9,6 +9,12 @@ jobs:
   docs:
     name: Generate Docs
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'gominima'
+    outputs:
+      REPO_NAME: ${{ steps.env.outputs.REPO_NAME }}
+      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2.4.0
@@ -18,25 +24,25 @@ jobs:
         with:
           go-version: 1.17
 
-      - name: Get Docgen
+      - name: Get docgen
         run: go get github.com/gominima/docgen 
         
-      - name: Run Docgen
-        run: go run github.com/gominima/docgen . $(git rev-parse --abbrev-ref HEAD).json
+      - name: Run docgen
+        run: go run github.com/gominima/docgen . $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json
         
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/}.json)"
-        id: extract_branch
-
-      - name: Push docs file
-        uses: dmnemec/copy_file_to_another_repo_action@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      - name: Checkout docs repository
+        uses: actions/checkout@v2
         with:
-          source_file: ${{ steps.extract_branch.outputs.branch }}
-          destination_repo: 'gominima/docs'
-          user_email: 'tofu.develops@gmail.com'
-          user_name: 'apoorvcodes'
-          commit_message: 'chore: docs'
-        
+          repository: 'gominima/docs'
+          token: ${{ secrets.API_TOKEN_GITHUB }}
+          path: 'out'
+
+      - name: Commit and push
+        run: |
+          mv $(basename `git rev-parse --show-toplevel`)-$(git rev-parse --abbrev-ref HEAD).json out
+          cd out
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
+          git push
