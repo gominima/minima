@@ -40,6 +40,7 @@ func main() {
 	app.UseRaw(SimpleTest())
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
+		res.Send(req.Query("name"))
 	})
 	app.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
 		id := req.Param("id")

@@ -54,7 +54,6 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	rawQuery   url.Values
 	header     *IncomingHeader
 	json       *json.Decoder
 }
@@ -64,28 +63,27 @@ type Request struct {
  * @param {http.Request} [http.Request] The net/http request instance
  * @returns {Request}
  */
-func request(httpRequest *http.Request) *Request {
+func request(r *http.Request) *Request {
 	req := &Request{
-		ref:        httpRequest,
+		ref:        r,
 		header:     &IncomingHeader{},
 		fileReader: nil,
-		method:     httpRequest.Proto,
-		rawQuery:   httpRequest.URL.Query(),
+		method:     r.Proto,
 	}
 
-	for i, v := range httpRequest.Header {
+	for i, v := range r.Header {
 		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
 	}
 
 	if req.header.Get("content-type") == "application/json" {
-		req.json = json.NewDecoder(httpRequest.Body)
+		req.json = json.NewDecoder(r.Body)
 	} else {
-		httpRequest.ParseForm()
+		r.ParseForm()
 	}
 
-	if len(httpRequest.PostForm) > 0 {
+	if len(r.PostForm) > 0 {
 		req.body = make(map[string][]string)
-		for key, value := range httpRequest.PostForm {
+		for key, value := range r.PostForm {
 			req.body[key] = value
 		}
 	}
@@ -168,7 +166,7 @@ func (r *Request) Raw() *http.Request {
  * @returns {string}
  */
 func (r *Request) Query(key string) string {
-	return r.rawQuery.Get("key")
+	return r.Raw().URL.Query().Get("name")
 }
 
 /**
@@ -185,7 +183,7 @@ func (r *Request) QueryString() string {
  * @returns {string}
  */
 func (r *Request) QueryParams() url.Values {
-	return r.rawQuery
+	return r.Raw().URL.Query()
 }
 
 /**
