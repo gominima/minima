@@ -1,10 +1,24 @@
 package minima
 
+
+/**
+ * @info The tree edge structure
+ * @property {string} [key] The key of the edge
+ * @property {Node} [n] The tree node
+*/
 type edge struct {
 	key string
 	n   *Node
 }
 
+
+/**
+ * @info The tree Node structure
+ * @property {Handler} [handler] The handler to be used
+ * @property {[]*edge} [edges] The array of node edges
+ * @property {int} [priority] The priority of the node in the tree
+ * @property {int} [depth] The depth of the node in the tree
+*/
 type Node struct {
 	handler  Handler
 	edges    []*edge
@@ -12,6 +26,10 @@ type Node struct {
 	depth    int
 }
 
+/**
+ * @info Whether the node is a leaf or not
+ * @returns {bool}
+*/
 func (n *Node) IsLeaf() bool {
 	length := len(n.edges)
 	if length == 2 {
@@ -20,47 +38,20 @@ func (n *Node) IsLeaf() bool {
 	return length == 0
 }
 
-func bit(i uint8, c byte) uint8 {
-	if 1<<(i-1)&c > 0 {
-		return 1
-	}
-	return 0
-}
-
-func (n *Node) insert(key string, handler Handler) {
-	for i := range key {
-		for j := uint8(8); j > 0; j-- {
-			bbit := bit(j, key[i])
-			done := i == len(key)-1 && j == 1
-			if e := n.edges[bbit]; e != nil {
-				if done {
-					e.n.handler = handler
-					return
-				}
-				goto next
-			}
-			n.edges[bbit] = &edge{
-				n: &Node{
-					depth: n.depth + 1,
-					edges: make([]*edge, 2),
-				},
-			}
-			if done {
-				n.edges[bbit].n.handler = handler
-			}
-
-		next:
-			n = n.edges[bbit].n
-		}
-	}
-}
-
+/**
+ * @info Clones the current node
+ * @returns {*Node}
+*/
 func (n *Node) clone() *Node {
 	c := *n
 	c.incrDepth()
 	return &c
 }
 
+
+/**
+ * @info Increases node's depth in the tree
+*/
 func (n *Node) incrDepth() {
 	n.depth++
 	for _, e := range n.edges {
