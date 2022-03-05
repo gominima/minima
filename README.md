@@ -89,11 +89,11 @@ func UserGetRouter() *minima.Router {
 
 	return router.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
 		// getting the id parameter from route
-		id := req.GetParam("id")
+		id := req.Param("id")
 
 		// instead of adding a param in route, you just need to fetch it
 
-		username := req.GetQueryParam("name")
+		username := req.Query("name")
 
 		// get user from database
 		userdata, err := db.FindUser(id, username)
@@ -126,7 +126,7 @@ func main() {
 	app := minima.New()
 
 	app.Get("/getuser/:id", func(res *minima.Response, req *minima.Request) {
-		userid := req.GetParam("id")
+		userid := req.Param("id")
 		// check if user id is available
 		if userid == "" {
 			res.Error(404, "No user found")
@@ -162,7 +162,7 @@ func main() {
 
 ## 📒 Minima Interface
 
-Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
+Minima is based on a custom implementation of radix tree which makes it extremely performant. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
 
 ### 🔖 Minima's Interface
 
@@ -240,7 +240,10 @@ type Res interface {
 	// utility functions for easier usage
 	Send(content string) *Response      //send content
 	WriteBytes(bytes []byte) error      //writes bytes to the page
-	Json(content interface{}) *Response //sends data in json format
+	JSON(content interface{}) *Response //sends data in json format
+	XML(content interface{}, indent string) //sends data in xml format
+	Stream(contentType string read io.Reader) // streams content to the route
+	NoContent(code int)
 	Error(status int, str string) *Response
 
 	// this functions returns http.ResponseWriter instance which means you could use any of your alrady written middlewares in minima!
@@ -273,22 +276,51 @@ type Req interface {
 	// minima request interface is built on http.Request
 
 	// returns param from route 
-	GetParam(name string) string
+	Param(name string) string
         
 	// sets a new param to the request instance
 	SetParam(key string, value) string
 	
 	//returns query param from route url
-	GetQueryParam(key string) string
+	Query(key string) string
+        
+	//returns query params to a string
+	QueryString() string
+        
+	//returns raw url.Values
+	QueryParams() url.Values
+        
+	//returns the ip of the request origin
+	IP() string
 
+	//returns whether the request is tls or not
+	IsTLS() bool
+
+	//returns whether the request is a socket or not
+	IsSocket() bool
+
+	//returns scheme type of request body
+	SchemeType() string
+
+	//Gets form value from request body 
+	FormValue(key string) string
+
+	//Gets all the form param values
+	FormParams() (url.Values, error)
+
+	//Gets file from request 
+	FormFile(key string) (*multipart.FileHeader, error)
+
+	//Gets request Multipart form
+	MultipartForm() (*multipart.Form, error)
 	// returns path url from the route
-	GetPathURL() string
+	Path() string
 
 	// returns raw request body
 	Body() map[string][]string
 
 	// finds given key value from body and returns it
-	GetBodyValue(key string) []string
+	BodyValue(key string) []string
 
 	// returns instance of minima.IncomingHeader for incoming header requests
 	Header() *IncomingHeader

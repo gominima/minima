@@ -42,7 +42,7 @@ func main() {
 		res.Send("Hello")
 	})
 	app.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
-		id := req.GetParam("id")
+		id := req.Param("id")
 		res.Send(id)
 	})
 	app.Listen(":3000")

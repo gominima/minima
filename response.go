@@ -31,6 +31,7 @@ SOFTWARE.
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"io"
 	"log"
 	"net/http"
@@ -174,12 +175,16 @@ func (res *Response) sendContent(contentType string, content []byte) {
 	}
 }
 
+func (res *Response) setContent(contentType string) {
+	res.header.Set("Content-Type", contentType)
+}
+
 /**
  * @info Writes json content to the route
  * @param {interface{}} [content] The json struct to write to the page
  * @returns {Response}
  */
-func (res *Response) Json(content interface{}) *Response {
+func (res *Response) JSON(content interface{}) *Response {
 	output, err := json.Marshal(content)
 	if err != nil {
 		output = []byte("")
@@ -187,6 +192,47 @@ func (res *Response) Json(content interface{}) *Response {
 
 	res.sendContent("application/json", output)
 	return res
+}
+
+/**
+ * @info Writes xml content to the route
+ * @param {interface{}} [content] The xml content to write to the page
+ * @param {string}  [indent] The indentation of the content
+ * @returns {error}
+ */
+func (res *Response) XML(content interface{}, indent string) error {
+	res.setContent("application/json; charset=utf-8")
+	enc := xml.NewEncoder(res.ref)
+	if indent != "" {
+		enc.Indent("", indent)
+	}
+	if _, err := res.ref.Write([]byte(xml.Header)); err != nil {
+		return err
+	}
+	return enc.Encode(content)
+}
+
+/**
+ * @info Streams content to the route
+ * @param {string} [contentType] The content type to stream
+ * @param {io.Reader} [read]  The io.Reader instance
+ * @returns {error}
+ */
+func (res *Response) Stream(contentType string, read io.Reader) error {
+	res.setContent(contentType)
+	_, err := io.Copy(res.ref, read)
+	return err
+}
+
+/**
+ * @info Sets page's content to none
+ * @param {int} [code] The status code
+ * @returns {error}
+ */
+func (res *Response) NoContent(code int) error {
+	res.Status(code)
+	res.CloseConn()
+	return nil
 }
 
 /**
@@ -198,6 +244,7 @@ func (res *Response) Json(content interface{}) *Response {
 func (res *Response) Error(status int, err string) *Response {
 	res.Status(status)
 	res.sendContent("text/html", []byte(err))
+	res.CloseConn()
 	return res
 }
 

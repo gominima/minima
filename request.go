@@ -31,6 +31,7 @@ SOFTWARE.
 import (
 	"encoding/json"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -53,7 +54,6 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	Query      map[string][]string
 	rawQuery   url.Values
 	header     *IncomingHeader
 	json       *json.Decoder
@@ -71,7 +71,6 @@ func request(httpRequest *http.Request) *Request {
 		fileReader: nil,
 		method:     httpRequest.Proto,
 		rawQuery:   httpRequest.URL.Query(),
-		Query:      make(map[string][]string),
 	}
 
 	for i, v := range httpRequest.Header {
@@ -90,10 +89,6 @@ func request(httpRequest *http.Request) *Request {
 			req.body[key] = value
 		}
 	}
-	for i, v := range req.rawQuery {
-		req.Query[i] = v
-	}
-
 	return req
 
 }
@@ -103,7 +98,7 @@ func request(httpRequest *http.Request) *Request {
  * @param {string} [key] Key of the route param
  * @returns {string}
  */
-func (r *Request) GetParam(key string) string {
+func (r *Request) Param(key string) string {
 	return r.Params[key]
 }
 
@@ -122,7 +117,7 @@ func (r *Request) SetParam(key string, value string) *Request {
  * @info Gets request path url
  * @returns {string}
  */
-func (r *Request) GetPathURL() string {
+func (r *Request) Path() string {
 	return r.ref.URL.Path
 }
 
@@ -139,7 +134,7 @@ func (r *Request) Body() map[string][]string {
  * @param {string} [key] Key of the request body
  * @returns {[]string}
  */
-func (r *Request) GetBodyValue(key string) []string {
+func (r *Request) BodyValue(key string) []string {
 	return r.body[key]
 }
 
@@ -172,13 +167,16 @@ func (r *Request) Raw() *http.Request {
  * @param {string} [key] key of the request query
  * @returns {string}
  */
-func (r *Request) GetQueryParam(key string) string {
-	var rvalue string
-	if len(r.Query[key][0]) != 0 {
-		rvalue = r.Query[key][0]
-		return rvalue
-	}
-	return rvalue
+func (r *Request) Query(key string) string {
+	return r.rawQuery.Get("key")
+}
+
+/**
+ * @info Gets request path query in a string
+ * @returns {string}
+ */
+func (r *Request) QueryString() string {
+	return r.ref.URL.RawQuery
 }
 
 /**
@@ -186,8 +184,112 @@ func (r *Request) GetQueryParam(key string) string {
  * @param {string} [key] key of the request query
  * @returns {string}
  */
-func (r *Request) GetRawQuery(key string) []string {
-	return r.Query[key]
+func (r *Request) QueryParams() url.Values {
+	return r.rawQuery
+}
+
+/**
+ * @info Gets ip of the request origin
+ * @returns {string}
+ */
+func (r *Request) IP() string {
+	if ip := r.ref.Header.Get("X-Forwarded-For"); ip != "" {
+		i := strings.IndexAny(ip, ",")
+		if i > 0 {
+			return strings.TrimSpace(ip[:i])
+		}
+		return ip
+	}
+	ra, _, _ := net.SplitHostPort(r.ref.RemoteAddr)
+	return ra
+}
+
+/**
+ * @info Whether the request is TLS or not
+ * @returns {bool}
+ */
+func (r *Request) IsTLS() bool {
+	return r.ref.TLS != nil
+}
+
+/**
+ * @info Whether the request is a websocket or not
+ * @returns {bool}
+ */
+func (r *Request) IsSocket() bool {
+	upgrade := r.ref.Header.Get("Upgrade")
+	return strings.EqualFold(upgrade, "websocket")
+}
+
+/**
+ * @info Gets the scheme type of the request body
+ * @returns {bool}
+ */
+func (r *Request) SchemeType() string {
+	if r.IsTLS() {
+		return "http"
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Proto"); scheme != "" {
+		return scheme
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Protocol"); scheme != "" {
+		return scheme
+	}
+	if ssl := r.ref.Header.Get("X-Forwarded-Ssl"); ssl == "on" {
+		return "https"
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Scheme"); scheme != "" {
+		return scheme
+	}
+	return "http"
+}
+
+/**
+ * @info Gets the values from request form
+ * @param {string} [key] The key of the value
+ * @returns {string}
+ */
+func (r *Request) FormValue(key string) string {
+	return r.ref.FormValue(key)
+}
+
+/**
+ * @info Gets all the form param values
+ * @returns {url.Values, error}
+ */
+func (r *Request) FormParams() (url.Values, error) {
+	if strings.HasPrefix(r.ref.Header.Get("Content-type"), "multipart/form-data") {
+		if err := r.ref.ParseMultipartForm(24); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := r.ref.ParseForm(); err != nil {
+			return nil, err
+		}
+	}
+	return r.ref.Form, nil
+}
+
+/**
+ * @info Gets a file from request form
+ * @returns {multipart.FileHeader, error}
+ */
+func (r *Request) FormFile(key string) (*multipart.FileHeader, error) {
+	f, file, err := r.ref.FormFile(key)
+	if err != nil {
+		return nil, err
+	}
+	f.Close()
+	return file, nil
+}
+
+/**
+ * @info Gets a Multi part form from request form
+ * @returns {multipart.Form, error}
+ */
+func (r *Request) MultipartForm() (*multipart.Form, error) {
+	err := r.ref.ParseMultipartForm(24)
+	return r.ref.MultipartForm, err
 }
 
 /**
