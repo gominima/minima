@@ -37,7 +37,7 @@ type Handler func(res *Response, req *Request)
 
 /**
  * @info The router structure
- * @property {map[string][]*Routes} [routes] The mux routes
+ * @property {map[string][]*tree} [routes] The radix-tree based routes
  * @property {Handler} [notfound] The handler for the non matching routes
  * @property {[]Handler} [minmiddleware] The minima handler middleware stack
  * @property {[]func(http.Handler)http.Handler} [middleware] The http.Handler middleware stack
