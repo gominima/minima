@@ -6,7 +6,7 @@ import (
 )
 
 /**
- * @info the radix tree structure 
+ * @info the radix tree structure
  * @property {Node} [roots] The roots of the tree
  * @property {int} [len] The lenght of the tree
  * @property {int} [size] The size of the tree
@@ -14,7 +14,7 @@ import (
  * @property {byte} [placeholder] The regex byte for params
  * @property {byte} [delim] The regex byte for params
  * @property {sync.Mutex} [mu] The synx.Mutex instance
-*/
+ */
 type tree struct {
 	root        *Node
 	len         int
@@ -44,7 +44,7 @@ func NewTree() *tree {
  * @param {string} [key] The route path used as key
  * @param {Handler} [handler] The handler to be used
  * @returns {}
-*/
+ */
 func (tr *tree) InsertNode(key string, handler Handler) {
 	if key == "" || handler == nil {
 		return
@@ -141,7 +141,7 @@ func (tr *tree) InsertNode(key string, handler Handler) {
  * @info Finds a specific node from the tree
  * @param {string} [key] The route path used as key
  * @returns {*Node, map[string]string}
-*/
+ */
 func (tr *tree) GetNode(key string) (*Node, map[string]string) {
 	if key == "" {
 		return nil, nil
@@ -208,7 +208,7 @@ func (tr *tree) GetNode(key string) (*Node, map[string]string) {
  * @info Turns a radix tree into a hash map
  * @param {tree} [tre] The tree to convert
  * @returns {map[string]Handler}
-*/
+ */
 func ToMap(tre *tree) map[string]Handler {
 	ma := make(map[string]Handler, tre.len)
 	for _, edge := range tre.root.edges {
@@ -221,7 +221,7 @@ func ToMap(tre *tree) map[string]Handler {
  * @info Inserts a hash map to the tree
  * @param {map[string]Handler} [m] The hash map to insert
  * @returns {}
-*/
+ */
 func (tr *tree) InsertMap(m map[string]Handler) {
 	for i, v := range m {
 		tr.InsertNode(i, v)

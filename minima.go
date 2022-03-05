@@ -36,15 +36,15 @@ import (
 )
 
 /**
-@info The framework structure
-@property {*http.Server} [server] The net/http stock server
-@property {bool} [started] Whether the server has started or not
-@property {*time.Duration} [Timeout] The router's breathing time
-@property {*Router} [router] The core router instance running with the server
-@property {map[string]interface{}} [properties] The properties for the server instance
-@property {*Config} [Config] The core config file for middlewares and router instances
-@property {*time.Duration} [drain] The router's drain time
-*/
+ * @info The framework structure
+ * @property {*http.Server} [server] The net/http stock server
+ * @property {bool} [started] Whether the server has started or not
+ * @property {*time.Duration} [Timeout] The router's breathing time
+ * @property {*Router} [router] The core router instance running with the server
+ * @property {map[string]interface{}} [properties] The properties for the server instance
+ * @property {*Config} [Config] The core config file for middlewares and router instances
+ * @property {*time.Duration} [drain] The router's drain time
+ */
 type Minima struct {
 	server     *http.Server
 	started    bool
@@ -55,8 +55,8 @@ type Minima struct {
 }
 
 /**
-@info Make a new default minima instance
-@example `
+ * @info Make a new default minima instance
+ * @example `
 func main() {
 	app := minima.New()
 
@@ -67,7 +67,7 @@ func main() {
 	app.Listen(":3000")
 }
 `
-@returns {minima}
+ * @returns {minima}
 */
 func New() *Minima {
 	return &Minima{
@@ -77,10 +77,10 @@ func New() *Minima {
 }
 
 /**
-@info Starts the actual http server
-@param {string} [addr] The port for the server instance to run on
-@returns {error}
-*/
+ * @info Starts the actual http server
+ * @param {string} [addr] The port for the server instance to run on
+ * @returns {error}
+ */
 func (m *Minima) Listen(addr string) error {
 	if m.started {
 		log.Panicf("Minimia's instance is already running at %s.", m.server.Addr)
@@ -92,11 +92,11 @@ func (m *Minima) Listen(addr string) error {
 }
 
 /**
-@info Injects the actual minima server logic to http
-@param {http.ResponseWriter} [w] The net/http response instance
-@param {http.Request} [r] The net/http request instance
-@returns {}
-*/
+ * @info Injects the actual minima server logic to http
+ * @param {http.ResponseWriter} [w] The net/http response instance
+ * @param {http.Request} [r] The net/http request instance
+ * @returns {}
+ */
 func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params := m.router.routes[r.Method].GetNode(r.URL.Path)
 
@@ -120,11 +120,11 @@ func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
-@info Adds route with Get method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Get method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Get(path string, handler Handler) *Minima {
 
 	m.router.Get(path, handler)
@@ -132,127 +132,127 @@ func (m *Minima) Get(path string, handler Handler) *Minima {
 }
 
 /**
-@info Adds route with Put method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Put method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Put(path string, handler Handler) *Minima {
 	m.router.Put(path, handler)
 	return m
 }
 
 /**
-@info Adds route with Options method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Options method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Options(path string, handler Handler) *Minima {
 	m.router.Options(path, handler)
 	return m
 }
 
 /**
-@info Adds route with Head method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Head method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Head(path string, handler Handler) *Minima {
 	m.router.Head(path, handler)
 	return m
 }
 
 /**
-@info Adds route with Delete method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Delete method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Delete(path string, handler Handler) *Minima {
 	m.router.Delete(path, handler)
 	return m
 }
 
 /**
-@info Adds route with Patch method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Patch method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Patch(path string, handler Handler) *Minima {
 	m.router.Patch(path, handler)
 	return m
 }
 
 /**
-@info Adds route with Post method
-@param {string} [path] The route path
-@param {...Handler} [handler] The handler for the given route
-@returns {*minima}
-*/
+ * @info Adds route with Post method
+ * @param {string} [path] The route path
+ * @param {...Handler} [handler] The handler for the given route
+ * @returns {*minima}
+ */
 func (m *Minima) Post(path string, handler Handler) *Minima {
 	m.router.Post(path, handler)
 	return m
 }
 
 /**
-@info Injects the NotFound handler to the minima instance
-@param {Handler} [handler] Minima handler instance
-@returns {*minima}
-*/
+ * @info Injects the NotFound handler to the minima instance
+ * @param {Handler} [handler] Minima handler instance
+ * @returns {*minima}
+ */
 func (m *Minima) NotFound(handler Handler) *Minima {
 	m.router.NotFound(handler)
 	return m
 }
 
 /**
-@info Injects the routes from the router to core stack
-@param {*Router} [router] Minima router instance
-@returns {*minima}
-*/
+ * @info Injects the routes from the router to core stack
+ * @param {*Router} [router] Minima router instance
+ * @returns {*minima}
+ */
 func (m *Minima) UseRouter(router *Router) *Minima {
 	m.router.UseRouter(router)
 	return m
 }
 
 /**
-@info The drain timeout for the core instance
-@param {time.Duration} [time] The time period for drain
-@returns {*minima}
-*/
+ * @info The drain timeout for the core instance
+ * @param {time.Duration} [time] The time period for drain
+ * @returns {*minima}
+ */
 func (m *Minima) ShutdownTimeout(t time.Duration) *Minima {
 	m.drain = t
 	return m
 }
 
 /**
-@info Shutdowns the core instance
-@param {context.Context} [ctx] The context for shutdown
-@returns {error}
-*/
+ * @info Shutdowns the core instance
+ * @param {context.Context} [ctx] The context for shutdown
+ * @returns {error}
+ */
 func (m *Minima) Shutdown(ctx context.Context) error {
 	log.Println("Stopping the server")
 	return m.server.Shutdown(ctx)
 }
 
 /**
-@info Declares prop for core properties
-@param {string} [key] Key for the prop
-@param {interface{}} [value] Value of the prop
-@returns {*minima}
-*/
+ * @info Declares prop for core properties
+ * @param {string} [key] Key for the prop
+ * @param {interface{}} [value] Value of the prop
+ * @returns {*minima}
+ */
 func (m *Minima) SetProp(key string, value interface{}) *Minima {
 	m.properties[key] = value
 	return m
 }
 
 /**
-@info Gets prop from core properties
-@param {string} [key] Key for the prop
-@returns {interface{}}
-*/
+ * @info Gets prop from core properties
+ * @param {string} [key] Key for the prop
+ * @returns {interface{}}
+ */
 func (m *Minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
