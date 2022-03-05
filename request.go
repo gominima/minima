@@ -33,6 +33,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"net"
 	"strings"
 )
 
@@ -53,7 +54,6 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	Query      map[string][]string
 	rawQuery   url.Values
 	header     *IncomingHeader
 	json       *json.Decoder
@@ -71,7 +71,6 @@ func request(httpRequest *http.Request) *Request {
 		fileReader: nil,
 		method:     httpRequest.Proto,
 		rawQuery:   httpRequest.URL.Query(),
-		Query:      make(map[string][]string),
 	}
 
 	for i, v := range httpRequest.Header {
@@ -90,10 +89,6 @@ func request(httpRequest *http.Request) *Request {
 			req.body[key] = value
 		}
 	}
-	for i, v := range req.rawQuery {
-		req.Query[i] = v
-	}
-
 	return req
 
 }
@@ -173,12 +168,15 @@ func (r *Request) Raw() *http.Request {
  * @returns {string}
  */
 func (r *Request) GetQueryParam(key string) string {
-	var rvalue string
-	if len(r.Query[key][0]) != 0 {
-		rvalue = r.Query[key][0]
-		return rvalue
-	}
-	return rvalue
+  return r.rawQuery.Get("key")
+}
+
+/**
+ * @info Gets request path query in a string
+ * @returns {string}
+ */
+func (r *Request) QueryString() string{
+	return r.ref.URL.RawQuery
 }
 
 /**
@@ -186,8 +184,79 @@ func (r *Request) GetQueryParam(key string) string {
  * @param {string} [key] key of the request query
  * @returns {string}
  */
-func (r *Request) GetRawQuery(key string) []string {
-	return r.Query[key]
+ func (r *Request) QueryParams() url.Values {
+	return r.rawQuery
+}
+
+func (r *Request) IP() string {
+	if ip := r.ref.Header.Get("X-Forwarded-For"); ip != "" {
+		i := strings.IndexAny(ip, ",")
+		if i > 0 {
+			return strings.TrimSpace(ip[:i])
+		}
+		return ip
+	}
+	ra, _, _ := net.SplitHostPort(r.ref.RemoteAddr)
+	return ra
+}
+
+func (r *Request) IsTLS() bool {
+	return r.ref.TLS != nil
+}
+
+func (r*Request) IsSocket() bool {
+	upgrade := r.ref.Header.Get("Upgrade")
+	return strings.EqualFold(upgrade, "websocket")
+}
+
+func (r*Request) SchemeType() string {
+	if r.IsTLS() {
+		return "http"
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Proto"); scheme != "" {
+		return scheme
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Protocol"); scheme != "" {
+		return scheme
+	}
+	if ssl := r.ref.Header.Get("X-Forwarded-Ssl"); ssl == "on" {
+		return "https"
+	}
+	if scheme := r.ref.Header.Get("X-Forwarded-Scheme"); scheme != "" {
+		return scheme
+	}
+	return "http"
+}
+
+func (r *Request) FormValue(key string) string {
+	return r.ref.FormValue(key)
+}
+
+func (r *Request) FormParams() (url.Values, error) {
+	if strings.HasPrefix(r.ref.Header.Get("Content-type"), "multipart/form-data") {
+		if err := r.ref.ParseMultipartForm(24); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := r.ref.ParseForm(); err != nil {
+			return nil, err
+		}
+	}
+	return r.ref.Form, nil
+}
+
+func (r *Request) FormFile(key string) (*multipart.FileHeader, error) {
+	f, file, err := r.ref.FormFile(key)
+	if err != nil {
+		return nil, err
+	}
+	f.Close()
+	return file, nil
+}
+
+func (r *Request) MultipartForm() (*multipart.Form, error) {
+	err := r.ref.ParseMultipartForm(24)
+	return r.ref.MultipartForm, err
 }
 
 /**
