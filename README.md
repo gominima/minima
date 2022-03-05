@@ -89,11 +89,11 @@ func UserGetRouter() *minima.Router {
 
 	return router.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
 		// getting the id parameter from route
-		id := req.GetParam("id")
+		id := req.Param("id")
 
 		// instead of adding a param in route, you just need to fetch it
 
-		username := req.GetQueryParam("name")
+		username := req.Query("name")
 
 		// get user from database
 		userdata, err := db.FindUser(id, username)
@@ -162,7 +162,7 @@ func main() {
 
 ## 📒 Minima Interface
 
-Minima is based on a looping system which loops through routes and matches the regex of requested route. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
+Minima is based on a custom implementation of radix tree which makes it extremely performant. The router itself is fully compatible with [`net/http`](https://pkg.go.dev/net/http)
 
 ### 🔖 Minima's Interface
 
@@ -279,7 +279,7 @@ type Req interface {
 	SetParam(key string, value) string
 	
 	//returns query param from route url
-	GetQueryParam(key string) string
+	Query(key string) string
 
 	// returns path url from the route
 	GetPathURL() string
