@@ -1,18 +1,17 @@
 package minima
 
-
 const tabSize = 4
 
 type edge struct {
 	key string
-	n     *Node
+	n   *Node
 }
 
 type Node struct {
-	handler Handler
-	edges []*edge
-	priorty int
-	depth int
+	handler  Handler
+	edges    []*edge
+	priority int
+	depth    int
 }
 
 func (n *Node) IsLeaf() bool {
@@ -30,7 +29,7 @@ func bit(i uint8, c byte) uint8 {
 	return 0
 }
 
-func (n*Node) insert(key string, handler Handler)  {
+func (n *Node) insert(key string, handler Handler) {
 	for i := range key {
 		for j := uint8(8); j > 0; j-- {
 			bbit := bit(j, key[i])
@@ -38,7 +37,7 @@ func (n*Node) insert(key string, handler Handler)  {
 			if e := n.edges[bbit]; e != nil {
 				if done {
 					e.n.handler = handler
-					return 
+					return
 				}
 				goto next
 			}
@@ -51,7 +50,7 @@ func (n*Node) insert(key string, handler Handler)  {
 			if done {
 				n.edges[bbit].n.handler = handler
 			}
-			
+
 		next:
 			n = n.edges[bbit].n
 		}
@@ -99,4 +98,17 @@ func (n *Node) getBinary(key string) *Node {
 		}
 	}
 	return nil
+}
+
+func (n *Node) clone() *Node {
+	c := *n
+	c.incrDepth()
+	return &c
+}
+
+func (n *Node) incrDepth() {
+	n.depth++
+	for _, e := range n.edges {
+		e.n.incrDepth()
+	}
 }

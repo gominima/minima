@@ -38,6 +38,10 @@ import (
 func main() {
 	app := minima.New()
 	app.UseRaw(SimpleTest())
+	tr := minima.NewTree()
+	tr.InsertNode("/user/name/:user", func(res *minima.Response, req *minima.Request) {})
+	n,v := tr.GetNode("/user/name/totu")
+	fmt.Print(n,v)
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 	})

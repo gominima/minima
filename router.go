@@ -44,10 +44,10 @@ type Handler func(res *Response, req *Request)
  * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
  */
 type Router struct {
-	notfound      Handler
-	handler       http.Handler
-	middlewares   []func(http.Handler) http.Handler
-	routes        map[string]*Routes
+	notfound    Handler
+	handler     http.Handler
+	middlewares []func(http.Handler) http.Handler
+	routes      map[string]*Routes
 }
 
 /**
@@ -207,8 +207,6 @@ func (r *Router) Mount(path string, Router *Router) *Router {
 	}
 	return r
 }
-
-
 
 /**
  * @info Injects net/http middleware to the stack
