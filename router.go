@@ -37,18 +37,17 @@ type Handler func(res *Response, req *Request)
 
 /**
  * @info The router structure
- * @property {map[string][]*Routes} [routes] The mux routes
+ * @property {map[string][]*tree} [routes] The radix-tree based routes
  * @property {Handler} [notfound] The handler for the non matching routes
  * @property {[]Handler} [minmiddleware] The minima handler middleware stack
  * @property {[]func(http.Handler)http.Handler} [middleware] The http.Handler middleware stack
  * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
  */
 type Router struct {
-	notfound      Handler
-	handler       http.Handler
-	minmiddleware []Handler
-	middlewares   []func(http.Handler) http.Handler
-	routes        map[string]*Routes
+	notfound    Handler
+	handler     http.Handler
+	middlewares []func(http.Handler) http.Handler
+	routes      map[string]*tree
 }
 
 /**
@@ -57,14 +56,14 @@ return {Router}
 */
 func NewRouter() *Router {
 	return &Router{
-		routes: map[string]*Routes{
-			"GET":     NewRoutes(),
-			"POST":    NewRoutes(),
-			"PUT":     NewRoutes(),
-			"DELETE":  NewRoutes(),
-			"PATCH":   NewRoutes(),
-			"OPTIONS": NewRoutes(),
-			"HEAD":    NewRoutes(),
+		routes: map[string]*tree{
+			"GET":     NewTree(),
+			"POST":    NewTree(),
+			"PUT":     NewTree(),
+			"DELETE":  NewTree(),
+			"PATCH":   NewTree(),
+			"OPTIONS": NewTree(),
+			"HEAD":    NewTree(),
 		},
 	}
 }
@@ -83,7 +82,7 @@ func (r *Router) Register(method string, path string, handler Handler) error {
 		return fmt.Errorf("method %s not valid", method)
 	}
 
-	routes.Add(path, handler)
+	routes.InsertNode(path, handler)
 	return nil
 }
 
@@ -172,7 +171,7 @@ func (r *Router) Delete(path string, handler Handler) *Router {
 @info Returns all the routes in router
 @returns {map[string][]*mux}
 */
-func (r *Router) GetRouterRoutes() map[string]*Routes {
+func (r *Router) GetRouterRoutes() map[string]*tree {
 	return r.routes
 }
 
@@ -181,41 +180,11 @@ func (r *Router) GetRouterRoutes() map[string]*Routes {
 @param {Router} [Router] The router instance to append
 @returns {Router}
 */
-func (r *Router) UseRouter(Router *Router) *Router {
-	for t, v := range Router.GetRouterRoutes() {
-		for i, vl := range v.roots {
-			for _, handle := range vl {
-				r.Register(t, i, handle.function)
-			}
-		}
+func (r *Router) UseRouter(Router *Router) {
+	rt := Router.GetRouterRoutes()
+	for method, tree := range rt {
+		r.routes[method].InsertMap(ToMap(tree))
 	}
-	return r
-}
-
-/**
-@info Mounts router to a specific path
-@param {string} [path] The route path
-@param {*Router} [router] Minima router instance
-@returns {*Router}
-*/
-func (r *Router) Mount(path string, Router *Router) *Router {
-	for t, v := range Router.GetRouterRoutes() {
-		for i, vl := range v.roots {
-			for _, handle := range vl {
-				r.Register(t, path+i, handle.function)
-			}
-		}
-	}
-	return r
-}
-
-/**
- * @info Injects Minima middleware to the stack
- * @param {...Handler} [handler] The handler stack to append
- * @returns {}
- */
-func (r *Router) use(handler ...Handler) {
-	r.minmiddleware = append(r.minmiddleware, handler...)
 }
 
 /**
@@ -223,7 +192,7 @@ func (r *Router) use(handler ...Handler) {
  * @param {...func(http.Handler)http.Handler} [handler] The handler stack to append
  * @returns {}
  */
-func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
+func (r *Router) use(handler ...func(http.Handler) http.Handler) {
 	if r.handler != nil {
 		panic("Minima: Middlewares can't go after the routes are mounted")
 	}
@@ -231,13 +200,7 @@ func (r *Router) useRaw(handler ...func(http.Handler) http.Handler) {
 }
 
 //A dummy function that runs at the end of the middleware stack
-func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {
-	resp := response(w, rq)
-	req := request(rq)
-	for _, fn := range r.minmiddleware {
-		fn(resp, req)
-	}
-}
+func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {}
 
 /**
  * @info Builds whole middleware stack chain into single handler

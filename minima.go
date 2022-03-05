@@ -98,10 +98,10 @@ func (m *Minima) Listen(addr string) error {
 @returns {}
 */
 func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
-	res := response(w, r)
-	req := request(r)
-	if match {
+	f, params := m.router.routes[r.Method].GetNode(r.URL.Path)
+
+	if f != nil {
+		handler := buildHandler(f.handler, params)
 		if err := r.ParseForm(); err != nil {
 			log.Printf("Error parsing form: %s", err)
 			return
@@ -109,13 +109,10 @@ func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if m.router.handler != nil {
 			m.router.handler.ServeHTTP(w, r)
 		}
-		req.Params = params
-		f(res, req)
+		handler.ServeHTTP(w, r)
 	} else {
-		res := response(w, r)
-		req := request(r)
 		if m.router.notfound != nil {
-			m.router.notfound(res, req)
+			buildHandler(m.router.notfound, nil).ServeHTTP(w, r)
 		} else {
 			w.Write([]byte("No matching route found"))
 		}
@@ -221,17 +218,6 @@ func (m *Minima) UseRouter(router *Router) *Minima {
 }
 
 /**
-@info Mounts router to a specific path
-@param {string} [path] The route path
-@param {*Router} [router] Minima router instance
-@returns {*minima}
-*/
-func (m *Minima) Mount(path string, router *Router) *Minima {
-	m.router.Mount(path, router)
-	return m
-}
-
-/**
 @info The drain timeout for the core instance
 @param {time.Duration} [time] The time period for drain
 @returns {*minima}
@@ -272,21 +258,21 @@ func (m *Minima) GetProp(key string) interface{} {
 }
 
 /**
- * @info Injects Minima middleware to the stack
- * @param {...Handler} [handler] The handler stack to append
- * @returns {}
- */
-func (m *Minima) Use(handler ...Handler) *Minima {
-	m.router.use(handler...)
-	return m
-}
-
-/**
  * @info Injects net/http middleware to the stack
  * @param {...http.HandlerFunc} [handler] The handler stack to append
  * @returns {}
  */
 func (m *Minima) UseRaw(handler ...func(http.Handler) http.Handler) *Minima {
-	m.router.useRaw(handler...)
+	m.router.use(handler...)
+	return m
+}
+
+/**
+ * @info Injects minima middleware to the stack
+ * @param {Handler} [handler] The handler stack to append
+ * @returns {}
+ */
+func (m *Minima) Use(handler Handler) *Minima {
+	m.router.use(build(handler, nil))
 	return m
 }

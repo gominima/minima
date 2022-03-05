@@ -253,6 +253,7 @@ func (res *Response) CloseConn() error {
 func (res *Response) Redirect(url string) *Response {
 	res.header.Status(302)
 	res.header.Set("Location", url)
+	http.Redirect(res.Raw(), res.header.req, url, http.StatusTemporaryRedirect)
 	res.ended = true
 	return res
 }
