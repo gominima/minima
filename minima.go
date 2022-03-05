@@ -30,6 +30,7 @@ SOFTWARE.
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -53,6 +54,18 @@ type Minima struct {
 	properties map[string]interface{}
 	drain      time.Duration
 }
+
+const (
+	version = "1.1.1"
+	banner  = `	
+  __  __  _  __  _  _  __  __   ____  
+ |  \/  || ||  \| || ||  \/  | / () \ 
+ |_|\/|_||_||_|\__||_||_|\/|_|/__/\__\ %s
+ The Go framework to scale
+___________________________________________
+ Server started at port %v                                                                              
+`
+)
 
 /**
  * @info Make a new default minima instance
@@ -87,7 +100,7 @@ func (m *Minima) Listen(addr string) error {
 	}
 	m.server = &http.Server{Addr: addr, Handler: m}
 	m.started = true
-
+	fmt.Printf(banner, version, addr)
 	return m.server.ListenAndServe()
 }
 
