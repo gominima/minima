@@ -200,7 +200,7 @@ func (res *Response) JSON(content interface{}) *Response {
  * @param {string}  [indent] The indentation of the content
  * @returns {error}
  */
-func (res *Response) XML(content interface{}, indent string) error{
+func (res *Response) XML(content interface{}, indent string) error {
 	res.setContent("application/json; charset=utf-8")
 	enc := xml.NewEncoder(res.ref)
 	if indent != "" {
@@ -211,7 +211,6 @@ func (res *Response) XML(content interface{}, indent string) error{
 	}
 	return enc.Encode(content)
 }
-
 
 /**
  * @info Streams content to the route
@@ -235,6 +234,7 @@ func (res *Response) NoContent(code int) error {
 	res.CloseConn()
 	return nil
 }
+
 /**
  * @info Returns error to the route
  * @param {int} [status] The status code of the error

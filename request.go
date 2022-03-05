@@ -31,9 +31,9 @@ SOFTWARE.
 import (
 	"encoding/json"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"net/url"
-	"net"
 	"strings"
 )
 
@@ -98,7 +98,7 @@ func request(httpRequest *http.Request) *Request {
  * @param {string} [key] Key of the route param
  * @returns {string}
  */
-func (r *Request) GetParam(key string) string {
+func (r *Request) Param(key string) string {
 	return r.Params[key]
 }
 
@@ -117,7 +117,7 @@ func (r *Request) SetParam(key string, value string) *Request {
  * @info Gets request path url
  * @returns {string}
  */
-func (r *Request) GetPathURL() string {
+func (r *Request) Path() string {
 	return r.ref.URL.Path
 }
 
@@ -134,7 +134,7 @@ func (r *Request) Body() map[string][]string {
  * @param {string} [key] Key of the request body
  * @returns {[]string}
  */
-func (r *Request) GetBodyValue(key string) []string {
+func (r *Request) BodyValue(key string) []string {
 	return r.body[key]
 }
 
@@ -167,15 +167,15 @@ func (r *Request) Raw() *http.Request {
  * @param {string} [key] key of the request query
  * @returns {string}
  */
-func (r *Request) GetQueryParam(key string) string {
-  return r.rawQuery.Get("key")
+func (r *Request) Query(key string) string {
+	return r.rawQuery.Get("key")
 }
 
 /**
  * @info Gets request path query in a string
  * @returns {string}
  */
-func (r *Request) QueryString() string{
+func (r *Request) QueryString() string {
 	return r.ref.URL.RawQuery
 }
 
@@ -184,10 +184,14 @@ func (r *Request) QueryString() string{
  * @param {string} [key] key of the request query
  * @returns {string}
  */
- func (r *Request) QueryParams() url.Values {
+func (r *Request) QueryParams() url.Values {
 	return r.rawQuery
 }
 
+/**
+ * @info Gets ip of the request origin
+ * @returns {string}
+ */
 func (r *Request) IP() string {
 	if ip := r.ref.Header.Get("X-Forwarded-For"); ip != "" {
 		i := strings.IndexAny(ip, ",")
@@ -200,16 +204,28 @@ func (r *Request) IP() string {
 	return ra
 }
 
+/**
+ * @info Whether the request is TLS or not
+ * @returns {bool}
+ */
 func (r *Request) IsTLS() bool {
 	return r.ref.TLS != nil
 }
 
-func (r*Request) IsSocket() bool {
+/**
+ * @info Whether the request is a websocket or not
+ * @returns {bool}
+ */
+func (r *Request) IsSocket() bool {
 	upgrade := r.ref.Header.Get("Upgrade")
 	return strings.EqualFold(upgrade, "websocket")
 }
 
-func (r*Request) SchemeType() string {
+/**
+ * @info Gets the scheme type of the request body
+ * @returns {bool}
+ */
+func (r *Request) SchemeType() string {
 	if r.IsTLS() {
 		return "http"
 	}
@@ -228,10 +244,19 @@ func (r*Request) SchemeType() string {
 	return "http"
 }
 
+/**
+ * @info Gets the values from request form
+ * @param {string} [key] The key of the value
+ * @returns {string}
+ */
 func (r *Request) FormValue(key string) string {
 	return r.ref.FormValue(key)
 }
 
+/**
+ * @info Gets all the form param values
+ * @returns {url.Values, error}
+ */
 func (r *Request) FormParams() (url.Values, error) {
 	if strings.HasPrefix(r.ref.Header.Get("Content-type"), "multipart/form-data") {
 		if err := r.ref.ParseMultipartForm(24); err != nil {
@@ -245,6 +270,10 @@ func (r *Request) FormParams() (url.Values, error) {
 	return r.ref.Form, nil
 }
 
+/**
+ * @info Gets a file from request form
+ * @returns {multipart.FileHeader, error}
+ */
 func (r *Request) FormFile(key string) (*multipart.FileHeader, error) {
 	f, file, err := r.ref.FormFile(key)
 	if err != nil {
@@ -254,6 +283,10 @@ func (r *Request) FormFile(key string) (*multipart.FileHeader, error) {
 	return file, nil
 }
 
+/**
+ * @info Gets a Multi part form from request form
+ * @returns {multipart.Form, error}
+ */
 func (r *Request) MultipartForm() (*multipart.Form, error) {
 	err := r.ref.ParseMultipartForm(24)
 	return r.ref.MultipartForm, err
