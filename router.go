@@ -47,7 +47,7 @@ type Router struct {
 	notfound    Handler
 	handler     http.Handler
 	middlewares []func(http.Handler) http.Handler
-	routes      map[string]*Routes
+	routes      map[string]*tree
 }
 
 /**
@@ -56,14 +56,14 @@ return {Router}
 */
 func NewRouter() *Router {
 	return &Router{
-		routes: map[string]*Routes{
-			"GET":     NewRoutes(),
-			"POST":    NewRoutes(),
-			"PUT":     NewRoutes(),
-			"DELETE":  NewRoutes(),
-			"PATCH":   NewRoutes(),
-			"OPTIONS": NewRoutes(),
-			"HEAD":    NewRoutes(),
+		routes: map[string]*tree{
+			"GET":     NewTree(),
+			"POST":    NewTree(),
+			"PUT":     NewTree(),
+			"DELETE":  NewTree(),
+			"PATCH":   NewTree(),
+			"OPTIONS": NewTree(),
+			"HEAD":    NewTree(),
 		},
 	}
 }
@@ -82,7 +82,7 @@ func (r *Router) Register(method string, path string, handler Handler) error {
 		return fmt.Errorf("method %s not valid", method)
 	}
 
-	routes.Add(path, handler)
+	routes.InsertNode(path, handler)
 	return nil
 }
 
@@ -171,7 +171,7 @@ func (r *Router) Delete(path string, handler Handler) *Router {
 @info Returns all the routes in router
 @returns {map[string][]*mux}
 */
-func (r *Router) GetRouterRoutes() map[string]*Routes {
+func (r *Router) GetRouterRoutes() map[string]*tree {
 	return r.routes
 }
 
@@ -180,32 +180,11 @@ func (r *Router) GetRouterRoutes() map[string]*Routes {
 @param {Router} [Router] The router instance to append
 @returns {Router}
 */
-func (r *Router) UseRouter(Router *Router) *Router {
-	for t, v := range Router.GetRouterRoutes() {
-		for i, vl := range v.roots {
-			for _, handle := range vl {
-				r.Register(t, i, handle.function)
-			}
-		}
+func (r *Router) UseRouter(Router *Router) {
+	rt := Router.GetRouterRoutes()
+	for method, tree := range rt {
+		r.routes[method].InsertMap(ToMap(tree))
 	}
-	return r
-}
-
-/**
-@info Mounts router to a specific path
-@param {string} [path] The route path
-@param {*Router} [router] Minima router instance
-@returns {*Router}
-*/
-func (r *Router) Mount(path string, Router *Router) *Router {
-	for t, v := range Router.GetRouterRoutes() {
-		for i, vl := range v.roots {
-			for _, handle := range vl {
-				r.Register(t, path+i, handle.function)
-			}
-		}
-	}
-	return r
 }
 
 /**

@@ -1,17 +1,8 @@
 package minima
 
 import (
-	"log"
 	"strings"
 	"sync"
-)
-
-const (
-	Tsafe = 1 << iota
-	// Tdebug adds more information to the tree's string representation.
-	Tdebug
-	// Tbinary uses a binary PATRICIA tree instead of a prefix tree.
-	Tbinary
 )
 
 type tree struct {
@@ -121,7 +112,6 @@ func (tr *tree) InsertNode(key string, handler Handler) {
 				priority: 1,
 			},
 		})
-		log.Print("Inserted the node")
 		tr.len++
 		tr.size += len(key)
 		return
@@ -190,4 +180,16 @@ func (tr *tree) GetNode(key string) (*Node, map[string]string) {
 	return n, params
 }
 
+func ToMap(tre *tree) map[string]Handler {
+	ma := make(map[string]Handler, tre.len)
+	for _, edge := range tre.root.edges {
+		ma[edge.key] = edge.n.handler
+	}
+	return ma
+}
 
+func (tr *tree) InsertMap(m map[string]Handler) {
+	for i, v := range m {
+		tr.InsertNode(i, v)
+	}
+}

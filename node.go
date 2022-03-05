@@ -1,7 +1,5 @@
 package minima
 
-const tabSize = 4
-
 type edge struct {
 	key string
 	n   *Node
@@ -55,49 +53,6 @@ func (n *Node) insert(key string, handler Handler) {
 			n = n.edges[bbit].n
 		}
 	}
-}
-
-func (n *Node) delBinary(key string) int {
-	var (
-		ref *edge
-		del int
-	)
-	for i := range key {
-		for j := uint8(8); j > 0; j-- {
-			bbit := bit(j, key[i])
-			done := i == len(key)-1 && j == 1
-			if e := n.edges[bbit]; e != nil {
-				del++
-				if done && e.n.IsLeaf() { // only delete if node is leaf, otherwise it would break the tree
-					ref.n.edges = make([]*edge, 2) // reset edges from the last node that has value
-					return del
-				}
-				ref = e
-				n = e.n
-				continue
-			}
-			return 0
-		}
-	}
-	return 0
-}
-
-func (n *Node) getBinary(key string) *Node {
-	for i := range key {
-		for j := uint8(8); j > 0; j-- {
-			bbit := bit(j, key[i])
-			done := i == len(key)-1 && j == 1
-			if e := n.edges[bbit]; e != nil {
-				if done {
-					return e.n
-				}
-				n = e.n
-				continue
-			}
-			return nil
-		}
-	}
-	return nil
 }
 
 func (n *Node) clone() *Node {
