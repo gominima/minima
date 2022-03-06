@@ -291,3 +291,16 @@ func (m *Minima) Use(handler Handler) *Minima {
 	m.router.use(build(handler, nil))
 	return m
 }
+
+/**
+ * @info Injects minima group to main router stack
+ * @param {Group} [grp] The minima group to append
+ * @returns {}
+ */
+func (m *Minima) UseGroup(grp *Group) *Minima {
+	for _, v := range grp.GetGroupRoutes() {
+		fmt.Print(v.method)
+		m.router.routes[v.method].InsertNode(v.path, v.handler)
+	}
+	return m
+}

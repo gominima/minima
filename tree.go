@@ -159,7 +159,7 @@ func (tr *tree) InsertNode(key string, handler Handler) {
 				priority: 1,
 			},
 		})
-	
+
 		tr.len++
 		tr.size += len(key)
 		return

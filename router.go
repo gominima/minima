@@ -29,14 +29,11 @@ SOFTWARE.
 */
 
 import (
-        "fmt"
+	"fmt"
 	"net/http"
 )
 
 type Handler func(res *Response, req *Request)
-
-
-
 
 /**
  * @info The cache routes struct
