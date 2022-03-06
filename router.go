@@ -29,11 +29,26 @@ SOFTWARE.
 */
 
 import (
-	"fmt"
+        "fmt"
 	"net/http"
 )
 
 type Handler func(res *Response, req *Request)
+
+
+
+
+/**
+ * @info The cache routes struct
+ * @property {string} [method] The route method
+ * @property {Handler} [handler] The handler for the cached route
+ * @property {string} [path] The path of the cached route
+ */
+type cacheRoute struct {
+	method  string
+	path    string
+	handler Handler
+}
 
 /**
  * @info The router structure
@@ -41,12 +56,16 @@ type Handler func(res *Response, req *Request)
  * @property {Handler} [notfound] The handler for the non matching routes
  * @property {[]Handler} [minmiddleware] The minima handler middleware stack
  * @property {[]func(http.Handler)http.Handler} [middleware] The http.Handler middleware stack
+ * @property {bool} [isCache] Whether the router is cache or not
+ * @property {[]*cacheRoute} [cacheRoute] Slice of cached routes
  * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
  */
 type Router struct {
 	notfound    Handler
 	handler     http.Handler
+	isCache     bool
 	middlewares []func(http.Handler) http.Handler
+	cacheRoute  []*cacheRoute
 	routes      map[string]*tree
 }
 
@@ -65,6 +84,8 @@ func NewRouter() *Router {
 			"OPTIONS": NewTree(),
 			"HEAD":    NewTree(),
 		},
+		isCache:    true,
+		cacheRoute: make([]*cacheRoute, 0),
 	}
 }
 
@@ -76,6 +97,14 @@ return {string, []string}
 func (r *Router) Register(method string, path string, handler Handler) error {
 	if r.handler == nil {
 		r.buildHandler()
+	}
+	if r.isCache {
+		r.cacheRoute = append(r.cacheRoute, &cacheRoute{
+			method:  method,
+			path:    path,
+			handler: handler,
+		})
+		return nil
 	}
 	routes, ok := r.routes[method]
 	if !ok {
@@ -171,8 +200,8 @@ func (r *Router) Delete(path string, handler Handler) *Router {
  * @info Returns all the routes in router
  * @returns {map[string][]*mux}
  */
-func (r *Router) GetRouterRoutes() map[string]*tree {
-	return r.routes
+func (r *Router) GetCacheRoutes() []*cacheRoute {
+	return r.cacheRoute
 }
 
 /**
@@ -181,10 +210,14 @@ func (r *Router) GetRouterRoutes() map[string]*tree {
  * @returns {Router}
  */
 func (r *Router) UseRouter(Router *Router) {
-	rt := Router.GetRouterRoutes()
-	for method, tree := range rt {
-		r.routes[method].InsertMap(ToMap(tree))
+	routes := Router.GetCacheRoutes()
+	if !r.isCache {
+		for _, v := range routes {
+			r.routes[v.method].InsertNode(v.path, v.handler)
+		}
+		return
 	}
+	r.cacheRoute = append(r.cacheRoute, routes...)
 }
 
 /**

@@ -30,21 +30,18 @@ SOFTWARE.
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/gominima/minima"
+	"github.com/gominima/minima/_examples/rtr"
+	"net/http"
 )
 
 func main() {
 	app := minima.New()
 	app.UseRaw(SimpleTest())
+	app.UseRouter(rtr.Router())
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 		res.Send(req.Query("name"))
-	})
-	app.Get("/user/:id", func(res *minima.Response, req *minima.Request) {
-		id := req.Param("id")
-		res.Send(id)
 	})
 	app.Listen(":3000")
 }

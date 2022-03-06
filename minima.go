@@ -83,10 +83,12 @@ func main() {
  * @returns {minima}
 */
 func New() *Minima {
-	return &Minima{
+	m := &Minima{
 		drain:  0,
 		router: NewRouter(),
 	}
+	m.router.isCache = false
+	return m
 }
 
 /**
