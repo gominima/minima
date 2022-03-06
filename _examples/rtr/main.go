@@ -2,7 +2,7 @@ package rtr
 
 import (
 	"github.com/gominima/minima"
-	"github.com/gominima/minima/_examples/rtr/auth"
+	"github.com/gominima/minima/_examples/rtr/test_routes"
 )
 
 func SimpleTest() minima.Handler {
@@ -13,10 +13,10 @@ func SimpleTest() minima.Handler {
 
 func Router() *minima.Router {
 	rt := minima.NewRouter()
-	rt.Get("/test/one", auth.SimpleTests())
-	rt.Get("/test/two", auth.SimpleTests1())
-	rt.Get("/test/three", auth.SimpleTests2())
-	rt.Get("/test/four", auth.SimpleTests3())
-	rt.Get("/test/last", auth.SimpleTests4())
+	rt.Get("/test/one", test.SimpleTests())
+	rt.Get("/test/two", test.SimpleTests1())
+	rt.Get("/test/three", test.SimpleTests2())
+	rt.Get("/test/four", test.SimpleTests3())
+	rt.Get("/test/last", test.SimpleTests4())
 	return rt
 }

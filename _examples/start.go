@@ -31,6 +31,7 @@ SOFTWARE.
 import (
 	"fmt"
 	"github.com/gominima/minima"
+	"github.com/gominima/minima/_examples/group"
 	"github.com/gominima/minima/_examples/rtr"
 	"net/http"
 )
@@ -39,6 +40,7 @@ func main() {
 	app := minima.New()
 	app.UseRaw(SimpleTest())
 	app.UseRouter(rtr.Router())
+	app.UseGroup(group.RouteGroup())
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 		res.Send(req.Query("name"))
