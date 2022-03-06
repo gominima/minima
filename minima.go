@@ -55,16 +55,16 @@ type Minima struct {
 	drain      time.Duration
 }
 
+var (
+	red    = "\u001b[31m"
+	green  = "\u001b[32m"
+	yellow = "\u001b[33m"
+	blue   = "\u001b[34m"
+	reset  = "\u001b[0m"
+)
+
 const (
 	version = "1.1.2"
-	banner  = `	
-  __  __  _  __  _  _  __  __   ____  
- |  \/  || ||  \| || ||  \/  | / () \ 
- |_|\/|_||_||_|\__||_||_|\/|_|/__/\__\ %s
- The Go framework to scale
-___________________________________________
- Server started at port %v                                                                              
-`
 )
 
 /**
@@ -98,11 +98,23 @@ func New() *Minima {
  */
 func (m *Minima) Listen(addr string) error {
 	if m.started {
-		log.Panicf("Minimia's instance is already running at %s.", m.server.Addr)
+		log.Panicf("Minima's instance is already running at %s.", m.server.Addr)
 	}
 	m.server = &http.Server{Addr: addr, Handler: m}
 	m.started = true
-	fmt.Printf(banner, version, addr)
+
+	banner := fmt.Sprintf(`	
+%s  __  __  _  __  _  _  __  __   ____  
+%s |  \/  || ||  \| || ||  \/  | / () \ 
+%s |_|\/|_||_||_|\__||_||_|\/|_|/__/\__\ %s
+%s The Go framework to scale
+%s___________________________________________
+%s Server started at port %s %v
+%s                                                                      
+`, green, green, green, version, blue, red, blue, yellow, addr, reset)
+
+	fmt.Println(banner)
+
 	return m.server.ListenAndServe()
 }
 
