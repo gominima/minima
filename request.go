@@ -166,9 +166,8 @@ func (r *Request) Raw() *http.Request {
  * @returns {string}
  */
 func (r *Request) Query(key string) string {
-	return r.Raw().URL.Query().Get("name")
+	return r.QueryParams().Get(key)
 }
-
 /**
  * @info Gets request path query in a string
  * @returns {string}
