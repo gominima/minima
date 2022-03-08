@@ -294,7 +294,10 @@ func (res *Response) CloseConn() error {
 	return returnErr
 }
 
-
+/**
+ * @info Sends a file to the server 
+ * @returns {error}
+ */
 func (res *Response) File(dir string) (error) {
 	f, err := os.Open(dir)
 	if err != nil {
