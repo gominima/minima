@@ -148,7 +148,7 @@ func main() {
 		// query params work a bit differently
 		// instead of adding a param in route, you just need to fetch it
 
-		userid := req.GetQuery("id")
+		userid := req.Query("id")
 
 		if userid == "" {
 			res.Error(404, "No user found")
@@ -172,7 +172,11 @@ type Minima interface {
 
 	// initializes net/http server with address
 	Listen(address string) error
+    
 
+	//static file serve methods
+	File(pth string, dir string) //serves a single static file to route
+	Static(pth string, dir string) //serves whole directory with specified pth ex /static/main.html
 	// main handler interface
 	ServeHTTP(w http.ResponseWriter, q *http.Request)
 
