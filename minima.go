@@ -31,8 +31,10 @@ SOFTWARE.
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -315,4 +317,39 @@ func (m *Minima) UseGroup(grp *Group) *Minima {
 		m.router.routes[v.method].InsertNode(v.path, v.handler)
 	}
 	return m
+}
+
+/**
+ * @info Injects a static file to minima instance
+ * @param {string} [pth] The route path for static serve
+ * @param {string} [dir] The dir of the file
+ * @returns {}
+ */
+func (m *Minima) File(pth string, dir string) {
+	m.Get(pth, func(res *Response, req *Request) {
+		res.File(dir)
+	})
+}
+
+/**
+ * @info Injects a static directory to minima instance
+ * @param {string} [pth] The route path for static serve
+ * @param {string} [dir] The dir of the static folder
+ * @returns {}
+ */
+func (m *Minima) Static(pth string, dir string) {
+	if dir == "" {
+		dir = "./"
+	}
+	files, err := ioutil.ReadDir(dir)
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, f := range files {
+		path := []string{pth, "/", f.Name()}
+		dr := []string{dir, "/", f.Name()}
+        m.Get(strings.Join(path, ""), func(res *Response, req *Request) {
+			res.File(strings.Join(dr, ""))
+		})
+    }
 }

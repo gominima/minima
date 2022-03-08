@@ -35,6 +35,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"text/template"
 )
 
@@ -292,6 +294,32 @@ func (res *Response) CloseConn() error {
 	return returnErr
 }
 
+/**
+ * @info Sends a file to the server 
+ * @returns {error}
+ */
+func (res *Response) File(dir string) (error) {
+	f, err := os.Open(dir)
+	if err != nil {
+	  log.Panicf("Minima: file %v wasn't found", dir)
+	}
+	defer f.Close()
+
+	fi, _ := f.Stat()
+	if fi.IsDir() {
+		dir = filepath.Join(dir, "")
+		f, err = os.Open(dir)
+		if err != nil {
+			log.Panicf("Minima: file %v wasn't found", dir)
+		}
+		defer f.Close()
+		if fi, err = f.Stat(); err != nil {
+			return err
+		}
+	}
+	http.ServeContent(res.ref, res.header.req, fi.Name(), fi.ModTime(), f)
+	return nil
+}
 /**
  * @info Redirects to a different route
  * @param {string} [url] The url of the route to redirect
