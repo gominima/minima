@@ -41,7 +41,8 @@ func main() {
 	app.UseRaw(SimpleTest())
 	app.UseRouter(rtr.Router())
 	app.UseGroup(group.RouteGroup())
-	app.File("/main", "./static/main.html")
+	app.File("/main.html", "./static/main.html")
+	app.Static("/static", "./static")
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 		res.Send(req.Query("name"))

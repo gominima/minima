@@ -31,8 +31,10 @@ SOFTWARE.
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -327,4 +329,18 @@ func (m *Minima) File(pth string, dir string) {
 	m.Get(pth, func(res *Response, req *Request) {
 		res.File(dir)
 	})
+}
+
+func (m *Minima) Static(pth string, dir string) {
+	files, err := ioutil.ReadDir(dir)
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, f := range files {
+		path := []string{pth, "/", f.Name()}
+		dr := []string{dir, "/", f.Name()}
+        m.Get(strings.Join(path, ""), func(res *Response, req *Request) {
+			res.File(strings.Join(dr, ""))
+		})
+    }
 }
