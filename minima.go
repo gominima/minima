@@ -331,7 +331,16 @@ func (m *Minima) File(pth string, dir string) {
 	})
 }
 
+/**
+ * @info Injects a static directory to minima instance
+ * @param {string} [pth] The route path for static serve
+ * @param {string} [dir] The dir of the static folder
+ * @returns {}
+ */
 func (m *Minima) Static(pth string, dir string) {
+	if dir == "" {
+		dir = "./"
+	}
 	files, err := ioutil.ReadDir(dir)
     if err != nil {
         log.Fatal(err)
