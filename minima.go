@@ -316,3 +316,15 @@ func (m *Minima) UseGroup(grp *Group) *Minima {
 	}
 	return m
 }
+
+/**
+ * @info Injects a static file to minima instance
+ * @param {string} [pth] The route path for static serve
+ * @param {string} [dir] The dir of the file
+ * @returns {}
+ */
+func (m *Minima) File(pth string, dir string) {
+	m.Get(pth, func(res *Response, req *Request) {
+		res.File(dir)
+	})
+}
