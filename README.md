@@ -66,7 +66,7 @@ func main() {
 - **Lightweight** - clocked in ~1000 loc</li>
 - **No Dependency** - just your plain old go standard libraries</li>
 - **Great Documentation** - best in class precise [documentation](https://gominima.studio/)
-- **Auto Docs** - docgen for generating all of your routing docs from router to json or markdown files
+- **Auto Docs** - docgen for generating all of your routing docs from jsdoc like comments to json or markdown files
 
 ## ❓ Why Minima
 
