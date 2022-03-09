@@ -96,7 +96,7 @@ func (res *Response) SetHeader(key string, value string) *Response {
 }
 
 /**
- * @info Gets header from response
+ * @info Deletes header from response
  * @param {string} [key] Key of the header
  * @returns {string}
  */
@@ -107,6 +107,7 @@ func (res *Response) DelHeader(key string) *Response {
 
 /**
  * @info Clones all header from response
+ * @param {} [] 
  * @returns {http.Header}
  */
 func (res *Response) CloneHeaders() http.Header {
