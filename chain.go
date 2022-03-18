@@ -34,7 +34,7 @@ import "net/http"
 type Middlewares []func(http.Handler) http.Handler
 
 /**
- * @info Create a middleware chain
+ n* @info Create a middleware chain
  */
 func Chain(middlewares ...func(http.Handler) http.Handler) Middlewares {
 	return Middlewares(middlewares)
@@ -91,7 +91,7 @@ func chain(middlewares []func(http.Handler) http.Handler, endpoint http.Handler)
 		return endpoint
 	}
 	h := middlewares[len(middlewares)-1](endpoint)
-	for i := len(middlewares) - 2; i >= 0; i-- {
+	for i := len(middlewares) - 2; i >= 0; i-- { 
 		h = middlewares[i](h)
 	}
 

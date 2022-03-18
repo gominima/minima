@@ -141,7 +141,7 @@ func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		handler.ServeHTTP(w, r)
 	} else {
 		if m.router.notfound != nil {
-			buildHandler(m.router.notfound, nil).ServeHTTP(w, r)
+			m.router.notfound.ServeHTTP(w,r)
 		} else {
 			w.Write([]byte("No matching route found"))
 		}

@@ -58,7 +58,7 @@ type cacheRoute struct {
  * @property {http.Handler} [handler] The single http.Handler built on chaining the whole middleware stack
  */
 type Router struct {
-	notfound    Handler
+	notfound    http.Handler
 	handler     http.Handler
 	isCache     bool
 	middlewares []func(http.Handler) http.Handler
@@ -113,7 +113,7 @@ func (r *Router) Register(method string, path string, handler Handler) error {
 }
 
 func (r *Router) NotFound(handler Handler) *Router {
-	r.notfound = handler
+	r.notfound = buildHandler(handler, nil)
 	return r
 }
 
