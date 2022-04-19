@@ -65,16 +65,6 @@ func (n *Node) IsLeaf() bool {
 }
 
 /**
- * @info Clones the current node
- * @returns {*Node}
- */
-func (n *Node) clone() *Node {
-	c := *n
-	c.incrDepth()
-	return &c
-}
-
-/**
  * @info Increases node's depth in the tree
  */
 func (n *Node) incrDepth() {
@@ -84,3 +74,12 @@ func (n *Node) incrDepth() {
 	}
 }
 
+/**
+ * @info Clones the current node
+ * @returns {*Node}
+ */
+func (n *Node) clone() *Node {
+	c := *n
+	c.incrDepth()
+	return &c
+}

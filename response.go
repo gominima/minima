@@ -107,7 +107,7 @@ func (res *Response) DelHeader(key string) *Response {
 
 /**
  * @info Clones all header from response
- * @param {} [] 
+ * @param {} []
  * @returns {http.Header}
  */
 func (res *Response) CloneHeaders() http.Header {
@@ -296,13 +296,13 @@ func (res *Response) CloseConn() error {
 }
 
 /**
- * @info Sends a file to the server 
+ * @info Sends a file to the server
  * @returns {error}
  */
-func (res *Response) File(dir string) (error) {
+func (res *Response) File(dir string) error {
 	f, err := os.Open(dir)
 	if err != nil {
-	  log.Panicf("Minima: file %v wasn't found", dir)
+		log.Panicf("Minima: file %v wasn't found", dir)
 	}
 	defer f.Close()
 
@@ -321,6 +321,7 @@ func (res *Response) File(dir string) (error) {
 	http.ServeContent(res.ref, res.header.req, fi.Name(), fi.ModTime(), f)
 	return nil
 }
+
 /**
  * @info Redirects to a different route
  * @param {string} [url] The url of the route to redirect

@@ -141,7 +141,7 @@ func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		handler.ServeHTTP(w, r)
 	} else {
 		if m.router.notfound != nil {
-			m.router.notfound.ServeHTTP(w,r)
+			m.router.notfound.ServeHTTP(w, r)
 		} else {
 			w.Write([]byte("No matching route found"))
 		}
@@ -342,14 +342,14 @@ func (m *Minima) Static(pth string, dir string) {
 		dir = "./"
 	}
 	files, err := ioutil.ReadDir(dir)
-    if err != nil {
-        log.Fatal(err)
-    }
-    for _, f := range files {
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
 		path := []string{pth, "/", f.Name()}
 		dr := []string{dir, "/", f.Name()}
-        m.Get(strings.Join(path, ""), func(res *Response, req *Request) {
+		m.Get(strings.Join(path, ""), func(res *Response, req *Request) {
 			res.File(strings.Join(dr, ""))
 		})
-    }
+	}
 }

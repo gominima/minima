@@ -2,7 +2,6 @@ package minima
 
 import "net/http"
 
-
 /**
  * @info Converts minima handler into middleware chain handler
  * @param {Handler} [h] The handler to convert
