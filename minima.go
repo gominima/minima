@@ -61,13 +61,11 @@ var (
 	red    = "\u001b[31m"
 	green  = "\u001b[32m"
 	yellow = "\u001b[33m"
-	blue   = "\u001b[34m"
+	blue   = "\u001B[36m"
 	reset  = "\u001b[0m"
+	version = "1.1.5"
 )
 
-const (
-	version = "1.1.2"
-)
 
 /**
  * @info Make a new default minima instance
