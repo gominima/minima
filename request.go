@@ -45,7 +45,6 @@ import (
  * @property {string} [method] Request method
  * @property {[]*Params} [Params] Request path parameters
  * @property {query} [url.Values] Request path query params
- * @property {IncomingHeader} [header] Incoming headers of the request
  * @property {json.Decoder} [json] Json decoder instance
  */
 type Request struct {
@@ -54,7 +53,6 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	header     *IncomingHeader
 	json       *json.Decoder
 }
 
@@ -66,16 +64,11 @@ type Request struct {
 func request(r *http.Request) *Request {
 	req := &Request{
 		ref:        r,
-		header:     &IncomingHeader{},
 		fileReader: nil,
 		method:     r.Proto,
 	}
 
-	for i, v := range r.Header {
-		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
-	}
-
-	if req.header.Get("content-type") == "application/json" {
+	if req.ref.Header.Get("content-type") == "application/json" {
 		req.json = json.NewDecoder(r.Body)
 	} else {
 		r.ParseForm()
@@ -321,7 +314,7 @@ func (r *Request) GetCookie(key string) *http.Cookie {
  * @returns {*Request}
  */
 func (r *Request) SetHeader(key string, value string) *Request {
-	r.header.Set(key, value)
+	r.ref.Header.Set(key, value)
 	return r
 }
 
@@ -331,5 +324,22 @@ func (r *Request) SetHeader(key string, value string) *Request {
  * @returns {string}
  */
 func (r *Request) GetHeader(key string) string {
-	return r.header.Get(key)
+	return r.ref.Header.Get(key)
+}
+
+
+/**
+ * @info Deletes a paticular Header by its key
+ * @param {string} [key] key of the Header
+ */
+ func (r *Request) DelHeader(key string) {
+	 r.ref.Header.Del(key)
+}
+
+/**
+ * @info Clones all headers from request body
+ * @returns {http.Header}
+ */
+ func (r *Request) CloneHeader() http.Header {
+	return r.ref.Header.Clone()
 }
