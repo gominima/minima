@@ -54,7 +54,6 @@ type Request struct {
 	body       map[string][]string
 	method     string
 	Params     map[string]string
-	header     *IncomingHeader
 	json       *json.Decoder
 }
 
@@ -66,16 +65,11 @@ type Request struct {
 func request(r *http.Request) *Request {
 	req := &Request{
 		ref:        r,
-		header:     &IncomingHeader{},
 		fileReader: nil,
 		method:     r.Proto,
 	}
 
-	for i, v := range r.Header {
-		req.header.Set(strings.ToLower(i), strings.Join(v, ","))
-	}
-
-	if req.header.Get("content-type") == "application/json" {
+	if req.ref.Header.Get("content-type") == "application/json" {
 		req.json = json.NewDecoder(r.Body)
 	} else {
 		r.ParseForm()
@@ -321,7 +315,7 @@ func (r *Request) GetCookie(key string) *http.Cookie {
  * @returns {*Request}
  */
 func (r *Request) SetHeader(key string, value string) *Request {
-	r.header.Set(key, value)
+	r.ref.Header.Set(key, value)
 	return r
 }
 
@@ -331,5 +325,5 @@ func (r *Request) SetHeader(key string, value string) *Request {
  * @returns {string}
  */
 func (r *Request) GetHeader(key string) string {
-	return r.header.Get(key)
+	return r.ref.Header.Get(key)
 }
