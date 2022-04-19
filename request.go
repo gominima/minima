@@ -45,7 +45,6 @@ import (
  * @property {string} [method] Request method
  * @property {[]*Params} [Params] Request path parameters
  * @property {query} [url.Values] Request path query params
- * @property {IncomingHeader} [header] Incoming headers of the request
  * @property {json.Decoder} [json] Json decoder instance
  */
 type Request struct {
