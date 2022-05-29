@@ -327,19 +327,18 @@ func (r *Request) GetHeader(key string) string {
 	return r.ref.Header.Get(key)
 }
 
-
 /**
  * @info Deletes a paticular Header by its key
  * @param {string} [key] key of the Header
  */
- func (r *Request) DelHeader(key string) {
-	 r.ref.Header.Del(key)
+func (r *Request) DelHeader(key string) {
+	r.ref.Header.Del(key)
 }
 
 /**
  * @info Clones all headers from request body
  * @returns {http.Header}
  */
- func (r *Request) CloneHeader() http.Header {
+func (r *Request) CloneHeader() http.Header {
 	return r.ref.Header.Clone()
 }

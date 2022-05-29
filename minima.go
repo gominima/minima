@@ -58,14 +58,13 @@ type Minima struct {
 }
 
 var (
-	red    = "\u001b[31m"
-	green  = "\u001b[32m"
-	yellow = "\u001b[33m"
-	blue   = "\u001B[36m"
-	reset  = "\u001b[0m"
+	red     = "\u001b[31m"
+	green   = "\u001b[32m"
+	yellow  = "\u001b[33m"
+	blue    = "\u001B[36m"
+	reset   = "\u001b[0m"
 	version = "1.1.5"
 )
-
 
 /**
  * @info Make a new default minima instance
