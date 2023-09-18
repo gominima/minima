@@ -7,9 +7,8 @@ require github.com/stretchr/testify v1.7.0
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.0 // indirect
 )
-
 
 //
 // Minima is a free and open source software under Mit license
@@ -36,4 +35,4 @@ require (
 
 //  Authors @apoorvcodes @megatank58
 //  Maintainers @Panquesito7 @savioxavier @Shubhaankar-Sharma @apoorvcodes @megatank58
-//  Thank you for showing interest in minima and for this beautiful community 
+//  Thank you for showing interest in minima and for this beautiful community
