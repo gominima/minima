@@ -30,7 +30,6 @@ SOFTWARE.
 
 import (
 	"encoding/json"
-	"fmt"
 	"mime/multipart"
 	"net"
 	"net/http"
@@ -66,7 +65,6 @@ func request(r *http.Request) *Request {
 	body, err := ParseRequestBody(r); if err != nil {
 		panic(err)
 	}
-	fmt.Println(body)
 	req := &Request{
 		ref:        r,
 		fileReader: nil,
