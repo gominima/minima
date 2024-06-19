@@ -217,7 +217,9 @@ func (r *Router) UseRouter(Router *Router) {
 	routes := Router.GetCacheRoutes()
 	if !r.isCache {
 		for _, v := range routes {
-			r.routes[v.method].InsertNode(v.path, v.handler)
+			err := r.Register(v.method, v.path, v.handler); if err != nil {
+				panic(err)
+			}
 		}
 		return
 	}
