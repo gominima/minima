@@ -3,7 +3,7 @@ package minima
 /**
 * Minima is a free and open source software under Mit license
 
-Copyright (c) 2021 gominima
+Copyright (c) 2024 gominima
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -57,32 +57,29 @@ type Minima struct {
 	drain      time.Duration
 }
 
-var (
-	red    = "\u001b[31m"
-	green  = "\u001b[32m"
-	yellow = "\u001b[33m"
-	blue   = "\u001B[36m"
-	reset  = "\u001b[0m"
-	version = "1.1.5"
-)
 
 
-/**
- * @info Make a new default minima instance
- * @example `
-func main() {
-	app := minima.New()
+/*
+*
 
-	app.Get("/", func(res *minima.Response, req *minima.Request) {
-		res.Status(200).Send("Hello World")
-	})
+  - @info Make a new default minima instance
 
-	app.Listen(":3000")
-}
+  - @example `
+
+    func main() {
+    app := minima.New()
+
+    app.Get("/", func(res *minima.Response, req *minima.Request) {
+    res.Status(200).Send("Hello World")
+    })
+
+    app.Listen(":3000")
+    }
+
 `
- * @returns {minima}
+  - @returns {minima}
 */
-func New() *Minima {
+func Engine() *Minima {
 	m := &Minima{
 		drain:  0,
 		router: NewRouter(),
@@ -102,19 +99,6 @@ func (m *Minima) Listen(addr string) error {
 	}
 	m.server = &http.Server{Addr: addr, Handler: m}
 	m.started = true
-
-	banner := fmt.Sprintf(`	
-%s  __  __  _  __  _  _  __  __   ____  
-%s |  \/  || ||  \| || ||  \/  | / () \ 
-%s |_|\/|_||_||_|\__||_||_|\/|_|/__/\__\ %s
-%s The Go framework to scale
-%s___________________________________________
-%s Server started at port %s %v
-%s                                                                      
-`, green, green, green, version, blue, red, blue, yellow, addr, reset)
-
-	fmt.Println(banner)
-
 	return m.server.ListenAndServe()
 }
 
@@ -133,6 +117,7 @@ func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error parsing form: %s", err)
 			return
 		}
+		
 		if m.router.handler != nil {
 			m.router.handler.ServeHTTP(w, r)
 		}

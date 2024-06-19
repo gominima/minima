@@ -3,7 +3,7 @@ package minima
 /**
 * Minima is a free and open source software under Mit license
 
-Copyright (c) 2021 gominima
+Copyright (c) 2024 gominima
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -66,12 +66,14 @@ type Router struct {
 	routes      map[string]*tree
 }
 
-/**
- * @info Make new default router interface
+/*
+*
+  - @info Make new default router interface
+
 return {Router}
 */
 func NewRouter() *Router {
-	return &Router{
+	r := &Router{
 		routes: map[string]*tree{
 			"GET":     NewTree(),
 			"POST":    NewTree(),
@@ -82,13 +84,18 @@ func NewRouter() *Router {
 			"HEAD":    NewTree(),
 		},
 		isCache:    true,
+		notfound:   nil,
+		middlewares: make([]func(http.Handler) http.Handler, 0),
 		cacheRoute: make([]*cacheRoute, 0),
 	}
+	return r
 }
 
-/**
- * @info Registers a new route to router interface
- * @param {string} [path] The route path
+/*
+*
+  - @info Registers a new route to router interface
+  - @param {string} [path] The route path
+
 return {string, []string}
 */
 func (r *Router) Register(method string, path string, handler Handler) error {
@@ -229,7 +236,7 @@ func (r *Router) use(handler ...func(http.Handler) http.Handler) {
 	r.middlewares = append(r.middlewares, handler...)
 }
 
-//A dummy function that runs at the end of the middleware stack
+// A dummy function that runs at the end of the middleware stack
 func (r *Router) middlewareHTTP(w http.ResponseWriter, rq *http.Request) {}
 
 /**

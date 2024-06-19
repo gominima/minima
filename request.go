@@ -3,7 +3,7 @@ package minima
 /**
 * Minima is a free and open source software under Mit license
 
-Copyright (c) 2021 gominima
+Copyright (c) 2024 gominima
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ SOFTWARE.
 
 import (
 	"encoding/json"
+	"fmt"
 	"mime/multipart"
 	"net"
 	"net/http"
@@ -50,9 +51,9 @@ import (
 type Request struct {
 	ref        *http.Request
 	fileReader *multipart.Reader
-	body       map[string][]string
 	method     string
 	Params     map[string]string
+	body       map[string]interface{}
 	json       *json.Decoder
 }
 
@@ -62,26 +63,19 @@ type Request struct {
  * @returns {Request}
  */
 func request(r *http.Request) *Request {
+	body, err := ParseRequestBody(r); if err != nil {
+		panic(err)
+	}
+	fmt.Println(body)
 	req := &Request{
 		ref:        r,
 		fileReader: nil,
 		method:     r.Proto,
+		Params:     make(map[string]string),
+		body:       make(map[string]interface{}),
 	}
-
-	if req.ref.Header.Get("content-type") == "application/json" {
-		req.json = json.NewDecoder(r.Body)
-	} else {
-		r.ParseForm()
-	}
-
-	if len(r.PostForm) > 0 {
-		req.body = make(map[string][]string)
-		for key, value := range r.PostForm {
-			req.body[key] = value
-		}
-	}
+	req.body = body
 	return req
-
 }
 
 /**
@@ -116,8 +110,11 @@ func (r *Request) Path() string {
  * @info Gets raw request body
  * @returns {map[string][]string}
  */
-func (r *Request) Body() map[string][]string {
-	return r.body
+
+
+// GetParsedBody retrieves the parsed request body from the context.
+func (r *Request) GetBody() (map[string]interface{}) {
+	return r.body 
 }
 
 /**
@@ -125,8 +122,9 @@ func (r *Request) Body() map[string][]string {
  * @param {string} [key] Key of the request body
  * @returns {[]string}
  */
-func (r *Request) BodyValue(key string) []string {
-	return r.body[key]
+func (r *Request) GetBodyValue(key string)(interface{}, bool) {
+	value, ok := r.body[key]
+	return value, ok
 }
 
 /**
@@ -327,19 +325,18 @@ func (r *Request) GetHeader(key string) string {
 	return r.ref.Header.Get(key)
 }
 
-
 /**
  * @info Deletes a paticular Header by its key
  * @param {string} [key] key of the Header
  */
- func (r *Request) DelHeader(key string) {
-	 r.ref.Header.Del(key)
+func (r *Request) DelHeader(key string) {
+	r.ref.Header.Del(key)
 }
 
 /**
  * @info Clones all headers from request body
  * @returns {http.Header}
  */
- func (r *Request) CloneHeader() http.Header {
+func (r *Request) CloneHeader() http.Header {
 	return r.ref.Header.Clone()
 }

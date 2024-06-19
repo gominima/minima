@@ -3,7 +3,7 @@ package main
 /**
 * Minima is a free and open source software under Mit license
 
-Copyright (c) 2021 gominima
+Copyright (c) 2024 gominima
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,17 +37,21 @@ import (
 )
 
 func main() {
-	app := minima.New()
+	app := minima.Engine()
 	app.UseRaw(SimpleTest())
 	app.UseRouter(rtr.Router())
 	app.UseGroup(group.RouteGroup())
 	app.File("/main.html", "./static/main.html")
 	app.Static("/static", "./static")
+	app.Post("/post", func(res *minima.Response, req *minima.Request) { 
+		fmt.Println(req.GetBodyValue("main"))
+		res.Send("Hello")
+	})
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.Send("Hello")
 		res.Send(req.Query("name"))
 	})
-	
+
 	app.Listen(":3000")
 }
 

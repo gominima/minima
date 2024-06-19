@@ -3,7 +3,7 @@ package minima
 /**
 * Minima is a free and open source software under Mit license
 
-Copyright (c) 2021 gominima
+Copyright (c) 2024 gominima
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,8 @@ import "net/http"
 
 type Middlewares []func(http.Handler) http.Handler
 
-/**
+/*
+*
 n* @info Create a middleware chain
 */
 func Chain(middlewares ...func(http.Handler) http.Handler) Middlewares {

@@ -48,7 +48,7 @@ package main
 import "github.com/gominima/minima"
 
 func main() {
-	app := minima.New()
+	app := minima.Engine()
 
 	app.Get("/", func(res *minima.Response, req *minima.Request) {
 		res.OK().Send("Hello World")
