@@ -30,10 +30,9 @@ SOFTWARE.
 
 import (
 	"context"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -296,8 +295,7 @@ func (m *Minima) Use(handler Handler) *Minima {
  */
 func (m *Minima) UseGroup(grp *Group) *Minima {
 	for _, v := range grp.GetGroupRoutes() {
-		fmt.Print(v.method)
-		m.router.routes[v.method].InsertNode(v.path, v.handler)
+		m.router.Register(v.method, v.path, v.handler)
 	}
 	return m
 }
@@ -324,7 +322,7 @@ func (m *Minima) Static(pth string, dir string) {
 	if dir == "" {
 		dir = "./"
 	}
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
